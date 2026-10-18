@@ -253,17 +253,48 @@ function initMobileNav() {
 }
 
 /* ══════════════════════════════════════════
-   MOBILE TOC TOGGLE
+   MOBILE TOC & SIDEBAR TOGGLE
 ══════════════════════════════════════════ */
 function initMobileTOC() {
-  const toggle = document.querySelector('.toc-mobile-toggle');
-  const sidebar = document.querySelector('.topic-sidebar');
-  if (!toggle || !sidebar) return;
+  const sidebar = document.querySelector('.topic-sidebar, .sidebar, aside');
+  if (!sidebar) return;
 
-  toggle.addEventListener('click', () => {
-    const isOpen = sidebar.classList.toggle('mobile-open');
-    toggle.textContent = isOpen ? '✕' : '☰';
-  });
+  // Find or create mobile TOC toggle button if on a unit page
+  let toggle = document.querySelector('.toc-mobile-toggle, .mobile-toc-toggle, .toc-toggle, #tocToggle, #mobileToggle');
+  
+  if (!toggle && document.querySelector('.toc-list')) {
+    toggle = document.createElement('button');
+    toggle.className = 'toc-mobile-toggle';
+    toggle.setAttribute('aria-label', 'Toggle Table of Contents');
+    toggle.textContent = '☰';
+    document.body.appendChild(toggle);
+  }
+
+  if (toggle) {
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = sidebar.classList.toggle('open') || sidebar.classList.toggle('mobile-open');
+      toggle.textContent = isOpen ? '✕' : '☰';
+    });
+
+    // Close when tapping on any link in the TOC
+    sidebar.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        sidebar.classList.remove('mobile-open');
+        toggle.textContent = '☰';
+      });
+    });
+
+    // Close on tapping outside
+    document.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && e.target !== toggle) {
+        sidebar.classList.remove('open');
+        sidebar.classList.remove('mobile-open');
+        toggle.textContent = '☰';
+      }
+    });
+  }
 }
 
 /* ══════════════════════════════════════════
