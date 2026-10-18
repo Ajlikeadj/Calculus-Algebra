@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5: Sequence and Series — Cal-Alge</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false},
+        {left:'\\(',right:'\\)',display:false},
+        {left:'\\[',right:'\\]',display:true}
+      ]
+    })"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/topic.css" />
+
+  <style>
+    /* ── Page-level overrides & enhancements ── */
+    :root {
+      --bg:        #050d0b;
+      --surface:   #0a1a16;
+      --border:    rgba(203,246,231,0.10);
+      --mint:      #cbf6e7;
+      --green:     #4ade80;
+      --text:      #f0fdf4;
+      --muted:     #6b7280;
+      --card:      rgba(10,26,22,0.85);
+      --radius:    12px;
+      --shadow:    0 4px 32px rgba(0,0,0,0.45);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #4ade80, #cbf6e7);
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* Cursor glow */
+    .cursor-glow {
+      position: fixed;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(74,222,128,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* ── Layout ── */
+    .page-wrapper {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+      gap: 0;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      z-index: 100;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .sidebar-logo {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toc-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .toc-list { list-style: none; }
+
+    .toc-list li { margin-bottom: 0.15rem; }
+
+    .toc-list a {
+      display: block;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 6px;
+      border-left: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .toc-list a:hover,
+    .toc-list a.active {
+      color: var(--mint);
+      border-left-color: var(--green);
+      background: rgba(74,222,128,0.06);
+    }
+
+    .toc-list .toc-sub a {
+      padding-left: 1.4rem;
+      font-size: 0.78rem;
+    }
+
+    /* ── Main content ── */
+    .main-content {
+      max-width: 900px;
+      padding: 3rem 3rem 6rem;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Header ── */
+    .unit-header {
+      margin-bottom: 3.5rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green);
+      text-decoration: none;
+      border: 1px solid rgba(74,222,128,0.3);
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+      margin-bottom: 2rem;
+    }
+    .back-btn:hover {
+      background: rgba(74,222,128,0.08);
+      border-color: var(--green);
+    }
+
+    .unit-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.25);
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+
+    .unit-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--mint);
+      margin-bottom: 1rem;
+    }
+
+    .unit-subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    .unit-meta {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.75rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .unit-meta-item { font-size: 0.82rem; }
+    .unit-meta-label { color: var(--muted); display: block; margin-bottom: 0.2rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .unit-meta-value { color: var(--mint); font-weight: 600; }
+
+    /* ── Section ── */
+    .content-section {
+      margin-bottom: 5rem;
+      scroll-margin-top: 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.25);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--mint);
+      letter-spacing: -0.01em;
+    }
+
+    .subsection-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--mint);
+      margin: 2.25rem 0 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .subsection-title::before {
+      content: '▸ ';
+      color: var(--green);
+      font-size: 0.85em;
+    }
+
+    p { margin-bottom: 1rem; color: #d1fae5; }
+
+    /* ── Cards ── */
+    .def-box, .thm-box, .example-box, .formula-box, .note-box, .warn-box, .proof-box {
+      border-radius: var(--radius);
+      padding: 1.5rem 1.75rem;
+      margin: 1.75rem 0;
+      position: relative;
+    }
+
+    .def-box {
+      background: rgba(74,222,128,0.05);
+      border: 1px solid rgba(74,222,128,0.22);
+      border-left: 4px solid var(--green);
+    }
+
+    .thm-box {
+      background: rgba(203,246,231,0.04);
+      border: 1px solid rgba(203,246,231,0.18);
+      border-left: 4px solid var(--mint);
+    }
+
+    .example-box {
+      background: rgba(99,102,241,0.06);
+      border: 1px solid rgba(99,102,241,0.22);
+      border-left: 4px solid #818cf8;
+    }
+
+    .formula-box {
+      background: rgba(251,191,36,0.04);
+      border: 1px solid rgba(251,191,36,0.18);
+      border-left: 4px solid #fbbf24;
+    }
+
+    .note-box {
+      background: rgba(14,165,233,0.05);
+      border: 1px solid rgba(14,165,233,0.18);
+      border-left: 4px solid #38bdf8;
+    }
+
+    .warn-box {
+      background: rgba(239,68,68,0.05);
+      border: 1px solid rgba(239,68,68,0.18);
+      border-left: 4px solid #f87171;
+    }
+
+    .proof-box {
+      background: rgba(168,85,247,0.05);
+      border: 1px solid rgba(168,85,247,0.18);
+      border-left: 4px solid #a855f7;
+    }
+
+    .box-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.65rem;
+      display: block;
+    }
+
+    .def-box    .box-label { color: var(--green); }
+    .thm-box    .box-label { color: var(--mint); }
+    .example-box .box-label { color: #818cf8; }
+    .formula-box .box-label { color: #fbbf24; }
+    .note-box   .box-label { color: #38bdf8; }
+    .warn-box   .box-label { color: #f87171; }
+    .proof-box  .box-label { color: #a855f7; }
+
+    .box-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    /* Step list */
+    .steps { list-style: none; counter-reset: step; padding: 0; }
+    .steps li {
+      counter-increment: step;
+      padding: 0.6rem 0 0.6rem 2.5rem;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      color: #d1fae5;
+    }
+    .steps li:last-child { border-bottom: none; }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0; top: 0.65rem;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(74,222,128,0.15);
+      border: 1px solid rgba(74,222,128,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    /* ── Table ── */
+    .math-table-wrap { overflow-x: auto; margin: 1.5rem 0; border-radius: var(--radius); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead tr {
+      background: rgba(74,222,128,0.1);
+    }
+    th {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      color: var(--green);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(74,222,128,0.2);
+    }
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: #d1fae5;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(74,222,128,0.03); }
+
+    /* Grid cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: rgba(74,222,128,0.3); }
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .card-body { font-size: 0.9rem; color: #d1fae5; }
+
+    /* Highlight inline */
+    .hl { color: var(--green); font-weight: 600; }
+    .hl-m { color: var(--mint); font-weight: 600; }
+
+    /* Divider */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .page-wrapper { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-content { padding: 2rem 1.25rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<div class="page-wrapper">
+
+  <!-- ═══════════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Cal-Alge · Unit 5</div>
+
+    <p class="toc-title">Contents</p>
+    <ul class="toc-list">
+      <li><a href="#sequences-review">1. Review of Sequences</a></li>
+      <li><a href="#series-review">2. Review of Series</a></li>
+      <li><a href="#positive-terms">3. Series of Positive Terms</a></li>
+      <li><a href="#cauchy-integral-test">4. Cauchy Integral Test</a></li>
+      <li><a href="#comparison-test">5. Comparison Test</a></li>
+      <li><a href="#dalembert-ratio-test">6. D'Alembert's Ratio Test</a></li>
+      <li><a href="#raabes-test">7. Raabe's Test</a></li>
+      <li><a href="#logarithmic-test">8. Logarithmic Test</a></li>
+      <li><a href="#cauchy-root-test">9. Cauchy Root Test</a></li>
+      <li><a href="#alternating-series">10. Alternating Series</a></li>
+      <li class="toc-sub"><a href="#leibniz-test">↳ Leibniz Test</a></li>
+      <li><a href="#absolute-convergence">11. Absolute Convergence</a></li>
+      <li><a href="#conditional-convergence">12. Conditional Convergence</a></li>
+    </ul>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════
+       MAIN
+  ═══════════════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="unit-header">
+      <a href="../index.html" class="back-btn">← Back to Home</a>
+      <div class="unit-badge">Unit 5 · 26MAB1001T</div>
+      <h1 class="unit-title">Sequence and Series</h1>
+      <p class="unit-subtitle">
+        A rigorous exploration of convergence theory — from the $\varepsilon$-$N$ definition of sequence limits through all classical convergence tests for infinite series, alternating series, absolute and conditional convergence.
+      </p>
+      <div class="unit-meta">
+        <div class="unit-meta-item">
+          <span class="unit-meta-label">Topics</span>
+          <span class="unit-meta-value">13 Core Sections</span>
+        </div>
+        <div class="unit-meta-item">
+          <span class="unit-meta-label">Convergence Tests</span>
+          <span class="unit-meta-value">8 Tests Covered</span>
+        </div>
+        <div class="unit-meta-item">
+          <span class="unit-meta-label">Difficulty</span>
+          <span class="unit-meta-value">Intermediate → Advanced</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         §1  REVIEW OF SEQUENCES
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="sequences-review">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <h2 class="section-title">Review of Sequences</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Sequence</span>
+        <p class="box-title">Sequence as a Function</p>
+        <p>A <strong>sequence</strong> of real numbers is a function $f : \mathbb{N} \to \mathbb{R}$. We write $a_n = f(n)$ for $n = 1, 2, 3, \ldots$ and denote the sequence by $\{a_n\}$ or $(a_n)_{n=1}^{\infty}$.</p>
+        <p>Examples: $\left\{\dfrac{1}{n}\right\}$, $\{(-1)^n\}$, $\left\{\dfrac{n^2-1}{n+1}\right\}$, $\{r^n\}$ for fixed $r \in \mathbb{R}$.</p>
+      </div>
+
+      <h3 class="subsection-title">Bounded Sequences</h3>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Boundedness</span>
+        <p>A sequence $\{a_n\}$ is:</p>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li><strong>Bounded above</strong> if $\exists\, M \in \mathbb{R}$ such that $a_n \le M$ for all $n$.</li>
+          <li><strong>Bounded below</strong> if $\exists\, m \in \mathbb{R}$ such that $a_n \ge m$ for all $n$.</li>
+          <li><strong>Bounded</strong> if it is both bounded above and below, i.e., $\exists\, K > 0$ such that $|a_n| \le K$ for all $n$.</li>
+        </ul>
+      </div>
+
+      <h3 class="subsection-title">Monotone Sequences</h3>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Monotonicity</span>
+        <p>A sequence $\{a_n\}$ is:</p>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li><strong>Monotonically increasing</strong>: $a_n \le a_{n+1}$ for all $n$ (strictly if $a_n < a_{n+1}$).</li>
+          <li><strong>Monotonically decreasing</strong>: $a_n \ge a_{n+1}$ for all $n$ (strictly if $a_n > a_{n+1}$).</li>
+          <li><strong>Monotone</strong> if it is either increasing or decreasing.</li>
+          <li><strong>Non-monotone</strong>: neither; e.g., $\{(-1)^n\}$ oscillates between $-1$ and $1$.</li>
+        </ul>
+      </div>
+
+      <h3 class="subsection-title">Limit of a Sequence — The $\varepsilon$-$N$ Definition</h3>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Convergence</span>
+        <p class="box-title">Formal (Cauchy–Weierstrass) Definition</p>
+        <p>A sequence $\{a_n\}$ <strong>converges</strong> to a limit $L \in \mathbb{R}$, written $\lim_{n\to\infty} a_n = L$, if:</p>
+        $$\forall\, \varepsilon > 0,\quad \exists\, N \in \mathbb{N} \text{ such that } n > N \implies |a_n - L| < \varepsilon.$$
+        <p style="margin-top:0.75rem;">If no such $L$ exists the sequence <strong>diverges</strong>. If $a_n \to +\infty$ or $a_n \to -\infty$ it diverges to infinity. If it neither converges nor diverges to $\pm\infty$ (like $(-1)^n$) it <strong>oscillates</strong>.</p>
+      </div>
+
+      <h3 class="subsection-title">Fundamental Theorems on Sequences</h3>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem</span>
+        <p class="box-title">Convergent Sequences are Bounded</p>
+        <p>If $\{a_n\}$ converges, then $\{a_n\}$ is bounded.</p>
+        <p style="margin-top:0.75rem; color:#6b7280; font-size:0.9rem;"><em>Proof sketch:</em> Let $L = \lim a_n$. Choose $\varepsilon = 1$. Then $\exists\, N$ with $|a_n - L| < 1$ for all $n > N$, so $|a_n| < |L| + 1$ for $n > N$. Set $K = \max\{|a_1|, \ldots, |a_N|, |L|+1\}$.</p>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Monotone Convergence Theorem</span>
+        <p class="box-title">Monotone Bounded Sequences Converge</p>
+        <p>Every monotone bounded sequence converges. Specifically:</p>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li>If $\{a_n\}$ is increasing and bounded above, then $a_n \to \sup_n a_n$.</li>
+          <li>If $\{a_n\}$ is decreasing and bounded below, then $a_n \to \inf_n a_n$.</li>
+        </ul>
+        <p style="margin-top:0.75rem; color:#6b7280; font-size:0.9rem;"><em>This is a consequence of the Completeness Axiom of $\mathbb{R}$.</em></p>
+      </div>
+
+      <h3 class="subsection-title">Subsequences and the Bolzano–Weierstrass Theorem</h3>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Subsequence</span>
+        <p>A <strong>subsequence</strong> of $\{a_n\}$ is a sequence $\{a_{n_k}\}$ where $n_1 < n_2 < n_3 < \cdots$ is a strictly increasing sequence of natural numbers.</p>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Bolzano–Weierstrass</span>
+        <p>Every bounded sequence of real numbers has a convergent subsequence.</p>
+        <p style="margin-top:0.75rem; color:#6b7280; font-size:0.9rem;"><em>Significance:</em> Even oscillating or divergent bounded sequences (like $(-1)^n$) contain convergent subsequences. The set of all subsequential limits is called the <strong>limit set</strong>.</p>
+      </div>
+
+      <h3 class="subsection-title">Cauchy Sequences and Completeness</h3>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Cauchy Sequence</span>
+        <p>A sequence $\{a_n\}$ is <strong>Cauchy</strong> if:</p>
+        $$\forall\, \varepsilon > 0,\quad \exists\, N \in \mathbb{N} \text{ such that } m, n > N \implies |a_m - a_n| < \varepsilon.$$
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Completeness of $\mathbb{R}$</span>
+        <p>In $\mathbb{R}$: a sequence converges $\iff$ it is Cauchy.</p>
+        <p style="margin-top:0.5rem; color:#6b7280; font-size:0.9rem;">This characterises $\mathbb{R}$ as a <em>complete</em> metric space. Cauchy sequences in $\mathbb{Q}$ may fail to converge in $\mathbb{Q}$ (e.g., rational approximations to $\sqrt{2}$).</p>
+      </div>
+
+      <h3 class="subsection-title">Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1</span>
+        <p class="box-title">Limit of a Rational Sequence</p>
+        <p>Find $\displaystyle\lim_{n\to\infty} \frac{2n^2 + 3n}{5n^2 + 1}$.</p>
+        <ol class="steps">
+          <li>Divide numerator and denominator by $n^2$ (the highest power):
+            $$a_n = \frac{2 + \tfrac{3}{n}}{5 + \tfrac{1}{n^2}}$$
+          </li>
+          <li>As $n\to\infty$: $\tfrac{3}{n} \to 0$ and $\tfrac{1}{n^2} \to 0$.</li>
+          <li>$$\lim_{n\to\infty} a_n = \frac{2 + 0}{5 + 0} = \boxed{\dfrac{2}{5}}$$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2</span>
+        <p class="box-title">The Number $e$ as a Sequence Limit</p>
+        <p>Show $\displaystyle a_n = \left(1 + \dfrac{1}{n}\right)^n \to e$.</p>
+        <ol class="steps">
+          <li>By the binomial theorem: $$a_n = \sum_{k=0}^{n} \binom{n}{k}\frac{1}{n^k} = \sum_{k=0}^{n}\frac{1}{k!}\cdot\frac{n(n-1)\cdots(n-k+1)}{n^k}$$</li>
+          <li>Each term satisfies $\dfrac{n(n-1)\cdots(n-k+1)}{n^k} = \prod_{j=0}^{k-1}\left(1-\dfrac{j}{n}\right) \to 1$ as $n \to \infty$.</li>
+          <li>So $a_n \to \displaystyle\sum_{k=0}^{\infty}\frac{1}{k!} = e$ (by the monotone convergence theorem and dominated convergence).</li>
+          <li>The sequence $\{a_n\}$ is <em>increasing</em> and <em>bounded above</em> (by $3$), confirming convergence.</li>
+        </ol>
+        <p style="margin-top:0.75rem; color:#d1fae5;">Result: $\displaystyle \lim_{n\to\infty}\!\left(1+\frac{1}{n}\right)^{\!n} = e \approx 2.71828\ldots$</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 3</span>
+        <p class="box-title">Geometric Sequence</p>
+        <p>Determine the behaviour of $a_n = r^n$ for various $r$.</p>
+        <div class="math-table-wrap">
+          <table>
+            <thead><tr><th>$r$</th><th>Behaviour of $r^n$</th><th>Limit</th></tr></thead>
+            <tbody>
+              <tr><td>$|r| < 1$</td><td>Converges to $0$</td><td>$0$</td></tr>
+              <tr><td>$r = 1$</td><td>Constant sequence</td><td>$1$</td></tr>
+              <tr><td>$r = -1$</td><td>Oscillates: $-1, 1, -1, 1, \ldots$</td><td>Does not exist</td></tr>
+              <tr><td>$r > 1$</td><td>Diverges to $+\infty$</td><td>$+\infty$</td></tr>
+              <tr><td>$r < -1$</td><td>Oscillates with $|a_n| \to \infty$</td><td>Does not exist</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §2  REVIEW OF SERIES
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="series-review">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <h2 class="section-title">Review of Series</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Infinite Series</span>
+        <p class="box-title">Series via Partial Sums</p>
+        <p>Given a sequence $\{a_n\}$, the associated <strong>infinite series</strong> is $\displaystyle\sum_{n=1}^{\infty} a_n$. The $n$-th <strong>partial sum</strong> is:</p>
+        $$S_n = \sum_{k=1}^{n} a_k = a_1 + a_2 + \cdots + a_n.$$
+        <p style="margin-top:0.75rem;">The series <strong>converges</strong> to sum $S$ if $\lim_{n\to\infty} S_n = S$. Otherwise the series <strong>diverges</strong>.</p>
+      </div>
+
+      <h3 class="subsection-title">Necessary Condition for Convergence</h3>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Term Test (Divergence Test)</span>
+        <p>If $\displaystyle\sum a_n$ converges, then $a_n \to 0$.</p>
+        <p style="color:#6b7280; font-size:0.9rem; margin-top:0.5rem;"><em>Proof:</em> $a_n = S_n - S_{n-1}$. If $S_n \to S$, then $a_n = S_n - S_{n-1} \to S - S = 0$. $\square$</p>
+        <p style="margin-top:0.75rem; color:#f87171; font-weight:600;">⚠ Converse is FALSE: $a_n \to 0$ does NOT imply convergence (harmonic series!).</p>
+      </div>
+
+      <h3 class="subsection-title">Geometric Series — Complete Analysis</h3>
+
+      <div class="formula-box">
+        <span class="box-label">Key Formula</span>
+        <p class="box-title">Geometric Series</p>
+        <p>For $a \ne 0$:</p>
+        $$\sum_{n=0}^{\infty} ar^n = \frac{a}{1-r}, \quad |r| < 1.$$
+        <p style="margin-top:0.75rem;">The series <strong>diverges</strong> for $|r| \ge 1$.</p>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-label">Proof — Geometric Series Derivation</span>
+        <p>The $n$-th partial sum:</p>
+        $$S_n = a + ar + ar^2 + \cdots + ar^{n-1}.$$
+        <p>Multiply by $r$: $rS_n = ar + ar^2 + \cdots + ar^n$. Subtract:</p>
+        $$(1-r)S_n = a(1 - r^n) \implies S_n = \frac{a(1-r^n)}{1-r}, \quad r \ne 1.$$
+        <p>If $|r| < 1$: $r^n \to 0$, so $S_n \to \dfrac{a}{1-r}$. If $|r| \ge 1$: $r^n$ does not $\to 0$, so $S_n$ diverges. $\square$</p>
+      </div>
+
+      <h3 class="subsection-title">Harmonic Series — Divergence Proof</h3>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem</span>
+        <p class="box-title">The Harmonic Series $\sum_{n=1}^{\infty} \frac{1}{n}$ Diverges</p>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-label">Proof — Cauchy's Grouping Argument</span>
+        <p>Group terms in blocks of powers of $2$:</p>
+        $$\sum_{n=1}^{\infty}\frac{1}{n} = 1 + \frac{1}{2} + \underbrace{\frac{1}{3}+\frac{1}{4}}_{\ge \tfrac{1}{2}} + \underbrace{\frac{1}{5}+\frac{1}{6}+\frac{1}{7}+\frac{1}{8}}_{\ge \tfrac{1}{2}} + \cdots$$
+        <p>Each group $\left(\dfrac{1}{2^{k-1}+1}+\cdots+\dfrac{1}{2^k}\right)$ contains $2^{k-1}$ terms each $\ge \dfrac{1}{2^k}$, giving a sum $\ge \dfrac{1}{2}$. Adding infinitely many groups of $\ge \dfrac{1}{2}$, the partial sums $\to \infty$. $\square$</p>
+      </div>
+
+      <h3 class="subsection-title">The $p$-Series</h3>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — $p$-Series Test</span>
+        <p class="box-title">Convergence of $\displaystyle\sum_{n=1}^{\infty} \frac{1}{n^p}$</p>
+        $$\sum_{n=1}^{\infty} \frac{1}{n^p} \begin{cases} \text{converges} & p > 1 \\ \text{diverges} & p \le 1 \end{cases}$$
+        <p style="margin-top:0.75rem; color:#6b7280; font-size:0.9rem;">Proved rigorously via the Cauchy Integral Test in §4.</p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-title">$p = 1$</div>
+          <div class="card-body">Harmonic series $\sum 1/n$. <strong>Diverges.</strong></div>
+        </div>
+        <div class="card">
+          <div class="card-title">$p = 2$</div>
+          <div class="card-body">Basel problem: $\sum 1/n^2 = \pi^2/6$. <strong>Converges.</strong></div>
+        </div>
+        <div class="card">
+          <div class="card-title">$p = 1/2$</div>
+          <div class="card-body">$\sum 1/\sqrt{n}$. Since $p < 1$: <strong>Diverges.</strong></div>
+        </div>
+        <div class="card">
+          <div class="card-title">$p = 3$</div>
+          <div class="card-body">$\sum 1/n^3 = \zeta(3) \approx 1.202$. <strong>Converges.</strong></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Telescoping Series</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example — Telescoping</span>
+        <p>Evaluate $\displaystyle\sum_{n=1}^{\infty} \frac{1}{n(n+1)}$.</p>
+        <ol class="steps">
+          <li>Partial fractions: $\dfrac{1}{n(n+1)} = \dfrac{1}{n} - \dfrac{1}{n+1}$.</li>
+          <li>Partial sum: $S_N = \left(1-\dfrac{1}{2}\right)+\left(\dfrac{1}{2}-\dfrac{1}{3}\right)+\cdots+\left(\dfrac{1}{N}-\dfrac{1}{N+1}\right) = 1 - \dfrac{1}{N+1}$.</li>
+          <li>$\displaystyle\lim_{N\to\infty} S_N = 1$. So $\sum_{n=1}^{\infty}\frac{1}{n(n+1)} = 1$.</li>
+        </ol>
+      </div>
+
+      <div class="note-box">
+        <span class="box-label">Properties of Convergent Series</span>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li><strong>Linearity:</strong> If $\sum a_n = A$ and $\sum b_n = B$, then $\sum(ca_n + db_n) = cA + dB$.</li>
+          <li><strong>Tail:</strong> $\sum_{n=1}^{\infty} a_n$ converges $\iff$ $\sum_{n=N}^{\infty} a_n$ converges for any $N$. Adding finitely many terms cannot change convergence (only the value).</li>
+          <li><strong>Non-associativity for divergent series:</strong> Regrouping can change sums of non-absolutely convergent series (Riemann).</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §3  SERIES OF POSITIVE TERMS
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="positive-terms">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <h2 class="section-title">Series of Positive Terms</h2>
+      </div>
+
+      <p>When each $a_n > 0$, the partial sums $S_n$ are <strong>strictly increasing</strong>. This dramatically simplifies convergence analysis.</p>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem</span>
+        <p class="box-title">Convergence Criterion for Positive Series</p>
+        <p>If $a_n > 0$ for all $n$, then $\displaystyle\sum_{n=1}^{\infty} a_n$ converges $\iff$ the sequence of partial sums $\{S_n\}$ is bounded above.</p>
+        <div class="proof-box" style="margin-top:1rem;">
+          <span class="box-label">Proof</span>
+          <p>Since $a_n > 0$, we have $S_n = S_{n-1} + a_n > S_{n-1}$: the partial sums form a <em>strictly increasing</em> sequence. By the Monotone Convergence Theorem, an increasing sequence converges $\iff$ it is bounded above. $\square$</p>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <span class="box-label">Structural Insight</span>
+        <p>All convergence tests for positive-term series (integral, comparison, ratio, root) are essentially ways to verify that partial sums $\{S_n\}$ are bounded. We compare with known convergent/divergent series as upper/lower bounds.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example</span>
+        <p class="box-title">Direct Bounding</p>
+        <p>Show $\displaystyle\sum_{n=1}^{\infty} \frac{1}{n^2}$ converges by bounding its partial sums.</p>
+        <ol class="steps">
+          <li>Note: for $n \ge 2$, $\dfrac{1}{n^2} \le \dfrac{1}{n(n-1)} = \dfrac{1}{n-1} - \dfrac{1}{n}$ (partial fractions).</li>
+          <li>So $S_N = 1 + \sum_{n=2}^{N}\dfrac{1}{n^2} \le 1 + \sum_{n=2}^{N}\left(\dfrac{1}{n-1}-\dfrac{1}{n}\right) = 1 + \left(1 - \dfrac{1}{N}\right) < 2$.</li>
+          <li>Partial sums are increasing and bounded above by $2$, so the series converges. (Exact value: $\pi^2/6 \approx 1.6449$.)</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §4  CAUCHY INTEGRAL TEST
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="cauchy-integral-test">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <h2 class="section-title">Cauchy Integral Test</h2>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Cauchy Integral Test</span>
+        <p class="box-title">Statement</p>
+        <p>Let $f : [1, \infty) \to \mathbb{R}$ be a function that is:</p>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin:0.5rem 0;">
+          <li><strong>Continuous</strong>,</li>
+          <li><strong>Positive</strong> ($f(x) > 0$),</li>
+          <li><strong>Decreasing</strong> ($f'(x) \le 0$).</li>
+        </ul>
+        <p>Then $\displaystyle\sum_{n=1}^{\infty} f(n)$ converges $\iff$ $\displaystyle\int_1^{\infty} f(x)\,dx$ converges.</p>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-label">Proof — Both Directions</span>
+        <p>Since $f$ is decreasing, for each integer $n \ge 1$:</p>
+        $$f(n+1) \le \int_n^{n+1} f(x)\,dx \le f(n).$$
+        <p><strong>Summing from $n=1$ to $N$:</strong></p>
+        $$\sum_{n=2}^{N+1} f(n) \le \int_1^{N+1} f(x)\,dx \le \sum_{n=1}^{N} f(n).$$
+        <p><strong>$(\Leftarrow)$</strong> If the integral converges to $I$, then $S_N = \sum_{n=1}^N f(n) \ge f(1) + \int_1^{N+1} f(x)\,dx$, giving a lower bound; more usefully from the right inequality, $S_N \le f(1) + \int_1^N f(x)\,dx \le f(1) + I < \infty$. Partial sums are bounded $\Rightarrow$ series converges.</p>
+        <p style="margin-top:0.75rem;"><strong>$(\Rightarrow)$</strong> If the series converges to $S$, then $\int_1^{N} f(x)\,dx \le \sum_{n=1}^{N-1} f(n) \le S < \infty$. As $N \to \infty$, the integral is bounded $\Rightarrow$ improper integral converges. $\square$</p>
+      </div>
+
+      <h3 class="subsection-title">Remainder Estimate</h3>
+
+      <div class="formula-box">
+        <span class="box-label">Remainder Bounds</span>
+        <p>If the series $\sum f(n) = S$ converges, the remainder $R_n = S - S_n$ satisfies:</p>
+        $$\int_{n+1}^{\infty} f(x)\,dx \le R_n \le \int_n^{\infty} f(x)\,dx.$$
+        <p style="margin-top:0.75rem; color:#d1fae5;">This gives a computable error bound for numerical approximation of series sums.</p>
+      </div>
+
+      <h3 class="subsection-title">Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1 — $p$-Series via Integral Test</span>
+        <p>Determine convergence of $\displaystyle\sum_{n=1}^{\infty} \frac{1}{n^p}$, $p > 0$.</p>
+        <ol class="steps">
+          <li>Let $f(x) = x^{-p}$. This is continuous, positive, and decreasing for $x \ge 1$, $p > 0$.</li>
+          <li>Compute $\displaystyle\int_1^{\infty} x^{-p}\,dx$:
+            <ul style="padding-left:1.5rem; margin-top:0.4rem; color:#d1fae5;">
+              <li>If $p \ne 1$: $\displaystyle\int_1^{\infty} x^{-p}\,dx = \left[\frac{x^{1-p}}{1-p}\right]_1^{\infty} = \begin{cases} \frac{1}{p-1} & p > 1 \\ +\infty & 0 < p < 1 \end{cases}$</li>
+              <li>If $p = 1$: $\displaystyle\int_1^{\infty} \frac{1}{x}\,dx = [\ln x]_1^{\infty} = +\infty$.</li>
+            </ul>
+          </li>
+          <li>Conclusion: converges for $p > 1$, diverges for $p \le 1$. $\square$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2 — Logarithmic Denominator</span>
+        <p>Test $\displaystyle\sum_{n=2}^{\infty} \frac{1}{n \ln n}$.</p>
+        <ol class="steps">
+          <li>$f(x) = \dfrac{1}{x \ln x}$ is continuous, positive, decreasing on $[2,\infty)$.</li>
+          <li>$\displaystyle\int_2^{\infty}\frac{dx}{x\ln x}$. Let $u = \ln x$, $du = dx/x$:
+            $$= \int_{\ln 2}^{\infty} \frac{du}{u} = [\ln u]_{\ln 2}^{\infty} = +\infty.$$
+          </li>
+          <li><strong>The series diverges.</strong> (Note: diverges more slowly than the harmonic series.)</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 3 — Logarithm Squared</span>
+        <p>Test $\displaystyle\sum_{n=2}^{\infty} \frac{1}{n(\ln n)^2}$.</p>
+        <ol class="steps">
+          <li>$f(x) = \dfrac{1}{x(\ln x)^2}$: continuous, positive, decreasing on $[2,\infty)$.</li>
+          <li>$\displaystyle\int_2^{\infty}\frac{dx}{x(\ln x)^2} = \int_{\ln 2}^{\infty}\frac{du}{u^2} = \left[-\frac{1}{u}\right]_{\ln 2}^{\infty} = \frac{1}{\ln 2} < \infty.$</li>
+          <li><strong>The series converges.</strong></li>
+        </ol>
+      </div>
+
+      <div class="note-box">
+        <span class="box-label">Euler–Mascheroni Connection</span>
+        <p>The integral test also reveals:</p>
+        $$\sum_{n=1}^{N}\frac{1}{n} = \ln N + \gamma + O\!\left(\frac{1}{N}\right), \quad \gamma \approx 0.5772\ldots$$
+        <p style="margin-top:0.5rem;">where $\gamma$ is the <strong>Euler–Mascheroni constant</strong>, defined as $\gamma = \displaystyle\lim_{N\to\infty}\left(\sum_{n=1}^N \frac{1}{n} - \ln N\right)$.</p>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §5  COMPARISON TEST
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="comparison-test">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <h2 class="section-title">Comparison Test</h2>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Basic Comparison Test</span>
+        <p>Suppose $0 \le a_n \le b_n$ for all $n \ge N_0$. Then:</p>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li>If $\displaystyle\sum b_n$ converges, then $\displaystyle\sum a_n$ converges.</li>
+          <li>If $\displaystyle\sum a_n$ diverges, then $\displaystyle\sum b_n$ diverges.</li>
+        </ul>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-label">Proof</span>
+        <p>If $\sum b_n$ converges to $B$, the partial sums $T_n = \sum_{k=1}^n b_k \le B$. For $n \ge N_0$:</p>
+        $$S_n = \sum_{k=1}^n a_k \le \sum_{k=1}^{N_0-1} a_k + \sum_{k=N_0}^n b_k \le C + B < \infty.$$
+        <p>Since $\{S_n\}$ is increasing and bounded, $\sum a_n$ converges. The divergence part follows by contrapositive. $\square$</p>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Limit Comparison Test</span>
+        <p>Let $a_n, b_n > 0$. Suppose $\displaystyle\lim_{n\to\infty}\frac{a_n}{b_n} = L$ where $0 < L < \infty$. Then $\displaystyle\sum a_n$ and $\displaystyle\sum b_n$ either both converge or both diverge.</p>
+        <div class="proof-box" style="margin-top:1rem;">
+          <span class="box-label">Proof</span>
+          <p>Since $a_n/b_n \to L > 0$, for large $n$: $\dfrac{L}{2} < \dfrac{a_n}{b_n} < \dfrac{3L}{2}$, i.e., $\dfrac{L}{2}\,b_n < a_n < \dfrac{3L}{2}\,b_n$. Apply basic comparison in both directions. $\square$</p>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <span class="box-label">Strategy — Choosing a Comparison Series</span>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li>If $a_n$ looks like $1/n^p$: compare with $\sum 1/n^p$ (p-series).</li>
+          <li>If $a_n$ involves $r^n$: compare with geometric series $\sum r^n$.</li>
+          <li>For rational functions of $n$: dominant-term analysis to find $b_n$.</li>
+          <li>Use limit comparison when inequalities are hard to establish directly.</li>
+        </ul>
+      </div>
+
+      <h3 class="subsection-title">Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{1}{n^2 + n + 1}$.</p>
+        <ol class="steps">
+          <li>For large $n$: $n^2 + n + 1 > n^2$, so $\dfrac{1}{n^2+n+1} < \dfrac{1}{n^2}$.</li>
+          <li>$\sum 1/n^2$ converges ($p$-series, $p=2>1$).</li>
+          <li>By basic comparison: $\displaystyle\sum \frac{1}{n^2+n+1}$ <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{\sqrt{n}}{n^2 - 1}$ ($n \ge 2$).</p>
+        <ol class="steps">
+          <li>Dominant terms: numerator $\sim n^{1/2}$, denominator $\sim n^2$, so $a_n \sim n^{-3/2}$.</li>
+          <li>Let $b_n = n^{-3/2}$. Compute: $\dfrac{a_n}{b_n} = \dfrac{\sqrt{n}}{n^2-1} \cdot n^{3/2} = \dfrac{n^2}{n^2-1} \to 1$.</li>
+          <li>$\sum 1/n^{3/2}$ converges ($p = 3/2 > 1$). By limit comparison: series <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 3</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{n}{n^2 + 1}$.</p>
+        <ol class="steps">
+          <li>$\dfrac{n}{n^2+1} \sim \dfrac{n}{n^2} = \dfrac{1}{n}$. Let $b_n = 1/n$.</li>
+          <li>$\dfrac{a_n}{b_n} = \dfrac{n}{n^2+1}\cdot n = \dfrac{n^2}{n^2+1} \to 1$.</li>
+          <li>$\sum 1/n$ diverges (harmonic). By limit comparison: series <strong>diverges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 4</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \sin\!\left(\frac{1}{n}\right)$.</p>
+        <ol class="steps">
+          <li>For small $x > 0$: $\sin x \approx x$. So $\sin(1/n) \approx 1/n$ for large $n$.</li>
+          <li>$\dfrac{\sin(1/n)}{1/n} \to 1$ (standard limit).</li>
+          <li>By limit comparison with $\sum 1/n$ (diverges): the series <strong>diverges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 5</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{1}{2^n - 1}$.</p>
+        <ol class="steps">
+          <li>$\dfrac{1}{2^n - 1} \le \dfrac{1}{2^n - 2^{n-1}} = \dfrac{1}{2^{n-1}} = \dfrac{2}{2^n}$ for $n \ge 2$.</li>
+          <li>$\sum 2/2^n = 2\sum (1/2)^n$ is a convergent geometric series ($r = 1/2 < 1$).</li>
+          <li>By basic comparison: $\displaystyle\sum \frac{1}{2^n-1}$ <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="warn-box">
+        <span class="box-label">Common Mistakes</span>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li>Using basic comparison with the wrong direction: if $a_n \le b_n$ and $\sum a_n$ diverges, you <em>cannot</em> conclude $\sum b_n$ diverges from this alone.</li>
+          <li>Limit comparison only works when both $L = \lim a_n/b_n$ is finite and nonzero. If $L = 0$ or $L = \infty$, use one-sided comparison.</li>
+          <li>Comparison applies to <em>positive-term</em> series only (or use absolute value for general series).</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §6  D'ALEMBERT'S RATIO TEST
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="dalembert-ratio-test">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <h2 class="section-title">D'Alembert's Ratio Test</h2>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — D'Alembert's Ratio Test</span>
+        <p class="box-title">Statement</p>
+        <p>Let $\sum a_n$ be a series of positive terms. Define:</p>
+        $$L = \lim_{n \to \infty} \frac{a_{n+1}}{a_n}.$$
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.75rem;">
+          <li>If $L < 1$: the series <strong>converges absolutely</strong>.</li>
+          <li>If $L > 1$ (or $L = +\infty$): the series <strong>diverges</strong>.</li>
+          <li>If $L = 1$: the test is <strong>inconclusive</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-label">Proof — Convergence when $L < 1$</span>
+        <p>Choose $r$ with $L < r < 1$. Since $a_{n+1}/a_n \to L$, $\exists\, N$ such that for $n \ge N$:</p>
+        $$\frac{a_{n+1}}{a_n} < r.$$
+        <p>So $a_{N+1} < ra_N$, $a_{N+2} < ra_{N+1} < r^2 a_N$, $\ldots$, $a_{N+k} < r^k a_N$. Thus:</p>
+        $$\sum_{k=0}^{\infty} a_{N+k} < a_N \sum_{k=0}^{\infty} r^k = \frac{a_N}{1-r} < \infty.$$
+        <p>Series converges by comparison with a geometric series. For $L > 1$: $a_{n+1}/a_n > 1$ eventually, so $a_n \not\to 0$, hence diverges. $\square$</p>
+      </div>
+
+      <h3 class="subsection-title">Why $L = 1$ is Inconclusive</h3>
+
+      <div class="note-box">
+        <span class="box-label">Inconclusiveness at $L = 1$</span>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li>$\sum 1/n$: ratio $\dfrac{1/(n+1)}{1/n} = \dfrac{n}{n+1} \to 1$. <strong>Diverges.</strong></li>
+          <li>$\sum 1/n^2$: ratio $\dfrac{n^2}{(n+1)^2} \to 1$. <strong>Converges.</strong></li>
+        </ul>
+        <p style="margin-top:0.5rem;">Both give $L=1$, yet one converges and one diverges. The ratio test cannot distinguish between these cases. Use Raabe's test or the integral test.</p>
+      </div>
+
+      <h3 class="subsection-title">Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{n^2}{2^n}$.</p>
+        <ol class="steps">
+          <li>$a_n = n^2/2^n$, $a_{n+1} = (n+1)^2/2^{n+1}$.</li>
+          <li>$\dfrac{a_{n+1}}{a_n} = \dfrac{(n+1)^2}{2^{n+1}} \cdot \dfrac{2^n}{n^2} = \dfrac{(n+1)^2}{2n^2} = \dfrac{1}{2}\left(1+\dfrac{1}{n}\right)^2 \to \dfrac{1}{2}$.</li>
+          <li>$L = 1/2 < 1$: series <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2</span>
+        <p>Test $\displaystyle\sum_{n=0}^{\infty} \frac{x^n}{n!}$ (exponential series).</p>
+        <ol class="steps">
+          <li>$a_n = x^n/n!$, $a_{n+1} = x^{n+1}/(n+1)!$.</li>
+          <li>$\dfrac{a_{n+1}}{a_n} = \dfrac{|x|^{n+1}}{(n+1)!} \cdot \dfrac{n!}{|x|^n} = \dfrac{|x|}{n+1} \to 0$.</li>
+          <li>$L = 0 < 1$ for all $x \in \mathbb{R}$: the series <strong>converges for all $x$</strong>. (This defines $e^x$.)</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 3</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{n!}{n^n}$.</p>
+        <ol class="steps">
+          <li>$\dfrac{a_{n+1}}{a_n} = \dfrac{(n+1)!}{(n+1)^{n+1}} \cdot \dfrac{n^n}{n!} = \dfrac{n^n}{(n+1)^n} = \left(\dfrac{n}{n+1}\right)^n = \left(1 - \dfrac{1}{n+1}\right)^n$.</li>
+          <li>As $n \to \infty$: $\left(1-\dfrac{1}{n+1}\right)^n \to e^{-1} = 1/e \approx 0.368$.</li>
+          <li>$L = 1/e < 1$: series <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 4</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{n^n}{n!}$.</p>
+        <ol class="steps">
+          <li>$\dfrac{a_{n+1}}{a_n} = \dfrac{(n+1)^{n+1}}{(n+1)!} \cdot \dfrac{n!}{n^n} = \dfrac{(n+1)^n}{n^n} = \left(1+\dfrac{1}{n}\right)^n \to e$.</li>
+          <li>$L = e > 1$: series <strong>diverges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 5</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{(2n)!}{(n!)^2}$.</p>
+        <ol class="steps">
+          <li>$a_n = \dfrac{(2n)!}{(n!)^2}$. Then $a_{n+1} = \dfrac{(2n+2)!}{((n+1)!)^2}$.</li>
+          <li>$\dfrac{a_{n+1}}{a_n} = \dfrac{(2n+2)!}{(2n)!} \cdot \dfrac{(n!)^2}{((n+1)!)^2} = \dfrac{(2n+2)(2n+1)}{(n+1)^2} = \dfrac{2(2n+1)}{(n+1)} \to 4$.</li>
+          <li>$L = 4 > 1$: series <strong>diverges</strong>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §7  RAABE'S TEST
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="raabes-test">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <h2 class="section-title">Raabe's Test</h2>
+      </div>
+
+      <p>When the ratio test yields $L = 1$, Raabe's test (a sharper criterion) is applied.</p>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Raabe's Test</span>
+        <p class="box-title">Statement</p>
+        <p>Let $\sum a_n$ be a positive-term series. Define:</p>
+        $$R_n = n\!\left(\frac{a_n}{a_{n+1}} - 1\right) \quad \text{and} \quad R = \lim_{n\to\infty} R_n.$$
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.75rem;">
+          <li>$R > 1$: series <strong>converges</strong>.</li>
+          <li>$R < 1$: series <strong>diverges</strong>.</li>
+          <li>$R = 1$: test is <strong>inconclusive</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-label">Proof Sketch</span>
+        <p>Compare with $p$-series. If $R > 1$, choose $p$ with $1 < p < R$. Then for large $n$:</p>
+        $$\frac{a_n}{a_{n+1}} > 1 + \frac{p}{n} \implies a_{n+1} < a_n \cdot \frac{n}{n+p} \approx a_n \cdot \frac{n^p}{(n+1)^p} \cdot \text{(bounded)}.$$
+        <p>This establishes $a_n n^p$ is eventually decreasing, so $a_n = O(1/n^p)$ with $p > 1$: converges by comparison with $\sum 1/n^p$.</p>
+        <p>If $R < 1$, choose $p$ with $R < p < 1$. Similarly $a_n n^p \to \infty$, so $a_n \ge c/n$ for some constant: diverges. $\square$</p>
+      </div>
+
+      <div class="note-box">
+        <span class="box-label">Connection to Ratio Test</span>
+        <p>Writing $\dfrac{a_{n+1}}{a_n} = 1 - \dfrac{R_n}{n}$, when $R_n \to R$:</p>
+        $$\frac{a_{n+1}}{a_n} = 1 - \frac{R}{n} + o(1/n) \to 1.$$
+        <p style="margin-top:0.5rem;">So Raabe's test captures the <em>next-order</em> behaviour when the ratio test is exactly borderline.</p>
+      </div>
+
+      <h3 class="subsection-title">Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{(2n)!}{4^n (n!)^2}$.</p>
+        <ol class="steps">
+          <li>Let $a_n = \dfrac{(2n)!}{4^n(n!)^2}$. Ratio: $\dfrac{a_{n+1}}{a_n} = \dfrac{(2n+2)(2n+1)}{4(n+1)^2} = \dfrac{(2n+1)}{2(n+1)} \to 1$. Test inconclusive.</li>
+          <li>Apply Raabe's: $R_n = n\!\left(\dfrac{a_n}{a_{n+1}}-1\right) = n\!\left(\dfrac{2(n+1)}{2n+1}-1\right) = n \cdot \dfrac{1}{2n+1} = \dfrac{n}{2n+1} \to \dfrac{1}{2}$.</li>
+          <li>$R = 1/2 < 1$: series <strong>diverges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \left(\frac{1\cdot3\cdot5\cdots(2n-1)}{2\cdot4\cdot6\cdots(2n)}\right)^2$.</p>
+        <ol class="steps">
+          <li>Let $a_n = \left(\dfrac{(2n-1)!!}{(2n)!!}\right)^2$. Ratio test gives $L = 1$ (check: $a_{n+1}/a_n = \left(\dfrac{2n+1}{2n+2}\right)^2 \to 1$).</li>
+          <li>Raabe: $R_n = n\!\left(\dfrac{a_n}{a_{n+1}}-1\right) = n\!\left(\left(\dfrac{2n+2}{2n+1}\right)^2-1\right) = n\cdot\dfrac{(2n+2)^2-(2n+1)^2}{(2n+1)^2}$.</li>
+          <li>Numerator: $(2n+2)^2-(2n+1)^2 = (4n+3)$. So $R_n = \dfrac{n(4n+3)}{(2n+1)^2} \to \dfrac{4n^2}{4n^2} = 1$.</li>
+          <li>$R = 1$: Raabe's test is also inconclusive here. (The series actually diverges, but requires a higher-order test — Bertrand's test.)</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §8  LOGARITHMIC TEST
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="logarithmic-test">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <h2 class="section-title">Logarithmic Test</h2>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Logarithmic Test (de Morgan–Bertrand)</span>
+        <p class="box-title">Statement</p>
+        <p>Let $\sum a_n$ be a positive-term series. Define:</p>
+        $$\Lambda = \lim_{n\to\infty} n \ln\!\left(\frac{a_n}{a_{n+1}}\right).$$
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.75rem;">
+          <li>$\Lambda > 1$: series <strong>converges</strong>.</li>
+          <li>$\Lambda < 1$: series <strong>diverges</strong>.</li>
+          <li>$\Lambda = 1$: test is <strong>inconclusive</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <span class="box-label">Relationship to Raabe's Test</span>
+        <p>Using $\ln(a_n/a_{n+1}) = \ln(1 + (a_n/a_{n+1} - 1)) \approx a_n/a_{n+1} - 1$ when $a_n/a_{n+1} \approx 1$, we get:</p>
+        $$\Lambda = \lim_{n \to \infty} n\ln\!\left(\frac{a_n}{a_{n+1}}\right) \approx \lim_{n\to\infty} n\!\left(\frac{a_n}{a_{n+1}} - 1\right) = R \text{ (Raabe's limit)}.$$
+        <p style="margin-top:0.5rem;">Thus the logarithmic test is essentially a reformulation of Raabe's test and equally sharp. It is sometimes easier to compute when $a_n/a_{n+1}$ has a natural logarithm form.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{n!}{(1+\alpha)^n}$ for $\alpha > 0$.</p>
+        <ol class="steps">
+          <li>Ratio: $\dfrac{a_{n+1}}{a_n} = \dfrac{n+1}{(1+\alpha)} \to \infty$ for all $\alpha > 0$.</li>
+          <li>$L = \infty > 1$: series <strong>diverges</strong> (by ratio test directly).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §9  CAUCHY ROOT TEST
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="cauchy-root-test">
+      <div class="section-header">
+        <div class="section-number">9</div>
+        <h2 class="section-title">Cauchy's Root Test</h2>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Cauchy Root Test</span>
+        <p class="box-title">Statement</p>
+        <p>Let $\sum a_n$ be a series of non-negative terms. Define:</p>
+        $$L = \limsup_{n\to\infty} a_n^{1/n} = \limsup_{n\to\infty} \sqrt[n]{a_n}.$$
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.75rem;">
+          <li>$L < 1$: series <strong>converges absolutely</strong>.</li>
+          <li>$L > 1$: series <strong>diverges</strong>.</li>
+          <li>$L = 1$: test is <strong>inconclusive</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-label">Proof</span>
+        <p><strong>Convergence ($L < 1$):</strong> Choose $r$ with $L < r < 1$. By definition of $\limsup$, $a_n^{1/n} < r$ for all but finitely many $n$, i.e., $a_n < r^n$ eventually. Since $\sum r^n$ converges (geometric, $r < 1$), by comparison $\sum a_n$ converges.</p>
+        <p style="margin-top:0.75rem;"><strong>Divergence ($L > 1$):</strong> $a_n^{1/n} > 1$ for infinitely many $n$, so $a_n > 1$ infinitely often, hence $a_n \not\to 0$: series diverges. $\square$</p>
+      </div>
+
+      <h3 class="subsection-title">Root Test vs. Ratio Test</h3>
+
+      <div class="note-box">
+        <span class="box-label">Comparison of Tests</span>
+        <ul style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+          <li>If $\lim a_{n+1}/a_n = L$, then $\lim a_n^{1/n} = L$ as well (ratio test implies root test).</li>
+          <li>The root test is strictly more powerful: the root test may be conclusive when the ratio test is not.</li>
+          <li>Root test is best when $a_n = f(n)^n$ for some function $f$.</li>
+          <li>Ratio test is best when $a_n$ involves factorials or products.</li>
+        </ul>
+      </div>
+
+      <h3 class="subsection-title">Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \left(\frac{n}{n+1}\right)^{n^2}$.</p>
+        <ol class="steps">
+          <li>$a_n = \left(\dfrac{n}{n+1}\right)^{n^2}$. Apply root test: $a_n^{1/n} = \left(\dfrac{n}{n+1}\right)^n$.</li>
+          <li>$\left(\dfrac{n}{n+1}\right)^n = \left(1 - \dfrac{1}{n+1}\right)^n \to e^{-1} = 1/e$.</li>
+          <li>$L = 1/e < 1$: series <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{1}{(\ln n)^n}$ (for $n \ge 2$).</p>
+        <ol class="steps">
+          <li>$a_n^{1/n} = \dfrac{1}{\ln n}$.</li>
+          <li>For $n \ge 3$, $\ln n > 1$, so $a_n^{1/n} = 1/\ln n \to 0$.</li>
+          <li>$L = 0 < 1$: series <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 3</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \left(\frac{2n+1}{3n-1}\right)^n$.</p>
+        <ol class="steps">
+          <li>$a_n^{1/n} = \dfrac{2n+1}{3n-1} \to \dfrac{2}{3}$.</li>
+          <li>$L = 2/3 < 1$: series <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §10  ALTERNATING SERIES
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="alternating-series">
+      <div class="section-header">
+        <div class="section-number">10</div>
+        <h2 class="section-title">Alternating Series</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-label">Definition</span>
+        <p class="box-title">Alternating Series</p>
+        <p>A series of the form $\displaystyle\sum_{n=1}^{\infty} (-1)^{n-1} a_n = a_1 - a_2 + a_3 - a_4 + \cdots$ where $a_n > 0$ for all $n$.</p>
+        <p style="margin-top:0.5rem;">Equivalently $\sum (-1)^n a_n$ with signs alternating and $a_n > 0$. The sign alternates between successive terms.</p>
+      </div>
+
+      <!-- ─── Leibniz Test ─── -->
+      <section id="leibniz-test" style="scroll-margin-top:2rem;">
+        <h3 class="subsection-title">Leibniz Alternating Series Test</h3>
+
+        <div class="thm-box">
+          <span class="box-label">Theorem — Leibniz (Alternating Series Test)</span>
+          <p class="box-title">Statement</p>
+          <p>If $\{a_n\}$ satisfies:</p>
+          <ol style="padding-left:1.5rem; color:#d1fae5; margin-top:0.5rem;">
+            <li>$a_n > 0$ for all $n$,</li>
+            <li>$a_n$ is <strong>decreasing</strong>: $a_{n+1} \le a_n$,</li>
+            <li>$a_n \to 0$,</li>
+          </ol>
+          <p style="margin-top:0.75rem;">then the alternating series $\displaystyle\sum_{n=1}^{\infty}(-1)^{n-1}a_n$ <strong>converges</strong>.</p>
+          <p style="margin-top:0.75rem;">Moreover, the <strong>error bound</strong> is: $|S - S_n| \le a_{n+1}$.</p>
+        </div>
+
+        <div class="proof-box">
+          <span class="box-label">Proof — Even/Odd Partial Sum Argument</span>
+          <p><strong>Even partial sums:</strong></p>
+          $$S_{2m} = (a_1 - a_2) + (a_3 - a_4) + \cdots + (a_{2m-1} - a_{2m}).$$
+          <p>Each parenthesis $a_{2k-1} - a_{2k} \ge 0$ (since $a_n$ decreasing), so $\{S_{2m}\}$ is <em>increasing</em>.</p>
+          <p style="margin-top:0.75rem;"><strong>Also:</strong></p>
+          $$S_{2m} = a_1 - (a_2 - a_3) - \cdots - (a_{2m-2}-a_{2m-1}) - a_{2m} \le a_1.$$
+          <p>So $\{S_{2m}\}$ is increasing and bounded above by $a_1$: converges to some $S$.</p>
+          <p style="margin-top:0.75rem;"><strong>Odd partial sums:</strong> $S_{2m+1} = S_{2m} + a_{2m+1} \to S + 0 = S$.</p>
+          <p style="margin-top:0.75rem;">Since both odd and even sub-sequences converge to $S$, $S_n \to S$. Error bound: $|S - S_n| \le a_{n+1}$ follows from the squeezing of the two subsequences. $\square$</p>
+        </div>
+      </section>
+
+      <h3 class="subsection-title">Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1 — Alternating Harmonic Series</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{(-1)^{n-1}}{n} = 1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots$</p>
+        <ol class="steps">
+          <li>$a_n = 1/n > 0$. ✓</li>
+          <li>$a_n$ is strictly decreasing. ✓</li>
+          <li>$a_n = 1/n \to 0$. ✓</li>
+          <li>By Leibniz: series <strong>converges</strong>. (Sum $= \ln 2 \approx 0.6931$.)</li>
+          <li>Error after $n$ terms: $|S - S_n| \le \dfrac{1}{n+1}$.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{(-1)^n \cdot n}{n^2+1}$.</p>
+        <ol class="steps">
+          <li>$a_n = \dfrac{n}{n^2+1}$. Is it decreasing? $f(x) = \dfrac{x}{x^2+1}$, $f'(x) = \dfrac{1-x^2}{(x^2+1)^2} < 0$ for $x > 1$. ✓</li>
+          <li>$a_n \to 0$ since $n/n^2 = 1/n \to 0$. ✓</li>
+          <li>By Leibniz: series <strong>converges</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 3</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{(-1)^n}{\sqrt{n}}$.</p>
+        <ol class="steps">
+          <li>$a_n = 1/\sqrt{n}$ is positive, decreasing, and $\to 0$. All conditions hold.</li>
+          <li>By Leibniz: series <strong>converges</strong>.</li>
+          <li>Note: $\sum 1/\sqrt{n}$ diverges ($p=1/2<1$), so this series is <em>conditionally</em> but not <em>absolutely</em> convergent.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §11  ABSOLUTE CONVERGENCE
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="absolute-convergence">
+      <div class="section-header">
+        <div class="section-number">11</div>
+        <h2 class="section-title">Absolute Convergence</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Absolute Convergence</span>
+        <p>A series $\displaystyle\sum_{n=1}^{\infty} a_n$ is <strong>absolutely convergent</strong> if $\displaystyle\sum_{n=1}^{\infty} |a_n|$ converges.</p>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem</span>
+        <p class="box-title">Absolute Convergence Implies Convergence</p>
+        <p>If $\displaystyle\sum |a_n|$ converges, then $\displaystyle\sum a_n$ converges.</p>
+        <div class="proof-box" style="margin-top:1rem;">
+          <span class="box-label">Proof</span>
+          <p>Define $b_n = a_n + |a_n| \ge 0$. Then $0 \le b_n \le 2|a_n|$. Since $\sum 2|a_n| = 2\sum|a_n|$ converges, by comparison $\sum b_n$ converges. Now $a_n = b_n - |a_n|$, so:</p>
+          $$\sum a_n = \sum b_n - \sum |a_n|,$$
+          <p>a difference of two convergent series: converges. $\square$</p>
+        </div>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Rearrangement (Dirichlet)</span>
+        <p class="box-title">Absolutely Convergent Series Can Be Freely Rearranged</p>
+        <p>If $\sum a_n$ converges absolutely to $S$, then every rearrangement of its terms also converges to $S$.</p>
+        <p style="margin-top:0.5rem; color:#6b7280; font-size:0.9rem;"><em>Contrast with Riemann's theorem for conditional convergence below.</em></p>
+      </div>
+
+      <h3 class="subsection-title">Examples</h3>
+
+      <div class="example-box">
+        <span class="box-label">Example 1 — Absolutely Convergent</span>
+        <p>$\displaystyle\sum_{n=1}^{\infty} \frac{(-1)^n}{n^2}$: we have $\sum \dfrac{1}{n^2} = \dfrac{\pi^2}{6}$ (converges, $p=2$). So the series <strong>converges absolutely</strong>, hence converges.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 2 — Not Absolutely Convergent</span>
+        <p>$\displaystyle\sum_{n=1}^{\infty} \frac{(-1)^{n-1}}{n}$: $\sum 1/n$ diverges. So this series does <strong>not</strong> converge absolutely. It <em>does</em> converge (conditionally) by Leibniz.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Example 3 — Applying Tests via Absolute Value</span>
+        <p>Test $\displaystyle\sum_{n=1}^{\infty} \frac{(-1)^n \cdot n}{3^n}$.</p>
+        <ol class="steps">
+          <li>Consider $\sum |a_n| = \sum \dfrac{n}{3^n}$. Apply ratio test: $\dfrac{(n+1)/3^{n+1}}{n/3^n} = \dfrac{n+1}{3n} \to \dfrac{1}{3}$.</li>
+          <li>$L = 1/3 < 1$: $\sum n/3^n$ converges. The original series <strong>converges absolutely</strong>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         §12  CONDITIONAL CONVERGENCE
+    ═══════════════════════════════════════════════ -->
+    <section class="content-section" id="conditional-convergence">
+      <div class="section-header">
+        <div class="section-number">12</div>
+        <h2 class="section-title">Conditional Convergence</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-label">Definition — Conditional Convergence</span>
+        <p>A series $\sum a_n$ is <strong>conditionally convergent</strong> if it converges but does <em>not</em> converge absolutely:
+        $$\sum a_n \text{ converges}, \quad \text{but} \quad \sum |a_n| \text{ diverges.}$$
+        </p>
+      </div>
+
+      <div class="thm-box">
+        <span class="box-label">Theorem — Riemann Rearrangement Theorem</span>
+        <p class="box-title">Conditionally Convergent Series Can Converge to Any Value</p>
+        <p>If $\sum a_n$ is conditionally convergent and $L \in \mathbb{R} \cup \{-\infty, +\infty\}$, then there exists a rearrangement of the terms of $\sum a_n$ that converges to $L$.</p>
+        <div class="proof-box" style="margin-top:1rem;">
+          <span class="box-label">Proof Idea</span>
+          <p>Let $p_n$ be the positive terms and $q_n$ the absolute values of negative terms in $\sum a_n$. Since $\sum a_n$ converges but $\sum|a_n|$ diverges, both $\sum p_n = +\infty$ and $\sum q_n = +\infty$ (neither partial sum is bounded). Given target $L$: take enough positive terms to exceed $L$, then enough negative terms to go below $L$, alternating. Since $a_n \to 0$, the overshoot $\to 0$, and the rearranged partial sums converge to $L$. $\square$</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <span class="box-label">Classic Example</span>
+        <p class="box-title">Alternating Harmonic Series Rearrangement</p>
+        <p>The alternating harmonic series $\sum (-1)^{n-1}/n = \ln 2$. Rearranging:</p>
+        $$1 - \frac{1}{2} - \frac{1}{4} + \frac{1}{3} - \frac{1}{6} - \frac{1}{8} + \frac{1}{5} - \cdots = \frac{\ln 2}{2}.$$
+        <p style="margin-top:0.75rem; color:#d1fae5;">The same series, differently arranged, converges to a <em>different sum</em>! This cannot happen for absolutely convergent series.</p>
+      </div>
+
+      <hr class="section-divider" />
+
+      <!-- ═══════════ SUMMARY TABLE ═══════════ -->
+      <h2 class="section-title" style="margin-bottom:1.5rem; font-size:1.5rem;">Summary: All Convergence Tests</h2>
+
+      <div class="math-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Test</th>
+              <th>Condition / Limit</th>
+              <th>Converges If</th>
+              <th>Diverges If</th>
+              <th>Inconclusive If</th>
+              <th>Best Used When</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Divergence (Term) Test</strong></td>
+              <td>$\lim a_n$</td>
+              <td>—</td>
+              <td>$a_n \not\to 0$</td>
+              <td>$a_n \to 0$</td>
+              <td>Always check first</td>
+            </tr>
+            <tr>
+              <td><strong>Geometric Series</strong></td>
+              <td>$a_n = ar^n$</td>
+              <td>$|r| < 1$</td>
+              <td>$|r| \ge 1$</td>
+              <td>—</td>
+              <td>Series with $r^n$ pattern</td>
+            </tr>
+            <tr>
+              <td><strong>$p$-Series</strong></td>
+              <td>$a_n = 1/n^p$</td>
+              <td>$p > 1$</td>
+              <td>$p \le 1$</td>
+              <td>—</td>
+              <td>Power of $n$ in denominator</td>
+            </tr>
+            <tr>
+              <td><strong>Integral Test</strong></td>
+              <td>$\int_1^\infty f(x)\,dx$</td>
+              <td>Integral converges</td>
+              <td>Integral diverges</td>
+              <td>—</td>
+              <td>$f$ continuous, positive, decreasing</td>
+            </tr>
+            <tr>
+              <td><strong>Basic Comparison</strong></td>
+              <td>$0 \le a_n \le b_n$</td>
+              <td>$\sum b_n$ converges</td>
+              <td>$\sum a_n$ diverges (implies $\sum b_n$)</td>
+              <td>—</td>
+              <td>Clear upper/lower bound series</td>
+            </tr>
+            <tr>
+              <td><strong>Limit Comparison</strong></td>
+              <td>$\lim a_n/b_n = L$</td>
+              <td>$0 < L < \infty$, $\sum b_n$ conv.</td>
+              <td>$0 < L < \infty$, $\sum b_n$ div.</td>
+              <td>$L=0$ or $L=\infty$</td>
+              <td>Dominant-term simplification</td>
+            </tr>
+            <tr>
+              <td><strong>D'Alembert Ratio</strong></td>
+              <td>$L = \lim a_{n+1}/a_n$</td>
+              <td>$L < 1$</td>
+              <td>$L > 1$</td>
+              <td>$L = 1$</td>
+              <td>Factorials, exponentials, $n!$, $n^n$</td>
+            </tr>
+            <tr>
+              <td><strong>Cauchy Root</strong></td>
+              <td>$L = \limsup a_n^{1/n}$</td>
+              <td>$L < 1$</td>
+              <td>$L > 1$</td>
+              <td>$L = 1$</td>
+              <td>$a_n = f(n)^n$ form</td>
+            </tr>
+            <tr>
+              <td><strong>Raabe's Test</strong></td>
+              <td>$R = \lim n(a_n/a_{n+1}-1)$</td>
+              <td>$R > 1$</td>
+              <td>$R < 1$</td>
+              <td>$R = 1$</td>
+              <td>When ratio test gives $L=1$</td>
+            </tr>
+            <tr>
+              <td><strong>Logarithmic Test</strong></td>
+              <td>$\Lambda = \lim n\ln(a_n/a_{n+1})$</td>
+              <td>$\Lambda > 1$</td>
+              <td>$\Lambda < 1$</td>
+              <td>$\Lambda = 1$</td>
+              <td>Refinement of Raabe's</td>
+            </tr>
+            <tr>
+              <td><strong>Leibniz (Alternating)</strong></td>
+              <td>$a_n \searrow 0$, alternating signs</td>
+              <td>All conditions hold</td>
+              <td>$a_n \not\to 0$</td>
+              <td>$a_n$ not monotone</td>
+              <td>Alternating series</td>
+            </tr>
+            <tr>
+              <td><strong>Absolute Convergence</strong></td>
+              <td>$\sum|a_n|$</td>
+              <td>$\sum|a_n|$ converges</td>
+              <td>—</td>
+              <td>$\sum|a_n|$ diverges</td>
+              <td>General series; apply tests to $|a_n|$</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="subsection-title">Decision Tree for Choosing a Test</h3>
+
+      <div class="note-box">
+        <span class="box-label">Strategy Guide</span>
+        <ol class="steps">
+          <li><strong>Term Test first:</strong> If $a_n \not\to 0$, the series diverges immediately.</li>
+          <li><strong>Recognize standard forms:</strong> geometric ($\sum r^n$), $p$-series ($\sum 1/n^p$), telescoping — use direct formulas.</li>
+          <li><strong>Alternating series:</strong> Check Leibniz conditions. If met, series converges (possibly only conditionally).</li>
+          <li><strong>Factorials or products:</strong> Try ratio test ($a_{n+1}/a_n$).</li>
+          <li><strong>$n$-th power form $f(n)^n$:</strong> Try root test ($a_n^{1/n}$).</li>
+          <li><strong>Ratio/Root gives $L=1$:</strong> Try Raabe's test or integral test.</li>
+          <li><strong>Rational / algebraic $a_n$:</strong> Try limit comparison with a $p$-series.</li>
+          <li><strong>$f$ is continuous, positive, decreasing:</strong> Use integral test.</li>
+        </ol>
+      </div>
+
+      <h3 class="subsection-title">Practice Problems Overview</h3>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-title">⭐ Easy</div>
+          <div class="card-body">$\sum \dfrac{1}{n^3}$, $\sum \dfrac{1}{3^n}$, $\sum \dfrac{(-1)^n}{n}$, $\sum \dfrac{n}{n^2+1}$</div>
+        </div>
+        <div class="card">
+          <div class="card-title">⭐⭐ Medium</div>
+          <div class="card-body">$\sum \dfrac{n^2}{2^n}$, $\sum \dfrac{1}{n(\ln n)^2}$, $\sum \dfrac{(2n)!}{(n!)^2 4^n}$, $\sum \left(\dfrac{n}{n+1}\right)^{n^2}$</div>
+        </div>
+        <div class="card">
+          <div class="card-title">⭐⭐⭐ Hard</div>
+          <div class="card-body">$\sum \dfrac{1\cdot3\cdot5\cdots(2n-1)}{2\cdot4\cdot6\cdots(2n)}$, $\sum \dfrac{(-1)^n}{\sqrt{n+1}-\sqrt{n}}$, Rearrangements, Cauchy product series</div>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:2rem;">
+        <span class="box-label">Key Relationships Summary</span>
+        <p style="margin-top:0.25rem;">$$\text{Absolutely Convergent} \implies \text{Convergent} \not\implies \text{Absolutely Convergent}$$</p>
+        <p>$$\text{Conditionally Convergent} = \text{Convergent} \setminus \text{Absolutely Convergent}$$</p>
+        <p style="margin-top:0.75rem; color:#d1fae5;">Root test is stronger than ratio test. Raabe's test is stronger than ratio test (when $L=1$). No single test covers all cases — mastery requires knowing which tool to apply when.</p>
+      </div>
+
+    </section>
+
+  </main>
+</div><!-- /page-wrapper -->
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer class="footer" style="padding: 40px 0; border-top: 1px solid var(--border); text-align: center;">
+  <p style="color: var(--text-muted); font-size: 0.9rem;">
+    Cal-Alge — 26MAB1001T Calculus &amp; Linear Algebra &nbsp;·&nbsp;
+    <a href="../index.html" style="color: var(--mint);">Home</a> &nbsp;·&nbsp;
+    Unit 5: Sequence and Series &nbsp;·&nbsp;
+    Made by <a href="https://github.com/ajlikeadj" target="_blank" rel="noopener noreferrer" style="color: var(--mint); text-decoration: underline; font-weight: 500;">Ajlikeadj</a>
+  </p>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Cursor glow
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  // Active TOC highlighting on scroll
+  const sections = document.querySelectorAll('.content-section, [id]');
+  const tocLinks  = document.querySelectorAll('.toc-list a');
+  const observer  = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('section[id], div[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

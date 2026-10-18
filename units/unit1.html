@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1: Vector Space &amp; Matrices — Cal-Alge</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false},
+        {left:'\\(',right:'\\)',display:false},
+        {left:'\\[',right:'\\]',display:true}
+      ]
+    })"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/topic.css" />
+
+  <style>
+    /* ── Fallback / supplementary styles if topic.css is minimal ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050d0b;
+      --surface: #0a1a16;
+      --border: rgba(203,246,231,0.10);
+      --accent: #cbf6e7;
+      --green: #4ade80;
+      --text: #f0fdf4;
+      --muted: #6b7280;
+      --card: rgba(10,26,22,0.85);
+      --radius: 12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #4ade80, #cbf6e7);
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* ── Cursor glow ── */
+    .cursor-glow {
+      position: fixed;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(74,222,128,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      transition: left 0.12s ease, top 0.12s ease;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(5,13,11,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+    /* ── Hero ── */
+    .topic-hero {
+      padding: 5rem 2rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+    .unit-badge {
+      display: inline-block;
+      background: rgba(74,222,128,0.12);
+      color: var(--green);
+      border: 1px solid rgba(74,222,128,0.3);
+      border-radius: 20px;
+      padding: 0.25rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .topic-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--text) 40%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+    .topic-hero p {
+      font-size: 1.125rem;
+      color: var(--muted);
+      max-width: 680px;
+      line-height: 1.7;
+    }
+
+    /* ── Two-column layout ── */
+    .topic-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+      align-items: start;
+    }
+
+    /* ── Sidebar ── */
+    .topic-sidebar {
+      position: sticky;
+      top: 80px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      padding-right: 0.5rem;
+    }
+    .sidebar-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .toc-list { list-style: none; }
+    .toc-list li { margin: 0; }
+    .toc-list a {
+      display: block;
+      padding: 0.45rem 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      border-left: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      border-radius: 0 6px 6px 0;
+    }
+    .toc-list a:hover,
+    .toc-list a.active {
+      color: var(--accent);
+      border-left-color: var(--green);
+      background: rgba(74,222,128,0.06);
+    }
+    .toc-list .toc-sub a {
+      padding-left: 1.5rem;
+      font-size: 0.78rem;
+    }
+
+    /* ── Mobile TOC toggle ── */
+    .toc-toggle {
+      display: none;
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      background: var(--green);
+      color: #050d0b;
+      border: none;
+      border-radius: 50%;
+      width: 52px; height: 52px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 24px rgba(74,222,128,0.4);
+    }
+
+    /* ── Content ── */
+    .topic-content section {
+      margin-bottom: 5rem;
+      scroll-margin-top: 80px;
+    }
+    .section-number {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.4rem;
+    }
+    .topic-content h2 {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .topic-content h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 2rem 0 0.8rem;
+    }
+    .topic-content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #a7f3d0;
+      margin: 1.5rem 0 0.5rem;
+    }
+    .topic-content p {
+      margin-bottom: 1rem;
+      color: #d1fae5;
+      line-height: 1.85;
+    }
+    .topic-content ul, .topic-content ol {
+      margin: 0.75rem 0 1rem 1.5rem;
+      color: #d1fae5;
+    }
+    .topic-content li { margin-bottom: 0.4rem; }
+
+    /* ── Boxes ── */
+    .def-box, .theorem-box, .example-box, .formula-box,
+    .key-points, .proof-box, .warning-box {
+      border-radius: var(--radius);
+      padding: 1.5rem 1.75rem;
+      margin: 1.75rem 0;
+      position: relative;
+    }
+    .def-box {
+      background: rgba(74,222,128,0.06);
+      border: 1px solid rgba(74,222,128,0.25);
+      border-left: 4px solid var(--green);
+    }
+    .def-box::before {
+      content: 'DEFINITION';
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+    .theorem-box {
+      background: rgba(203,246,231,0.05);
+      border: 1px solid rgba(203,246,231,0.2);
+      border-left: 4px solid var(--accent);
+    }
+    .theorem-box::before {
+      content: 'THEOREM';
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .example-box {
+      background: rgba(30,50,40,0.6);
+      border: 1px solid rgba(203,246,231,0.12);
+      border-left: 4px solid #60a5fa;
+    }
+    .example-box::before {
+      content: 'WORKED EXAMPLE';
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #93c5fd;
+      margin-bottom: 0.5rem;
+    }
+    .formula-box {
+      background: rgba(5,13,11,0.9);
+      border: 1px solid rgba(203,246,231,0.15);
+      border-radius: var(--radius);
+      text-align: center;
+      padding: 1.5rem;
+    }
+    .formula-box .formula-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .key-points {
+      background: rgba(251,191,36,0.05);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-left: 4px solid #fbbf24;
+    }
+    .key-points::before {
+      content: 'KEY POINTS';
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #fbbf24;
+      margin-bottom: 0.5rem;
+    }
+    .proof-box {
+      background: rgba(139,92,246,0.06);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-left: 4px solid #a78bfa;
+    }
+    .proof-box::before {
+      content: 'PROOF';
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 0.5rem;
+    }
+    .warning-box {
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-left: 4px solid #f87171;
+    }
+    .warning-box::before {
+      content: '⚠ NOTE';
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #f87171;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── Steps ── */
+    .steps { counter-reset: step; list-style: none; margin: 1rem 0; padding: 0; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      min-width: 28px; height: 28px;
+      background: var(--green);
+      color: #050d0b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.78rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    /* ── Math table ── */
+    .math-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .math-table th {
+      background: rgba(74,222,128,0.1);
+      color: var(--accent);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    .math-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid rgba(203,246,231,0.06);
+      color: #d1fae5;
+      vertical-align: top;
+    }
+    .math-table tr:hover td { background: rgba(74,222,128,0.03); }
+
+    /* ── Inline code / small ── */
+    code {
+      background: rgba(74,222,128,0.1);
+      color: var(--green);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.875em;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 2.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .topic-layout { grid-template-columns: 1fr; }
+      .topic-sidebar {
+        display: none;
+        position: fixed;
+        top: 64px; left: 0; right: 0; bottom: 0;
+        background: var(--bg);
+        z-index: 150;
+        padding: 1.5rem;
+        overflow-y: auto;
+      }
+      .topic-sidebar.open { display: block; }
+      .toc-toggle { display: flex; align-items: center; justify-content: center; }
+      .nav-links { display: none; }
+    }
+
+    /* ── KaTeX display overrides ── */
+    .katex-display { overflow-x: auto; padding: 0.5rem 0; }
+    .katex { font-size: 1.05em; }
+    .example-box .katex-display { margin: 0.75rem 0; }
+
+    /* subsection divider */
+    .sub-divider {
+      border: none;
+      border-top: 1px dashed rgba(203,246,231,0.08);
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Cursor glow -->
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+<nav class="nav">
+  <a class="nav-logo" href="../index.html">Cal-Alge</a>
+  <ul class="nav-links">
+    <li><a href="../units/unit1.html" class="active">Unit 1</a></li>
+    <li><a href="../units/unit2.html">Unit 2</a></li>
+    <li><a href="../units/unit3.html">Unit 3</a></li>
+    <li><a href="../units/unit4.html">Unit 4</a></li>
+    <li><a href="../units/unit5.html">Unit 5</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<header class="topic-hero">
+  <a class="back-link" href="../index.html">← Back to Home</a>
+  <div class="unit-badge">Unit 01</div>
+  <h1>Vector Space &amp; Matrices</h1>
+  <p>
+    A rigorous treatment of matrix theory, vector spaces, linear transformations,
+    eigenvalue problems, the Cayley–Hamilton theorem, and diagonalization — the
+    foundational language of all quantitative science and engineering.
+  </p>
+</header>
+
+<!-- ═══════════════════════════ LAYOUT ═══════════════════════════ -->
+<div class="topic-layout">
+
+  <!-- ───── SIDEBAR TOC ───── -->
+  <aside class="topic-sidebar" id="sidebar">
+    <p class="sidebar-title">Contents</p>
+    <ul class="toc-list">
+      <li><a href="#matrices-review">1. Review of Matrices</a></li>
+      <li class="toc-sub"><ul class="toc-list">
+        <li><a href="#matrix-types">Matrix Types</a></li>
+        <li><a href="#matrix-ops">Operations &amp; Determinants</a></li>
+        <li><a href="#matrix-rank">Rank &amp; Echelon Form</a></li>
+        <li><a href="#linear-systems">Linear Systems</a></li>
+      </ul></li>
+      <li><a href="#vector-spaces">2. Vector Spaces</a></li>
+      <li class="toc-sub"><ul class="toc-list">
+        <li><a href="#vs-axioms">Axioms</a></li>
+        <li><a href="#vs-examples">Examples</a></li>
+      </ul></li>
+      <li><a href="#subspaces">3. Subspaces, Basis &amp; Dimension</a></li>
+      <li><a href="#linear-dependence">4. Linear Dependence</a></li>
+      <li class="toc-sub"><ul class="toc-list">
+        <li><a href="#null-col-row">Null, Row &amp; Column Spaces</a></li>
+        <li><a href="#rank-nullity">Rank–Nullity Theorem</a></li>
+      </ul></li>
+      <li><a href="#characteristic-eq">5. Characteristic Equation</a></li>
+      <li><a href="#eigenvalues">6. Eigenvalues &amp; Eigenvectors</a></li>
+      <li><a href="#cayley-hamilton">7. Cayley–Hamilton Theorem</a></li>
+      <li><a href="#linear-transformations">8. Linear Transformations</a></li>
+      <li><a href="#orthogonal-transformation">9. Orthogonal Transformation</a></li>
+      <li class="toc-sub"><ul class="toc-list">
+        <li><a href="#gram-schmidt">Gram–Schmidt Process</a></li>
+        <li><a href="#qr-decomp">QR Decomposition</a></li>
+      </ul></li>
+      <li><a href="#diagonalization">10. Diagonalization</a></li>
+    </ul>
+  </aside>
+
+  <!-- ───── MAIN CONTENT ───── -->
+  <main class="topic-content">
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 1 — REVIEW OF MATRICES
+    ══════════════════════════════════════════════════════════ -->
+    <section id="matrices-review">
+      <div class="section-number">Section 01</div>
+      <h2>Review of Matrices</h2>
+
+      <p>
+        A <strong>matrix</strong> is a rectangular array of numbers (or more generally, elements
+        of a field $\mathbb{F}$) arranged in $m$ rows and $n$ columns. We denote the set of all
+        $m \times n$ matrices over $\mathbb{F}$ by $M_{m \times n}(\mathbb{F})$. The entry in the
+        $i$-th row and $j$-th column of matrix $A$ is written $a_{ij}$ or $(A)_{ij}$.
+      </p>
+
+      <!-- ── 1a: Matrix Types ── -->
+      <h3 id="matrix-types">1.1 Special Types of Matrices</h3>
+
+      <table class="math-table">
+        <thead>
+          <tr><th>Type</th><th>Defining Property</th><th>Key Consequence</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Square</strong></td>
+            <td>$m = n$</td>
+            <td>Has a well-defined determinant and possibly an inverse</td>
+          </tr>
+          <tr>
+            <td><strong>Symmetric</strong></td>
+            <td>$A^T = A$, i.e. $a_{ij}=a_{ji}$</td>
+            <td>All eigenvalues real; eigenvectors orthogonal (Spectral Theorem)</td>
+          </tr>
+          <tr>
+            <td><strong>Skew-Symmetric</strong></td>
+            <td>$A^T = -A$, i.e. $a_{ij}=-a_{ji}$, $a_{ii}=0$</td>
+            <td>All eigenvalues purely imaginary or zero; $\det(A)=0$ when $n$ is odd</td>
+          </tr>
+          <tr>
+            <td><strong>Orthogonal</strong></td>
+            <td>$A^T A = A A^T = I$</td>
+            <td>$\det(A) = \pm 1$; preserves lengths and angles</td>
+          </tr>
+          <tr>
+            <td><strong>Hermitian</strong></td>
+            <td>$A^* = A$ (conjugate transpose); $\overline{a}_{ji}=a_{ij}$</td>
+            <td>All eigenvalues real (complex generalization of symmetric)</td>
+          </tr>
+          <tr>
+            <td><strong>Unitary</strong></td>
+            <td>$A^* A = I$ (complex field)</td>
+            <td>Complex generalization of orthogonal; $|\det(A)|=1$</td>
+          </tr>
+          <tr>
+            <td><strong>Idempotent</strong></td>
+            <td>$A^2 = A$</td>
+            <td>Eigenvalues are $0$ or $1$; represents a projection</td>
+          </tr>
+          <tr>
+            <td><strong>Nilpotent</strong></td>
+            <td>$A^k = 0$ for some positive integer $k$</td>
+            <td>All eigenvalues are $0$; $\det(A)=0$</td>
+          </tr>
+          <tr>
+            <td><strong>Involutory</strong></td>
+            <td>$A^2 = I$</td>
+            <td>Eigenvalues are $\pm 1$; $A^{-1}=A$; represents a reflection</td>
+          </tr>
+          <tr>
+            <td><strong>Diagonal</strong></td>
+            <td>$a_{ij}=0$ for $i \neq j$</td>
+            <td>Eigenvalues are the diagonal entries; trivially diagonalized</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="def-box">
+        <strong>Trace of a Matrix.</strong> For a square $n\times n$ matrix $A$, the trace is
+        $$\operatorname{tr}(A) = \sum_{i=1}^{n} a_{ii} = a_{11}+a_{22}+\cdots+a_{nn}.$$
+        Key properties: $\operatorname{tr}(A+B)=\operatorname{tr}(A)+\operatorname{tr}(B)$,
+        $\operatorname{tr}(cA)=c\,\operatorname{tr}(A)$, $\operatorname{tr}(AB)=\operatorname{tr}(BA)$.
+      </div>
+
+      <!-- ── 1b: Operations ── -->
+      <h3 id="matrix-ops">1.2 Matrix Operations and Determinants</h3>
+
+      <h4>Basic Operations</h4>
+      <ul>
+        <li><strong>Addition:</strong> $(A+B)_{ij} = a_{ij}+b_{ij}$; requires same size.</li>
+        <li><strong>Scalar multiplication:</strong> $(cA)_{ij}=c\,a_{ij}$.</li>
+        <li><strong>Matrix product:</strong> If $A$ is $m\times p$ and $B$ is $p\times n$, then $(AB)_{ij} = \sum_{k=1}^p a_{ik}b_{kj}$.</li>
+        <li><strong>Transpose:</strong> $(A^T)_{ij}=a_{ji}$; $(AB)^T=B^T A^T$; $(A^T)^T=A$.</li>
+      </ul>
+
+      <div class="formula-box">
+        <div class="formula-label">Key Matrix Identities</div>
+        $$
+        \det(AB) = \det(A)\det(B) \qquad
+        (AB)^{-1} = B^{-1}A^{-1} \qquad
+        (A^T)^{-1} = (A^{-1})^T
+        $$
+        $$
+        \det(A^T) = \det(A) \qquad
+        \det(cA) = c^n \det(A) \quad (A \text{ is } n\times n) \qquad
+        \det(A^{-1}) = \frac{1}{\det(A)}
+        $$
+      </div>
+
+      <h4>Determinant — Cofactor Expansion</h4>
+      <p>For an $n\times n$ matrix $A$, the determinant via expansion along row $i$ is:</p>
+      $$\det(A) = \sum_{j=1}^{n} (-1)^{i+j} a_{ij} M_{ij}$$
+      <p>where $M_{ij}$ is the $(n-1)\times(n-1)$ <em>minor</em> obtained by deleting row $i$ and column $j$. The quantity $C_{ij}=(-1)^{i+j}M_{ij}$ is the <strong>cofactor</strong>.</p>
+
+      <h4>Matrix Inverse via Adjoint</h4>
+      <p>The <strong>adjugate</strong> (classical adjoint) of $A$ is $\operatorname{adj}(A) = [C_{ji}]$ (transpose of the cofactor matrix). Then:</p>
+      $$A^{-1} = \frac{1}{\det(A)}\operatorname{adj}(A) \quad (\text{provided } \det(A)\neq 0)$$
+
+      <!-- ── 1c: Rank ── -->
+      <h3 id="matrix-rank">1.3 Rank of a Matrix</h3>
+
+      <div class="def-box">
+        The <strong>rank</strong> of a matrix $A$, denoted $\rho(A)$ or $\operatorname{rank}(A)$, is the maximum number of linearly independent rows (equivalently, columns) of $A$, or equivalently the order of the largest non-zero minor.
+      </div>
+
+      <h4>Row Echelon Form (REF)</h4>
+      <p>A matrix is in REF if:</p>
+      <ol>
+        <li>All zero rows are at the bottom.</li>
+        <li>The leading entry (pivot) of each non-zero row is to the right of the pivot in the row above.</li>
+        <li>All entries below a pivot are zero.</li>
+      </ol>
+      <p>The rank equals the number of non-zero rows in the REF. In <strong>Reduced REF (RREF)</strong>, pivots are 1 and all other entries in pivot columns are also zero.</p>
+
+      <h4>Normal Form (Smith Normal Form for integers)</h4>
+      <p>Every matrix $A$ over a field can be reduced by elementary row and column operations to its <strong>normal form</strong>:</p>
+      $$N = \begin{pmatrix} I_r & 0 \\ 0 & 0 \end{pmatrix}$$
+      <p>where $r = \operatorname{rank}(A)$.</p>
+
+      <div class="example-box">
+        <strong>Example 1.1 — Find the rank of a $4\times 4$ matrix by row reduction.</strong>
+        <p>Let</p>
+        $$A = \begin{pmatrix}
+        1 & 2 & 3 & 4 \\
+        2 & 4 & 7 & 9 \\
+        1 & 2 & 4 & 6 \\
+        3 & 6 & 10& 13
+        \end{pmatrix}$$
+        <ol class="steps">
+          <li>
+            $R_2 \leftarrow R_2 - 2R_1$, $R_3 \leftarrow R_3 - R_1$, $R_4 \leftarrow R_4 - 3R_1$:
+            $$\begin{pmatrix}
+            1 & 2 & 3 & 4 \\
+            0 & 0 & 1 & 1 \\
+            0 & 0 & 1 & 2 \\
+            0 & 0 & 1 & 1
+            \end{pmatrix}$$
+          </li>
+          <li>
+            $R_3 \leftarrow R_3 - R_2$, $R_4 \leftarrow R_4 - R_2$:
+            $$\begin{pmatrix}
+            1 & 2 & 3 & 4 \\
+            0 & 0 & 1 & 1 \\
+            0 & 0 & 0 & 1 \\
+            0 & 0 & 0 & 0
+            \end{pmatrix}$$
+          </li>
+          <li>
+            $R_1 \leftarrow R_1 - 4R_3$, $R_2 \leftarrow R_2 - R_3$:
+            $$\begin{pmatrix}
+            1 & 2 & 3 & 0 \\
+            0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 1 \\
+            0 & 0 & 0 & 0
+            \end{pmatrix}$$
+          </li>
+          <li>
+            We have 3 non-zero rows, so $\operatorname{rank}(A) = \boxed{3}$.
+          </li>
+        </ol>
+      </div>
+
+      <!-- ── 1d: Linear Systems ── -->
+      <h3 id="linear-systems">1.4 Systems of Linear Equations</h3>
+
+      <p>A system $A\mathbf{x}=\mathbf{b}$ with $A \in M_{m\times n}$ is consistent iff its augmented matrix $[A|\mathbf{b}]$ has the same rank as $A$.</p>
+
+      <div class="theorem-box">
+        <strong>Rouché–Capelli Theorem.</strong> The system $A\mathbf{x}=\mathbf{b}$ is:
+        <ul>
+          <li><strong>Inconsistent</strong> (no solution) if $\operatorname{rank}(A) < \operatorname{rank}([A|\mathbf{b}])$.</li>
+          <li><strong>Consistent with a unique solution</strong> if $\operatorname{rank}(A) = \operatorname{rank}([A|\mathbf{b}]) = n$.</li>
+          <li><strong>Consistent with infinitely many solutions</strong> if $\operatorname{rank}(A) = \operatorname{rank}([A|\mathbf{b}]) = r < n$; the solution space has dimension $n-r$ (the nullity).</li>
+        </ul>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 1.2 — Solve the system using Gaussian elimination.</strong>
+        $$\begin{cases} 2x + y - z = 8 \\ -3x - y + 2z = -11 \\ -2x + y + 2z = -3 \end{cases}$$
+        <ol class="steps">
+          <li>
+            Write the augmented matrix:
+            $$[A|\mathbf{b}] = \left(\begin{array}{ccc|c} 2 & 1 & -1 & 8 \\ -3 & -1 & 2 & -11 \\ -2 & 1 & 2 & -3 \end{array}\right)$$
+          </li>
+          <li>
+            $R_2 \leftarrow R_2 + \tfrac{3}{2}R_1$, $R_3 \leftarrow R_3 + R_1$:
+            $$\left(\begin{array}{ccc|c} 2 & 1 & -1 & 8 \\ 0 & \frac{1}{2} & \frac{1}{2} & 1 \\ 0 & 2 & 1 & 5 \end{array}\right)$$
+          </li>
+          <li>
+            $R_3 \leftarrow R_3 - 4R_2$:
+            $$\left(\begin{array}{ccc|c} 2 & 1 & -1 & 8 \\ 0 & \frac{1}{2} & \frac{1}{2} & 1 \\ 0 & 0 & -1 & 1 \end{array}\right)$$
+          </li>
+          <li>
+            Back-substitution: from row 3, $-z = 1 \Rightarrow z = -1$.
+          </li>
+          <li>
+            Row 2: $\tfrac{1}{2}y + \tfrac{1}{2}(-1) = 1 \Rightarrow y = 3$.
+          </li>
+          <li>
+            Row 1: $2x + 3 - (-1) = 8 \Rightarrow 2x = 4 \Rightarrow x = 2$.
+          </li>
+          <li>
+            <strong>Solution:</strong> $(x, y, z) = (2, 3, -1)$.
+          </li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 1.3 — Find the inverse of $A$ using elementary row operations.</strong>
+        $$A = \begin{pmatrix} 1 & 2 & 1 \\ 0 & 1 & 1 \\ 2 & 5 & 4 \end{pmatrix}$$
+        <ol class="steps">
+          <li>Augment $A$ with identity: $[A \mid I]$.</li>
+          <li>
+            $R_3 \leftarrow R_3 - 2R_1$:
+            $$\left(\begin{array}{ccc|ccc}1&2&1&1&0&0\\0&1&1&0&1&0\\0&1&2&-2&0&1\end{array}\right)$$
+          </li>
+          <li>
+            $R_1 \leftarrow R_1 - 2R_2$, $R_3 \leftarrow R_3 - R_2$:
+            $$\left(\begin{array}{ccc|ccc}1&0&-1&1&-2&0\\0&1&1&0&1&0\\0&0&1&-2&-1&1\end{array}\right)$$
+          </li>
+          <li>
+            $R_1 \leftarrow R_1 + R_3$, $R_2 \leftarrow R_2 - R_3$:
+            $$\left(\begin{array}{ccc|ccc}1&0&0&-1&-3&1\\0&1&0&2&2&-1\\0&0&1&-2&-1&1\end{array}\right)$$
+          </li>
+          <li>
+            Therefore $A^{-1} = \begin{pmatrix} -1 & -3 & 1 \\ 2 & 2 & -1 \\ -2 & -1 & 1 \end{pmatrix}$.
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 2 — VECTOR SPACES
+    ══════════════════════════════════════════════════════════ -->
+    <section id="vector-spaces">
+      <div class="section-number">Section 02</div>
+      <h2>Vector Spaces</h2>
+
+      <p>
+        A <strong>vector space</strong> is one of the most fundamental structures in mathematics.
+        It abstracts the notion of arrows in $\mathbb{R}^n$ to arbitrary collections of objects
+        (vectors) that can be added and scaled in a consistent way.
+      </p>
+
+      <h3 id="vs-axioms">2.1 Axioms of a Vector Space</h3>
+
+      <div class="def-box">
+        A <strong>vector space</strong> over a field $\mathbb{F}$ (e.g. $\mathbb{R}$ or $\mathbb{C}$) is a set $V$ equipped with two operations — <em>vector addition</em> $+: V\times V\to V$ and <em>scalar multiplication</em> $\cdot: \mathbb{F}\times V\to V$ — satisfying the following <strong>ten axioms</strong> for all $\mathbf{u},\mathbf{v},\mathbf{w}\in V$ and all $\alpha,\beta\in\mathbb{F}$:
+        <ol>
+          <li><strong>(A1) Closure under addition)</strong> $\mathbf{u}+\mathbf{v} \in V$.</li>
+          <li><strong>(A2) Commutativity)</strong> $\mathbf{u}+\mathbf{v}=\mathbf{v}+\mathbf{u}$.</li>
+          <li><strong>(A3) Associativity of addition)</strong> $(\mathbf{u}+\mathbf{v})+\mathbf{w}=\mathbf{u}+(\mathbf{v}+\mathbf{w})$.</li>
+          <li><strong>(A4) Additive identity)</strong> $\exists\, \mathbf{0}\in V$ such that $\mathbf{v}+\mathbf{0}=\mathbf{v}$.</li>
+          <li><strong>(A5) Additive inverse)</strong> $\forall\,\mathbf{v}\in V,\; \exists\,{-\mathbf{v}}\in V$ s.t. $\mathbf{v}+(-\mathbf{v})=\mathbf{0}$.</li>
+          <li><strong>(A6) Closure under scalar multiplication)</strong> $\alpha\mathbf{v}\in V$.</li>
+          <li><strong>(A7) Distributivity over vector addition)</strong> $\alpha(\mathbf{u}+\mathbf{v})=\alpha\mathbf{u}+\alpha\mathbf{v}$.</li>
+          <li><strong>(A8) Distributivity over scalar addition)</strong> $(\alpha+\beta)\mathbf{v}=\alpha\mathbf{v}+\beta\mathbf{v}$.</li>
+          <li><strong>(A9) Associativity of scalar multiplication)</strong> $(\alpha\beta)\mathbf{v}=\alpha(\beta\mathbf{v})$.</li>
+          <li><strong>(A10) Multiplicative identity)</strong> $1\cdot\mathbf{v}=\mathbf{v}$.</li>
+        </ol>
+      </div>
+
+      <h3 id="vs-examples">2.2 Standard Examples of Vector Spaces</h3>
+
+      <table class="math-table">
+        <thead>
+          <tr><th>Space</th><th>Elements</th><th>Addition</th><th>Scalar Mult.</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$\mathbb{R}^n$</td>
+            <td>$n$-tuples $(x_1,\ldots,x_n)$</td>
+            <td>Component-wise</td>
+            <td>Component-wise</td>
+          </tr>
+          <tr>
+            <td>$P_n[x]$</td>
+            <td>Polynomials of degree $\le n$</td>
+            <td>Polynomial addition</td>
+            <td>Scalar $\times$ polynomial</td>
+          </tr>
+          <tr>
+            <td>$C[a,b]$</td>
+            <td>Continuous functions on $[a,b]$</td>
+            <td>$(f+g)(x)=f(x)+g(x)$</td>
+            <td>$(cf)(x)=c\,f(x)$</td>
+          </tr>
+          <tr>
+            <td>$M_{m\times n}(\mathbb{F})$</td>
+            <td>$m\times n$ matrices</td>
+            <td>Entry-wise</td>
+            <td>Entry-wise</td>
+          </tr>
+          <tr>
+            <td>$\{\mathbf{0}\}$</td>
+            <td>The zero vector only</td>
+            <td>$\mathbf{0}+\mathbf{0}=\mathbf{0}$</td>
+            <td>$c\mathbf{0}=\mathbf{0}$</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="key-points">
+        <ul>
+          <li>$\dim(\mathbb{R}^n)=n$; standard basis $\{e_1,\ldots,e_n\}$.</li>
+          <li>$\dim(P_n[x])=n+1$; basis $\{1, x, x^2,\ldots,x^n\}$.</li>
+          <li>$\dim(M_{m\times n})=mn$; basis is the set of matrices $E_{ij}$ with 1 in position $(i,j)$ and 0 elsewhere.</li>
+          <li>$C[a,b]$ is <em>infinite-dimensional</em>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 3 — SUBSPACES
+    ══════════════════════════════════════════════════════════ -->
+    <section id="subspaces">
+      <div class="section-number">Section 03</div>
+      <h2>Subspaces, Basis &amp; Dimension</h2>
+
+      <div class="def-box">
+        A nonempty subset $W \subseteq V$ is a <strong>subspace</strong> of $V$ if and only if it satisfies the <em>Subspace Criterion</em>:
+        <ol>
+          <li><strong>(S1)</strong> $\mathbf{0} \in W$ (contains the zero vector).</li>
+          <li><strong>(S2)</strong> If $\mathbf{u}, \mathbf{v}\in W$, then $\mathbf{u}+\mathbf{v}\in W$ (closed under addition).</li>
+          <li><strong>(S3)</strong> If $\mathbf{v}\in W$ and $c\in\mathbb{F}$, then $c\mathbf{v}\in W$ (closed under scalar multiplication).</li>
+        </ol>
+        (S2) and (S3) can be combined: $W$ is a subspace iff $\alpha\mathbf{u}+\beta\mathbf{v}\in W$ for all $\mathbf{u},\mathbf{v}\in W$ and $\alpha,\beta\in\mathbb{F}$.
+      </div>
+
+      <div class="example-box">
+        <strong>Example 3.1 — Is $W = \{(x,y,z)\in\mathbb{R}^3 : x+2y-z=0\}$ a subspace?</strong>
+        <ol class="steps">
+          <li>$\mathbf{0}=(0,0,0)$: $0+0-0=0$ ✓</li>
+          <li>Let $\mathbf{u}=(a_1,a_2,a_3)$ and $\mathbf{v}=(b_1,b_2,b_3)$ both satisfy the equation. Then $(a_1+b_1)+2(a_2+b_2)-(a_3+b_3)=(a_1+2a_2-a_3)+(b_1+2b_2-b_3)=0+0=0$ ✓</li>
+          <li>$c\mathbf{u}=(ca_1,ca_2,ca_3)$: $ca_1+2ca_2-ca_3=c(a_1+2a_2-a_3)=c\cdot 0=0$ ✓</li>
+          <li>$W$ is a subspace of $\mathbb{R}^3$. It is the plane through the origin with normal $(1,2,-1)$.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 3.2 — Why $S = \{(x,y)\in\mathbb{R}^2 : x^2+y^2=1\}$ is NOT a subspace.</strong>
+        <p>Take $\mathbf{v}=(1,0)\in S$. Then $2\mathbf{v}=(2,0)$ but $4+0\neq 1$, so $2\mathbf{v}\notin S$. Fails (S3). Also $\mathbf{0}\notin S$. Fails (S1).</p>
+      </div>
+
+      <h3>Span, Basis, and Dimension</h3>
+
+      <div class="def-box">
+        The <strong>span</strong> of vectors $\mathbf{v}_1,\ldots,\mathbf{v}_k\in V$ is
+        $$\operatorname{span}\{\mathbf{v}_1,\ldots,\mathbf{v}_k\} = \{\alpha_1\mathbf{v}_1+\cdots+\alpha_k\mathbf{v}_k : \alpha_i\in\mathbb{F}\}.$$
+        This is always a subspace of $V$. A set $\mathcal{B}=\{\mathbf{v}_1,\ldots,\mathbf{v}_n\}$ is a <strong>basis</strong> for $V$ if:
+        <ul>
+          <li>$\mathcal{B}$ is linearly independent, and</li>
+          <li>$\operatorname{span}(\mathcal{B})=V$.</li>
+        </ul>
+        The <strong>dimension</strong> of $V$ is the cardinality of any basis (all bases of a finite-dimensional space have the same size).
+      </div>
+
+      <div class="example-box">
+        <strong>Example 3.3 — Find a basis and dimension of the subspace $W = \operatorname{span}\{v_1,v_2,v_3,v_4\}$</strong> where
+        $v_1=(1,2,1)$, $v_2=(2,4,2)$, $v_3=(0,1,1)$, $v_4=(1,3,2)$.
+        <ol class="steps">
+          <li>Row-reduce the matrix whose rows are $v_1,v_2,v_3,v_4$:
+            $$\begin{pmatrix}1&2&1\\2&4&2\\0&1&1\\1&3&2\end{pmatrix} \xrightarrow{R_2-2R_1,R_4-R_1}
+            \begin{pmatrix}1&2&1\\0&0&0\\0&1&1\\0&1&1\end{pmatrix}$$
+          </li>
+          <li>
+            $\xrightarrow{R_2\leftrightarrow R_3,\;R_4-R_3}$
+            $$\begin{pmatrix}1&2&1\\0&1&1\\0&0&0\\0&0&0\end{pmatrix}$$
+          </li>
+          <li>Two non-zero rows remain. $\dim(W)=2$.</li>
+          <li>Basis: $\{(1,2,1),(0,1,1)\}$.</li>
+        </ol>
+      </div>
+
+      <div class="theorem-box">
+        <strong>Basis Extension Theorem.</strong> Any linearly independent subset of a finite-dimensional vector space $V$ can be extended to a basis of $V$. Any spanning set contains a basis as a subset.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 4 — LINEAR DEPENDENCE
+    ══════════════════════════════════════════════════════════ -->
+    <section id="linear-dependence">
+      <div class="section-number">Section 04</div>
+      <h2>Linear Dependence and Independence</h2>
+
+      <div class="def-box">
+        Vectors $\mathbf{v}_1,\ldots,\mathbf{v}_k\in V$ are <strong>linearly dependent</strong> if there exist scalars $c_1,\ldots,c_k\in\mathbb{F}$, not all zero, such that
+        $$c_1\mathbf{v}_1 + c_2\mathbf{v}_2 + \cdots + c_k\mathbf{v}_k = \mathbf{0}.$$
+        They are <strong>linearly independent</strong> if the only solution to the above is $c_1=c_2=\cdots=c_k=0$ (the trivial solution).
+      </div>
+
+      <h3>The Wronskian Test for Functions</h3>
+
+      <div class="def-box">
+        For $n$ functions $f_1,\ldots,f_n$ that are $(n-1)$-times differentiable on an interval $I$, the <strong>Wronskian</strong> is
+        $$W(f_1,\ldots,f_n)(x) = \det\begin{pmatrix}
+        f_1 & f_2 & \cdots & f_n \\
+        f_1' & f_2' & \cdots & f_n' \\
+        \vdots & \vdots & & \vdots \\
+        f_1^{(n-1)} & f_2^{(n-1)} & \cdots & f_n^{(n-1)}
+        \end{pmatrix}.$$
+        If $W(x_0)\neq 0$ for some $x_0\in I$, the functions are linearly independent on $I$.
+      </div>
+
+      <div class="example-box">
+        <strong>Example 4.1 — Test $\{1, e^x, e^{2x}\}$ for independence.</strong>
+        $$W = \det\begin{pmatrix} 1 & e^x & e^{2x} \\ 0 & e^x & 2e^{2x} \\ 0 & e^x & 4e^{2x} \end{pmatrix} = 1\cdot(4e^{3x}-2e^{3x}) = 2e^{3x} \neq 0.$$
+        Linearly <strong>independent</strong>.
+      </div>
+
+      <div class="example-box">
+        <strong>Example 4.2 — Are $v_1=(1,2,3)$, $v_2=(4,5,6)$, $v_3=(7,8,9)$ linearly independent?</strong>
+        <ol class="steps">
+          <li>Form matrix and row-reduce:
+            $$\begin{pmatrix}1&2&3\\4&5&6\\7&8&9\end{pmatrix}\xrightarrow{R_2-4R_1,R_3-7R_1}\begin{pmatrix}1&2&3\\0&-3&-6\\0&-6&-12\end{pmatrix}\xrightarrow{R_3-2R_2}\begin{pmatrix}1&2&3\\0&-3&-6\\0&0&0\end{pmatrix}$$
+          </li>
+          <li>Only 2 pivot rows; rank = 2 $<$ 3. The vectors are <strong>linearly dependent</strong>.</li>
+          <li>Note: $v_3 = 2v_2 - v_1$ (arithmetic progression).</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 4.3 — Are $v_1=(1,0,0)$, $v_2=(0,1,0)$, $v_3=(0,0,1)$, $v_4=(1,1,1)$ independent?</strong>
+        <p>In $\mathbb{R}^3$, any 4 vectors must be dependent (since $\dim\mathbb{R}^3=3$). Indeed $v_4 = v_1+v_2+v_3$.</p>
+      </div>
+
+      <h3 id="null-col-row">4.1 Row Space, Column Space, and Null Space</h3>
+
+      <div class="def-box">
+        For an $m\times n$ matrix $A$:
+        <ul>
+          <li><strong>Row space</strong> $\operatorname{Row}(A)$: span of the rows of $A$, a subspace of $\mathbb{F}^n$.</li>
+          <li><strong>Column space</strong> $\operatorname{Col}(A)$: span of the columns of $A$, a subspace of $\mathbb{F}^m$. This is the image/range of the linear map $\mathbf{x}\mapsto A\mathbf{x}$.</li>
+          <li><strong>Null space (kernel)</strong> $\operatorname{Null}(A) = \ker(A) = \{\mathbf{x}\in\mathbb{F}^n : A\mathbf{x}=\mathbf{0}\}$, a subspace of $\mathbb{F}^n$.</li>
+        </ul>
+        $\operatorname{rank}(A) = \dim(\operatorname{Row}(A)) = \dim(\operatorname{Col}(A))$.
+      </div>
+
+      <h3 id="rank-nullity">4.2 The Rank–Nullity Theorem</h3>
+
+      <div class="theorem-box">
+        <strong>Rank–Nullity Theorem.</strong> For any $m\times n$ matrix $A$:
+        $$\operatorname{rank}(A) + \operatorname{nullity}(A) = n,$$
+        where $\operatorname{nullity}(A) = \dim(\operatorname{Null}(A))$.
+      </div>
+
+      <div class="proof-box">
+        <strong>Proof Sketch.</strong> Let $r = \operatorname{rank}(A)$. By row reduction to RREF, we get $r$ pivot variables and $n-r$ free variables. The free variables parametrize $\operatorname{Null}(A)$, contributing $n-r$ linearly independent vectors (one per free variable). Hence $\operatorname{nullity}(A)=n-r$, giving rank + nullity $= r+(n-r)=n$. $\blacksquare$
+      </div>
+
+      <div class="example-box">
+        <strong>Example 4.4 — Find the null space of $A = \begin{pmatrix}1&2&-1&3\\2&4&-2&6\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$R_2 \leftarrow R_2-2R_1$: $\begin{pmatrix}1&2&-1&3\\0&0&0&0\end{pmatrix}$</li>
+          <li>Pivot variable: $x_1$; free variables: $x_2,x_3,x_4$.</li>
+          <li>General solution: $x_1 = -2x_2+x_3-3x_4$, so
+            $$\mathbf{x} = x_2\begin{pmatrix}-2\\1\\0\\0\end{pmatrix}+x_3\begin{pmatrix}1\\0\\1\\0\end{pmatrix}+x_4\begin{pmatrix}-3\\0\\0\\1\end{pmatrix}.$$
+          </li>
+          <li>$\operatorname{Null}(A)$ has dimension 3; basis is the three vectors above. Rank = 1; $1+3=4=n$ ✓.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 5 — CHARACTERISTIC EQUATION
+    ══════════════════════════════════════════════════════════ -->
+    <section id="characteristic-eq">
+      <div class="section-number">Section 05</div>
+      <h2>The Characteristic Equation</h2>
+
+      <div class="def-box">
+        The <strong>characteristic polynomial</strong> of an $n\times n$ matrix $A$ is
+        $$p(\lambda) = \det(A - \lambda I).$$
+        Setting $p(\lambda)=0$ gives the <strong>characteristic equation</strong>. The roots of $p(\lambda)$ are the <strong>eigenvalues</strong> of $A$.
+      </div>
+
+      <h3>For a $2\times 2$ Matrix</h3>
+      <p>Let $A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$. Then</p>
+      $$p(\lambda) = \det\begin{pmatrix} a-\lambda & b \\ c & d-\lambda \end{pmatrix} = \lambda^2 - (a+d)\lambda + (ad-bc) = \lambda^2 - \operatorname{tr}(A)\lambda + \det(A).$$
+
+      <div class="formula-box">
+        <div class="formula-label">For 2×2 matrices</div>
+        $$\lambda^2 - \operatorname{tr}(A)\lambda + \det(A) = 0 \implies \lambda = \frac{\operatorname{tr}(A) \pm \sqrt{(\operatorname{tr}A)^2 - 4\det(A)}}{2}$$
+      </div>
+
+      <h3>For a $3\times 3$ Matrix</h3>
+      <p>Let $A = \begin{pmatrix}a_{11}&a_{12}&a_{13}\\a_{21}&a_{22}&a_{23}\\a_{31}&a_{32}&a_{33}\end{pmatrix}$. The characteristic polynomial is a cubic:</p>
+      $$p(\lambda) = -\lambda^3 + \operatorname{tr}(A)\lambda^2 - (\text{sum of }2\times 2 \text{ principal minors})\lambda + \det(A).$$
+
+      <div class="theorem-box">
+        <strong>Trace–Determinant Relations.</strong> For an $n\times n$ matrix $A$ with eigenvalues $\lambda_1,\ldots,\lambda_n$ (counted with algebraic multiplicity):
+        $$\operatorname{tr}(A) = \lambda_1+\lambda_2+\cdots+\lambda_n = \sum_{i=1}^n \lambda_i,$$
+        $$\det(A) = \lambda_1 \cdot \lambda_2 \cdots \lambda_n = \prod_{i=1}^n \lambda_i.$$
+      </div>
+
+      <div class="example-box">
+        <strong>Example 5.1 — Find the characteristic polynomial of $A=\begin{pmatrix}4&1\\2&3\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$p(\lambda)=\lambda^2-\operatorname{tr}(A)\lambda+\det(A)=\lambda^2-7\lambda+(12-2)=\lambda^2-7\lambda+10$.</li>
+          <li>$p(\lambda)=(\lambda-5)(\lambda-2)=0$, so $\lambda_1=5$, $\lambda_2=2$.</li>
+          <li>Check: $\operatorname{tr}(A)=7=5+2$ ✓; $\det(A)=10=5\times 2$ ✓.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 5.2 — Characteristic polynomial of $A=\begin{pmatrix}2&0&1\\0&3&0\\1&0&2\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>
+            $p(\lambda)=\det(A-\lambda I)=\det\begin{pmatrix}2-\lambda&0&1\\0&3-\lambda&0\\1&0&2-\lambda\end{pmatrix}$
+          </li>
+          <li>Expand along row 2: $p(\lambda) = (3-\lambda)\det\begin{pmatrix}2-\lambda&1\\1&2-\lambda\end{pmatrix}$
+            $= (3-\lambda)[(2-\lambda)^2-1]$
+            $= (3-\lambda)(\lambda^2-4\lambda+3)$
+            $= (3-\lambda)(\lambda-1)(\lambda-3)$.
+          </li>
+          <li>Eigenvalues: $\lambda = 1, 3, 3$. (So $\lambda=3$ has algebraic multiplicity 2.)</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 5.3 — Characteristic polynomial of $A=\begin{pmatrix}1&2&0\\0&3&0\\2&-4&2\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$p(\lambda)=\det\begin{pmatrix}1-\lambda&2&0\\0&3-\lambda&0\\2&-4&2-\lambda\end{pmatrix}$.</li>
+          <li>Expanding along column 3: $(2-\lambda)\det\begin{pmatrix}1-\lambda&2\\0&3-\lambda\end{pmatrix}=(2-\lambda)(1-\lambda)(3-\lambda)$.</li>
+          <li>Eigenvalues: $\lambda=1,2,3$, all distinct.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 6 — EIGENVALUES AND EIGENVECTORS
+    ══════════════════════════════════════════════════════════ -->
+    <section id="eigenvalues">
+      <div class="section-number">Section 06</div>
+      <h2>Eigenvalues and Eigenvectors</h2>
+
+      <div class="def-box">
+        A scalar $\lambda\in\mathbb{F}$ is an <strong>eigenvalue</strong> of $A$ if there exists a nonzero vector $\mathbf{v}\in\mathbb{F}^n$ such that
+        $$A\mathbf{v} = \lambda\mathbf{v}.$$
+        Such a $\mathbf{v}$ is called an <strong>eigenvector</strong> corresponding to $\lambda$. The <strong>eigenspace</strong> $E_\lambda = \ker(A-\lambda I) = \operatorname{Null}(A-\lambda I)$ is the set of all eigenvectors for $\lambda$ together with $\mathbf{0}$.
+      </div>
+
+      <h3>Algorithm to Find Eigenvalues and Eigenvectors</h3>
+      <ol class="steps">
+        <li>Compute $p(\lambda) = \det(A-\lambda I)$.</li>
+        <li>Solve $p(\lambda)=0$ to find eigenvalues $\lambda_1,\ldots,\lambda_k$.</li>
+        <li>For each $\lambda_i$, solve $(A-\lambda_i I)\mathbf{v}=\mathbf{0}$ to find a basis for $E_{\lambda_i}$.</li>
+      </ol>
+
+      <div class="example-box">
+        <strong>Example 6.1 — Find eigenvalues and eigenvectors of $A=\begin{pmatrix}3&-2&0\\-2&3&0\\0&0&5\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$p(\lambda)=\det\begin{pmatrix}3-\lambda&-2&0\\-2&3-\lambda&0\\0&0&5-\lambda\end{pmatrix}=(5-\lambda)[(3-\lambda)^2-4]=(5-\lambda)(\lambda^2-6\lambda+5)=(5-\lambda)(\lambda-1)(\lambda-5)$.</li>
+          <li>Eigenvalues: $\lambda_1=1$, $\lambda_2=5$ (multiplicity 2).</li>
+          <li>
+            <em>$\lambda=1$:</em> $(A-I)\mathbf{v}=\mathbf{0}$:
+            $\begin{pmatrix}2&-2&0\\-2&2&0\\0&0&4\end{pmatrix}\mathbf{v}=\mathbf{0}$. Row reduce: $v_1=v_2$, $v_3=0$. Eigenvector: $\mathbf{v}_1=(1,1,0)^T$.
+          </li>
+          <li>
+            <em>$\lambda=5$:</em> $(A-5I)=\begin{pmatrix}-2&-2&0\\-2&-2&0\\0&0&0\end{pmatrix}$. Row reduce: $v_1=-v_2$, $v_3$ free. Two independent eigenvectors: $\mathbf{v}_2=(1,-1,0)^T$, $\mathbf{v}_3=(0,0,1)^T$.
+          </li>
+        </ol>
+      </div>
+
+      <h3>Algebraic vs. Geometric Multiplicity</h3>
+
+      <div class="def-box">
+        The <strong>algebraic multiplicity</strong> $m_a(\lambda)$ of an eigenvalue is its multiplicity as a root of the characteristic polynomial. The <strong>geometric multiplicity</strong> $m_g(\lambda)$ is $\dim(E_\lambda)=\dim\ker(A-\lambda I)$.
+        <br><br>
+        Always: $1 \le m_g(\lambda) \le m_a(\lambda)$. A matrix is <strong>defective</strong> if $m_g(\lambda)<m_a(\lambda)$ for some eigenvalue.
+      </div>
+
+      <table class="math-table">
+        <thead>
+          <tr><th>Matrix Type</th><th>Eigenvalue Properties</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Real symmetric ($A^T=A$)</td><td>All eigenvalues are real</td></tr>
+          <tr><td>Orthogonal ($A^TA=I$)</td><td>All eigenvalues have absolute value 1 ($|\lambda|=1$)</td></tr>
+          <tr><td>Skew-symmetric ($A^T=-A$)</td><td>All eigenvalues purely imaginary or zero</td></tr>
+          <tr><td>Positive definite</td><td>All eigenvalues strictly positive</td></tr>
+          <tr><td>Idempotent ($A^2=A$)</td><td>Eigenvalues are only $0$ or $1$</td></tr>
+          <tr><td>Nilpotent ($A^k=0$)</td><td>All eigenvalues are $0$</td></tr>
+          <tr><td>Involutory ($A^2=I$)</td><td>Eigenvalues are only $\pm 1$</td></tr>
+          <tr><td>Triangular</td><td>Eigenvalues are the diagonal entries</td></tr>
+        </tbody>
+      </table>
+
+      <div class="example-box">
+        <strong>Example 6.2 — Defective matrix.</strong> Let $A=\begin{pmatrix}2&1\\0&2\end{pmatrix}$.
+        <p>$p(\lambda)=(\lambda-2)^2$, so $\lambda=2$ with $m_a=2$. $(A-2I)=\begin{pmatrix}0&1\\0&0\end{pmatrix}$; $\ker(A-2I)=\operatorname{span}\{(1,0)^T\}$, so $m_g=1$. Since $m_g<m_a$, $A$ is <strong>defective</strong> (cannot be diagonalized over $\mathbb{R}$).</p>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 6.3 — Properties of eigenvalues.</strong> If $\lambda$ is an eigenvalue of $A$ with eigenvector $\mathbf{v}$, then:
+        <ul>
+          <li>$\lambda^k$ is an eigenvalue of $A^k$ (same eigenvector): $A^k\mathbf{v}=\lambda^k\mathbf{v}$.</li>
+          <li>$\frac{1}{\lambda}$ is an eigenvalue of $A^{-1}$ (if $A$ invertible): $A^{-1}\mathbf{v}=\frac{1}{\lambda}\mathbf{v}$.</li>
+          <li>$p(\lambda)$ is an eigenvalue of $p(A)$ for any polynomial $p$.</li>
+          <li>Similar matrices $A$ and $B=PAP^{-1}$ have the same eigenvalues.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 7 — CAYLEY–HAMILTON
+    ══════════════════════════════════════════════════════════ -->
+    <section id="cayley-hamilton">
+      <div class="section-number">Section 07</div>
+      <h2>The Cayley–Hamilton Theorem</h2>
+
+      <div class="theorem-box">
+        <strong>Cayley–Hamilton Theorem.</strong> Every square matrix satisfies its own characteristic equation. That is, if $p(\lambda)=\det(\lambda I - A)$ is the characteristic polynomial of $A$, then
+        $$p(A) = \mathbf{0}.$$
+        Concretely, if $p(\lambda) = \lambda^n + c_{n-1}\lambda^{n-1}+\cdots+c_1\lambda+c_0$, then
+        $$A^n + c_{n-1}A^{n-1}+\cdots+c_1 A + c_0 I = \mathbf{0}.$$
+      </div>
+
+      <div class="proof-box">
+        <strong>Full Proof for the $2\times 2$ Case.</strong>
+        <p>Let $A=\begin{pmatrix}a&b\\c&d\end{pmatrix}$ with characteristic polynomial $p(\lambda)=\lambda^2-(a+d)\lambda+(ad-bc)$.</p>
+        <p>We must show $p(A) = A^2-(a+d)A+(ad-bc)I = \mathbf{0}$.</p>
+        <p>Compute $A^2$:</p>
+        $$A^2 = \begin{pmatrix}a^2+bc & ab+bd\\ca+dc & cb+d^2\end{pmatrix} = \begin{pmatrix}a^2+bc & b(a+d)\\c(a+d) & d^2+bc\end{pmatrix}.$$
+        <p>Then $A^2 - (a+d)A + (ad-bc)I$:</p>
+        $$= \begin{pmatrix}a^2+bc & b(a+d)\\c(a+d) & d^2+bc\end{pmatrix} - \begin{pmatrix}a(a+d)&b(a+d)\\c(a+d)&d(a+d)\end{pmatrix}+\begin{pmatrix}ad-bc&0\\0&ad-bc\end{pmatrix}$$
+        $$= \begin{pmatrix}a^2+bc-a^2-ad+ad-bc & 0\\0 & d^2+bc-d^2-ad+ad-bc\end{pmatrix} = \begin{pmatrix}0&0\\0&0\end{pmatrix}. \quad \blacksquare$$
+      </div>
+
+      <h3>Applications of Cayley–Hamilton</h3>
+
+      <h4>1. Computing the Inverse</h4>
+      <p>From $A^n + c_{n-1}A^{n-1}+\cdots+c_0 I=0$, multiply by $A^{-1}$:</p>
+      $$A^{n-1}+c_{n-1}A^{n-2}+\cdots+c_1 I + c_0 A^{-1}=0 \implies A^{-1} = -\frac{1}{c_0}(A^{n-1}+c_{n-1}A^{n-2}+\cdots+c_1 I).$$
+
+      <h4>2. Computing High Powers</h4>
+      <p>Any power $A^k$ for $k\ge n$ can be reduced to a polynomial in $A$ of degree at most $n-1$, using the relation $A^n = -(c_{n-1}A^{n-1}+\cdots+c_0 I)$.</p>
+
+      <div class="example-box">
+        <strong>Example 7.1 — Use Cayley–Hamilton to find $A^{-1}$ and $A^4$ for $A=\begin{pmatrix}1&2\\3&4\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$p(\lambda)=\lambda^2-5\lambda-2$. By C-H: $A^2-5A-2I=0$.</li>
+          <li>
+            $A^{-1}$: rearrange $A^2=5A+2I$, multiply by $A^{-1}$:
+            $A = 5I + 2A^{-1} \Rightarrow A^{-1}=\frac{1}{2}(A-5I)=\frac{1}{2}\begin{pmatrix}-4&2\\3&-1\end{pmatrix}=\begin{pmatrix}-2&1\\\frac{3}{2}&-\frac{1}{2}\end{pmatrix}$.
+          </li>
+          <li>
+            $A^4$: From $A^2=5A+2I$:
+            $A^4=(A^2)^2=(5A+2I)^2=25A^2+20A+4I=25(5A+2I)+20A+4I=145A+54I$.
+          </li>
+          <li>
+            $A^4 = 145\begin{pmatrix}1&2\\3&4\end{pmatrix}+54I = \begin{pmatrix}199&290\\435&634\end{pmatrix}$.
+          </li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 7.2 — Find $A^{-1}$ using Cayley–Hamilton for $A=\begin{pmatrix}1&0&1\\1&2&0\\0&1&3\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>
+            $p(\lambda)=-\lambda^3+6\lambda^2-9\lambda+3$ (compute via cofactor expansion).
+            Check: $\det(A)=1(6-0)-0+1(1-0)=6+1=7$. Actually let's use the formula. $p(\lambda)=\lambda^3-\operatorname{tr}(A)\lambda^2+(\text{sum of 2×2 principal minors})\lambda-\det(A)$.
+          </li>
+          <li>$\operatorname{tr}(A)=1+2+3=6$. Minors: $M_{11}=\det\begin{pmatrix}2&0\\1&3\end{pmatrix}=6$, $M_{22}=\det\begin{pmatrix}1&1\\0&3\end{pmatrix}=3$, $M_{33}=\det\begin{pmatrix}1&0\\1&2\end{pmatrix}=2$. Sum $=11$. $\det(A)=7$.</li>
+          <li>$p(\lambda)=\lambda^3-6\lambda^2+11\lambda-7$. By C-H: $A^3-6A^2+11A-7I=0$.</li>
+          <li>Multiply by $A^{-1}$: $A^2-6A+11I=7A^{-1}$, so $A^{-1}=\frac{1}{7}(A^2-6A+11I)$.</li>
+          <li>
+            $A^2=\begin{pmatrix}1&1&4\\3&4&1\\1&5&9\end{pmatrix}$; $6A=\begin{pmatrix}6&0&6\\6&12&0\\0&6&18\end{pmatrix}$; $11I=11I$.
+            $A^{-1}=\frac{1}{7}\begin{pmatrix}6&1&-2\\-3&3&1\\1&-1&2\end{pmatrix}$.
+          </li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 7.3 — Express $A^4$ as a linear combination for $A$ with $p(\lambda)=\lambda^2-3\lambda+2$.</strong>
+        <p>C-H: $A^2=3A-2I$. Then $A^3=3A^2-2A=3(3A-2I)-2A=7A-6I$. $A^4=7A^2-6A=7(3A-2I)-6A=15A-14I$.</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 8 — LINEAR TRANSFORMATIONS
+    ══════════════════════════════════════════════════════════ -->
+    <section id="linear-transformations">
+      <div class="section-number">Section 08</div>
+      <h2>Linear Transformations on ℝⁿ</h2>
+
+      <div class="def-box">
+        A map $T: V \to W$ between vector spaces over $\mathbb{F}$ is a <strong>linear transformation</strong> (or linear map) if for all $\mathbf{u},\mathbf{v}\in V$ and $c\in\mathbb{F}$:
+        <ol>
+          <li><strong>Additivity:</strong> $T(\mathbf{u}+\mathbf{v}) = T(\mathbf{u})+T(\mathbf{v})$.</li>
+          <li><strong>Homogeneity:</strong> $T(c\mathbf{u}) = cT(\mathbf{u})$.</li>
+        </ol>
+        Equivalently: $T(c\mathbf{u}+d\mathbf{v})=cT(\mathbf{u})+dT(\mathbf{v})$ for all $c,d\in\mathbb{F}$.
+      </div>
+
+      <h3>Matrix Representation</h3>
+      <p>Every linear map $T:\mathbb{R}^n\to\mathbb{R}^m$ can be represented as left-multiplication by a unique $m\times n$ matrix $A_T$, where column $j$ of $A_T$ is $T(\mathbf{e}_j)$:</p>
+      $$[A_T] = [T(\mathbf{e}_1) \mid T(\mathbf{e}_2) \mid \cdots \mid T(\mathbf{e}_n)].$$
+
+      <h3>Kernel and Image</h3>
+      <div class="def-box">
+        <ul>
+          <li><strong>Kernel (null space):</strong> $\ker(T) = \{\mathbf{v}\in V : T(\mathbf{v})=\mathbf{0}\}$, a subspace of $V$.</li>
+          <li><strong>Image (range):</strong> $\operatorname{Im}(T) = \{T(\mathbf{v}) : \mathbf{v}\in V\}$, a subspace of $W$.</li>
+        </ul>
+        $T$ is <strong>injective (one-to-one)</strong> iff $\ker(T)=\{\mathbf{0}\}$. $T$ is <strong>surjective (onto)</strong> iff $\operatorname{Im}(T)=W$.
+      </div>
+
+      <div class="theorem-box">
+        <strong>Rank–Nullity for Linear Maps.</strong> For $T:V\to W$ with $\dim V = n$ finite:
+        $$\dim(\ker T) + \dim(\operatorname{Im} T) = n.$$
+      </div>
+
+      <h3>Standard Geometric Transformations in $\mathbb{R}^2$</h3>
+      <table class="math-table">
+        <thead><tr><th>Transformation</th><th>Matrix</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Rotation by $\theta$</td>
+            <td>$\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}$</td>
+            <td>Rotates CCW by $\theta$</td>
+          </tr>
+          <tr>
+            <td>Reflection over $x$-axis</td>
+            <td>$\begin{pmatrix}1&0\\0&-1\end{pmatrix}$</td>
+            <td>Flips $y$-coordinate</td>
+          </tr>
+          <tr>
+            <td>Projection onto $x$-axis</td>
+            <td>$\begin{pmatrix}1&0\\0&0\end{pmatrix}$</td>
+            <td>Kills $y$-component</td>
+          </tr>
+          <tr>
+            <td>Horizontal shear</td>
+            <td>$\begin{pmatrix}1&k\\0&1\end{pmatrix}$</td>
+            <td>$x\to x+ky$</td>
+          </tr>
+          <tr>
+            <td>Dilation by $k$</td>
+            <td>$kI$</td>
+            <td>Scales all by $k$</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Change of Basis and Similarity</h3>
+      <p>If $\mathcal{B}=\{\mathbf{b}_1,\ldots,\mathbf{b}_n\}$ is a basis for $V$ and $P=[\mathbf{b}_1|\cdots|\mathbf{b}_n]$ (the change-of-basis matrix), then the matrix of $T$ in the $\mathcal{B}$-basis is</p>
+      $$[T]_{\mathcal{B}} = P^{-1}AP,$$
+      <p>where $A=[T]_{\mathcal{E}}$ is the standard matrix. Two matrices $A$ and $B$ are <strong>similar</strong> (written $A\sim B$) if $B=P^{-1}AP$ for some invertible $P$.</p>
+
+      <div class="example-box">
+        <strong>Example 8.1 — Find the matrix of $T$ w.r.t. a non-standard basis.</strong>
+        <p>Let $T:\mathbb{R}^2\to\mathbb{R}^2$ be defined by $T(x,y)=(2x+y, x-3y)$. Standard matrix: $A=\begin{pmatrix}2&1\\1&-3\end{pmatrix}$. Now let $\mathcal{B}=\{(1,1),(1,-1)\}$.</p>
+        <ol class="steps">
+          <li>$P=\begin{pmatrix}1&1\\1&-1\end{pmatrix}$, $P^{-1}=\frac{1}{-2}\begin{pmatrix}-1&-1\\-1&1\end{pmatrix}=\begin{pmatrix}\frac{1}{2}&\frac{1}{2}\\\frac{1}{2}&-\frac{1}{2}\end{pmatrix}$.</li>
+          <li>$[T]_{\mathcal{B}}=P^{-1}AP=\begin{pmatrix}\frac{1}{2}&\frac{1}{2}\\\frac{1}{2}&-\frac{1}{2}\end{pmatrix}\begin{pmatrix}2&1\\1&-3\end{pmatrix}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$.</li>
+          <li>First: $P^{-1}A=\begin{pmatrix}\frac{3}{2}&-1\\-\frac{1}{2}&2\end{pmatrix}$ (compute). Then $(P^{-1}A)P=\begin{pmatrix}\frac{1}{2}&\frac{5}{2}\\-\frac{5}{2}&\frac{3}{2}+\frac{1}{2}\end{pmatrix}$... </li>
+          <li>Directly: $T(1,1)=(3,-2)$ and $T(1,-1)=(1,4)$. Express each in basis $\mathcal{B}$: $(3,-2)=\frac{1}{2}(1,1)+\frac{5}{2}(1,-1)$; $(1,4)=\frac{5}{2}(1,1)-\frac{3}{2}(1,-1)$. So $[T]_\mathcal{B}=\begin{pmatrix}\frac{1}{2}&\frac{5}{2}\\\frac{5}{2}&-\frac{3}{2}\end{pmatrix}$.</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 8.2 — Composition of transformations.</strong>
+        <p>If $T_1:\mathbb{R}^n\to\mathbb{R}^m$ and $T_2:\mathbb{R}^m\to\mathbb{R}^p$ are linear with matrices $A_1$ and $A_2$, then $T_2\circ T_1$ has matrix $A_2A_1$. For example, rotate by $90°$ then reflect over $x$-axis:</p>
+        $$\begin{pmatrix}1&0\\0&-1\end{pmatrix}\begin{pmatrix}0&-1\\1&0\end{pmatrix}=\begin{pmatrix}0&-1\\-1&0\end{pmatrix} \quad \text{(reflection over } y=-x\text{).}$$
+      </div>
+
+      <div class="example-box">
+        <strong>Example 8.3 — Kernel and Image of a Differentiation Map.</strong>
+        <p>Let $T:P_3[x]\to P_2[x]$ be defined by $T(p)=p'$ (derivative). $\ker(T)=\{$constants$\}$, $\dim\ker T=1$. $\operatorname{Im}(T)=P_2[x]$, $\dim\operatorname{Im}T=3$. Check: $1+3=4=\dim P_3[x]$ ✓.</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 9 — ORTHOGONAL TRANSFORMATION
+    ══════════════════════════════════════════════════════════ -->
+    <section id="orthogonal-transformation">
+      <div class="section-number">Section 09</div>
+      <h2>Orthogonal Transformations</h2>
+
+      <div class="def-box">
+        A matrix $Q\in M_{n\times n}(\mathbb{R})$ is <strong>orthogonal</strong> if $Q^TQ = QQ^T = I_n$, i.e., $Q^{-1}=Q^T$. Equivalently, the columns (and rows) of $Q$ form an orthonormal basis for $\mathbb{R}^n$.
+        <br><br>
+        Key properties: $\det(Q)=\pm 1$. If $\det(Q)=+1$, $Q$ is a rotation; if $\det(Q)=-1$, $Q$ is a rotation-reflection (improper rotation).
+      </div>
+
+      <h3>Inner Product and Norms</h3>
+      <div class="def-box">
+        The <strong>standard inner product</strong> on $\mathbb{R}^n$ is $\langle\mathbf{u},\mathbf{v}\rangle = \mathbf{u}^T\mathbf{v} = \sum_{i=1}^n u_iv_i$. The <strong>norm</strong> is $\|\mathbf{v}\|=\sqrt{\langle\mathbf{v},\mathbf{v}\rangle}$. The <strong>angle</strong> $\theta$ between $\mathbf{u},\mathbf{v}$ satisfies $\cos\theta = \frac{\langle\mathbf{u},\mathbf{v}\rangle}{\|\mathbf{u}\|\|\mathbf{v}\|}$.
+        <br><br>
+        Vectors $\mathbf{u},\mathbf{v}$ are <strong>orthogonal</strong> if $\langle\mathbf{u},\mathbf{v}\rangle=0$. A set is <strong>orthonormal</strong> if pairwise orthogonal and each has unit norm.
+      </div>
+
+      <div class="theorem-box">
+        <strong>Preservation of Lengths and Angles.</strong> If $Q$ is orthogonal, then for all $\mathbf{u},\mathbf{v}\in\mathbb{R}^n$:
+        $$\|Q\mathbf{u}\| = \|\mathbf{u}\| \quad \text{and} \quad \langle Q\mathbf{u}, Q\mathbf{v}\rangle = \langle\mathbf{u},\mathbf{v}\rangle.$$
+        Proof: $\langle Q\mathbf{u},Q\mathbf{v}\rangle=(Q\mathbf{u})^T(Q\mathbf{v})=\mathbf{u}^TQ^TQ\mathbf{v}=\mathbf{u}^T\mathbf{v}=\langle\mathbf{u},\mathbf{v}\rangle$. $\blacksquare$
+      </div>
+
+      <h3 id="gram-schmidt">The Gram–Schmidt Orthogonalization Process</h3>
+
+      <div class="def-box">
+        <strong>Gram–Schmidt Algorithm.</strong> Given linearly independent vectors $\mathbf{v}_1,\ldots,\mathbf{v}_k$, produce an orthonormal set $\{\mathbf{q}_1,\ldots,\mathbf{q}_k\}$ spanning the same subspace:
+        <br><br>
+        Set $\mathbf{u}_1 = \mathbf{v}_1$, then for $i=2,3,\ldots,k$:
+        $$\mathbf{u}_i = \mathbf{v}_i - \sum_{j=1}^{i-1}\frac{\langle\mathbf{v}_i,\mathbf{u}_j\rangle}{\langle\mathbf{u}_j,\mathbf{u}_j\rangle}\mathbf{u}_j.$$
+        Then normalize: $\mathbf{q}_i = \dfrac{\mathbf{u}_i}{\|\mathbf{u}_i\|}$.
+      </div>
+
+      <div class="example-box">
+        <strong>Example 9.1 — Orthogonalize $\{v_1,v_2,v_3\}$ where $v_1=(1,1,0)$, $v_2=(1,0,1)$, $v_3=(0,1,1)$.</strong>
+        <ol class="steps">
+          <li>
+            $\mathbf{u}_1 = \mathbf{v}_1 = (1,1,0)$. $\|\mathbf{u}_1\|^2=2$.
+          </li>
+          <li>
+            $\mathbf{u}_2 = \mathbf{v}_2 - \frac{\langle\mathbf{v}_2,\mathbf{u}_1\rangle}{\|\mathbf{u}_1\|^2}\mathbf{u}_1$.
+            $\langle\mathbf{v}_2,\mathbf{u}_1\rangle=1\cdot1+0\cdot1+1\cdot0=1$.
+            $\mathbf{u}_2 = (1,0,1)-\tfrac{1}{2}(1,1,0) = \left(\tfrac{1}{2},-\tfrac{1}{2},1\right)$.
+            $\|\mathbf{u}_2\|^2 = \tfrac{1}{4}+\tfrac{1}{4}+1=\tfrac{3}{2}$.
+          </li>
+          <li>
+            $\mathbf{u}_3 = \mathbf{v}_3 - \frac{\langle\mathbf{v}_3,\mathbf{u}_1\rangle}{\|\mathbf{u}_1\|^2}\mathbf{u}_1 - \frac{\langle\mathbf{v}_3,\mathbf{u}_2\rangle}{\|\mathbf{u}_2\|^2}\mathbf{u}_2$.
+            $\langle\mathbf{v}_3,\mathbf{u}_1\rangle=0+1+0=1$.
+            $\langle\mathbf{v}_3,\mathbf{u}_2\rangle=0\cdot\tfrac{1}{2}+1\cdot(-\tfrac{1}{2})+1\cdot1=\tfrac{1}{2}$.
+            $$\mathbf{u}_3=(0,1,1)-\tfrac{1}{2}(1,1,0)-\tfrac{1/2}{3/2}\left(\tfrac{1}{2},-\tfrac{1}{2},1\right)$$
+            $$=(0,1,1)-\tfrac{1}{2}(1,1,0)-\tfrac{1}{3}\left(\tfrac{1}{2},-\tfrac{1}{2},1\right)$$
+            $$=\left(-\tfrac{1}{2},\tfrac{1}{2},1\right)-\left(\tfrac{1}{6},-\tfrac{1}{6},\tfrac{1}{3}\right)=\left(-\tfrac{2}{3},\tfrac{2}{3},\tfrac{2}{3}\right).$$
+            $\|\mathbf{u}_3\|^2=\tfrac{4}{9}+\tfrac{4}{9}+\tfrac{4}{9}=\tfrac{4}{3}$.
+          </li>
+          <li>
+            Normalize:
+            $$\mathbf{q}_1=\frac{1}{\sqrt{2}}(1,1,0),\quad \mathbf{q}_2=\sqrt{\tfrac{2}{3}}\left(\tfrac{1}{2},-\tfrac{1}{2},1\right)=\frac{1}{\sqrt{6}}(1,-1,2),\quad \mathbf{q}_3=\frac{1}{\sqrt{3}}(−1,1,1).$$
+          </li>
+          <li>Verify: $\langle\mathbf{q}_1,\mathbf{q}_2\rangle=\frac{1}{\sqrt{2}\sqrt{6}}(1-1+0)=0$ ✓ ; $\langle\mathbf{q}_1,\mathbf{q}_3\rangle=\frac{1}{\sqrt{6}}(-1+1+0)=0$ ✓.</li>
+        </ol>
+      </div>
+
+      <h3 id="qr-decomp">QR Decomposition</h3>
+      <div class="def-box">
+        <strong>QR Decomposition.</strong> Any $m\times n$ matrix $A$ with linearly independent columns can be written as $A = QR$, where $Q$ is an $m\times n$ matrix with orthonormal columns (obtained via Gram–Schmidt), and $R$ is an $n\times n$ upper triangular matrix with positive diagonal entries. Concretely:
+        $$r_{jj} = \|\mathbf{u}_j\|, \quad r_{ij} = \langle\mathbf{v}_j,\mathbf{q}_i\rangle \text{ for } i<j, \quad r_{ij}=0 \text{ for } i>j.$$
+        QR decomposition is the algorithmic implementation of Gram–Schmidt and is used in numerical algorithms for solving least-squares problems and computing eigenvalues.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECTION 10 — DIAGONALIZATION
+    ══════════════════════════════════════════════════════════ -->
+    <section id="diagonalization">
+      <div class="section-number">Section 10</div>
+      <h2>Diagonalization of a Matrix</h2>
+
+      <div class="def-box">
+        An $n\times n$ matrix $A$ is <strong>diagonalizable</strong> if there exists an invertible matrix $P$ such that
+        $$P^{-1}AP = D$$
+        where $D=\operatorname{diag}(\lambda_1,\ldots,\lambda_n)$ is diagonal. Equivalently, $A$ has $n$ linearly independent eigenvectors. The columns of $P$ are eigenvectors; the diagonal entries of $D$ are the corresponding eigenvalues.
+      </div>
+
+      <div class="theorem-box">
+        <strong>Diagonalizability Criteria.</strong> An $n\times n$ matrix $A$ is diagonalizable iff:
+        <ul>
+          <li>$A$ has $n$ distinct eigenvalues (sufficient but not necessary), OR</li>
+          <li>For every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity: $m_g(\lambda)=m_a(\lambda)$.</li>
+        </ul>
+        A real symmetric matrix is always diagonalizable (Spectral Theorem), and moreover can be orthogonally diagonalized.
+      </div>
+
+      <h3>Algorithm for Diagonalization</h3>
+      <ol class="steps">
+        <li>Compute characteristic polynomial $p(\lambda)=\det(A-\lambda I)$ and find all eigenvalues.</li>
+        <li>For each eigenvalue $\lambda_i$, find a basis for $E_{\lambda_i}=\ker(A-\lambda_i I)$.</li>
+        <li>Collect all basis eigenvectors: if they number $n$ total, $A$ is diagonalizable.</li>
+        <li>Form $P$ whose columns are the eigenvectors (in the order matching $D$).</li>
+        <li>$D=P^{-1}AP$ has eigenvalues on the diagonal.</li>
+      </ol>
+
+      <div class="example-box">
+        <strong>Example 10.1 — Diagonalize $A=\begin{pmatrix}4&-3&0\\2&-1&0\\0&0&3\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$p(\lambda)=\det(A-\lambda I)=(3-\lambda)[(4-\lambda)(-1-\lambda)+6]=(3-\lambda)[\lambda^2-3\lambda+2]=(3-\lambda)(\lambda-1)(\lambda-2)$.</li>
+          <li>Eigenvalues: $\lambda_1=1$, $\lambda_2=2$, $\lambda_3=3$ (all distinct → diagonalizable).</li>
+          <li>
+            $\lambda=1$: $(A-I)\mathbf{v}=0$: $\begin{pmatrix}3&-3&0\\2&-2&0\\0&0&2\end{pmatrix}\mathbf{v}=0$. $v_3=0$, $v_1=v_2$. $\mathbf{p}_1=(1,1,0)^T$.
+          </li>
+          <li>
+            $\lambda=2$: $(A-2I)=\begin{pmatrix}2&-3&0\\2&-3&0\\0&0&1\end{pmatrix}$. $v_3=0$, $v_1=\frac{3}{2}v_2$. $\mathbf{p}_2=(3,2,0)^T$.
+          </li>
+          <li>
+            $\lambda=3$: $(A-3I)=\begin{pmatrix}1&-3&0\\2&-4&0\\0&0&0\end{pmatrix}$. Row reduce: $v_1=3v_2$, $v_3$ free but from row 2: $2(3v_2)-4v_2=2v_2=0\Rightarrow v_2=0$, $v_1=0$. $\mathbf{p}_3=(0,0,1)^T$.
+          </li>
+          <li>
+            $P=\begin{pmatrix}1&3&0\\1&2&0\\0&0&1\end{pmatrix}$, $D=\begin{pmatrix}1&0&0\\0&2&0\\0&0&3\end{pmatrix}$.
+          </li>
+        </ol>
+      </div>
+
+      <h3>Computing Powers of $A$</h3>
+      <p>Since $A=PDP^{-1}$, we get $A^k=(PDP^{-1})^k=PD^kP^{-1}$, and $D^k=\operatorname{diag}(\lambda_1^k,\ldots,\lambda_n^k)$ is trivial to compute.</p>
+
+      <div class="example-box">
+        <strong>Example 10.2 — Compute $A^{10}$ for $A=\begin{pmatrix}1&2\\3&2\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$p(\lambda)=\lambda^2-3\lambda-4=(\lambda-4)(\lambda+1)$. Eigenvalues $4$ and $-1$.</li>
+          <li>$\lambda=4$: $\mathbf{p}_1=(1,\frac{3}{2})^T$, scale to $(2,3)^T$. $\lambda=-1$: $\mathbf{p}_2=(1,-1)^T$.</li>
+          <li>$P=\begin{pmatrix}2&1\\3&-1\end{pmatrix}$, $D=\begin{pmatrix}4&0\\0&-1\end{pmatrix}$.</li>
+          <li>$P^{-1}=\frac{1}{-5}\begin{pmatrix}-1&-1\\-3&2\end{pmatrix}=\begin{pmatrix}\frac{1}{5}&\frac{1}{5}\\\frac{3}{5}&-\frac{2}{5}\end{pmatrix}$.</li>
+          <li>
+            $A^{10}=P\begin{pmatrix}4^{10}&0\\0&1\end{pmatrix}P^{-1}$. ($(-1)^{10}=1$.)
+            $$A^{10} = \frac{1}{5}\begin{pmatrix}2\cdot 4^{10}+3 & 2\cdot 4^{10}-2\\ 3\cdot 4^{10}-3 & 3\cdot 4^{10}+2\end{pmatrix}.$$
+          </li>
+        </ol>
+      </div>
+
+      <h3>Spectral Decomposition</h3>
+      <div class="theorem-box">
+        <strong>Spectral Decomposition (Real Symmetric Matrices).</strong> If $A$ is a real symmetric $n\times n$ matrix with distinct eigenvalues $\lambda_1,\ldots,\lambda_r$ and corresponding orthonormal eigenvectors $\{\mathbf{q}_1,\ldots,\mathbf{q}_n\}$, then
+        $$A = \sum_{i=1}^{n} \lambda_i \mathbf{q}_i\mathbf{q}_i^T = \lambda_1 P_1 + \lambda_2 P_2 + \cdots + \lambda_n P_n,$$
+        where $P_i=\mathbf{q}_i\mathbf{q}_i^T$ is the orthogonal projection onto the eigenspace of $\lambda_i$. In matrix form, $A=Q\Lambda Q^T$ where $Q$ is orthogonal and $\Lambda$ is diagonal.
+      </div>
+
+      <div class="theorem-box">
+        <strong>Spectral Theorem for Symmetric Matrices.</strong> Every real symmetric matrix $A$ is orthogonally diagonalizable: there exists an orthogonal matrix $Q$ such that $Q^TAQ=\Lambda$ (diagonal). In particular:
+        <ul>
+          <li>All eigenvalues of $A$ are real.</li>
+          <li>Eigenvectors corresponding to distinct eigenvalues are orthogonal.</li>
+          <li>Even if an eigenvalue has $m_a>1$, we can always choose $m_a$ orthonormal eigenvectors from $E_\lambda$.</li>
+        </ul>
+      </div>
+
+      <div class="example-box">
+        <strong>Example 10.3 — Orthogonally diagonalize $A=\begin{pmatrix}3&2&4\\2&0&2\\4&2&3\end{pmatrix}$.</strong>
+        <ol class="steps">
+          <li>$p(\lambda)$: $\det(A-\lambda I)=-\lambda^3+6\lambda^2+15\lambda-100$... More cleanly: eigenvalues are $\lambda=-1$ (double) and $\lambda=8$ (simple). (Verify by computing $p(\lambda)$ via cofactor expansion.)</li>
+          <li>
+            Actually: $\operatorname{tr}(A)=6$; characteristic polynomial evaluates as $(\lambda+1)^2(\lambda-8)=0$.
+            Eigenvalues: $\lambda_1=-1$ (mult 2), $\lambda_2=8$ (mult 1).
+          </li>
+          <li>
+            $\lambda=-1$: $(A+I)=\begin{pmatrix}4&2&4\\2&1&2\\4&2&4\end{pmatrix}$. Row reduce: $2v_1+v_2+2v_3=0$; free variables $v_1,v_3$. Basis: $\mathbf{u}=(-1,2,0)^T$ and $\mathbf{w}=(-1,0,1)^T$. Orthogonalize: $\mathbf{q}_1=\frac{1}{\sqrt{5}}(-1,2,0)^T$, $\mathbf{q}_2=\frac{1}{\sqrt{30}}(-1,-2,5)^T$.
+          </li>
+          <li>
+            $\lambda=8$: $(A-8I)=\begin{pmatrix}-5&2&4\\2&-8&2\\4&2&-5\end{pmatrix}$. Row reduce to find $\mathbf{q}_3=\frac{1}{\sqrt{6}}(2,1,2)^T$.
+          </li>
+          <li>
+            $Q=\begin{pmatrix}-\frac{1}{\sqrt{5}}&-\frac{1}{\sqrt{30}}&\frac{2}{\sqrt{6}}\\\frac{2}{\sqrt{5}}&-\frac{2}{\sqrt{30}}&\frac{1}{\sqrt{6}}\\0&\frac{5}{\sqrt{30}}&\frac{2}{\sqrt{6}}\end{pmatrix}$, $\Lambda=\begin{pmatrix}-1&0&0\\0&-1&0\\0&0&8\end{pmatrix}$.
+          </li>
+        </ol>
+      </div>
+
+      <h3>Matrix Exponential and Diagonalization</h3>
+      <p>For a diagonalizable matrix $A=PDP^{-1}$, the matrix exponential is</p>
+      $$e^A = Pe^DP^{-1} = P\operatorname{diag}(e^{\lambda_1},\ldots,e^{\lambda_n})P^{-1}.$$
+      <p>This is used in solving systems of ODEs $\mathbf{x}'=A\mathbf{x}$, whose solution is $\mathbf{x}(t)=e^{tA}\mathbf{x}(0)$.</p>
+
+      <div class="key-points">
+        <strong>Summary: Diagonalization Checklist</strong>
+        <ul>
+          <li>Compute $p(\lambda)=\det(A-\lambda I)$; find eigenvalues.</li>
+          <li>For each $\lambda_i$: find $\dim\ker(A-\lambda_iI)$. Check $m_g=m_a$.</li>
+          <li>If all eigenvalues have $m_g=m_a$: assemble $P$ from eigenvectors, $D$ from eigenvalues.</li>
+          <li>For symmetric matrices, use Gram–Schmidt to ensure $Q$ is orthogonal.</li>
+          <li>Use $A^n=PD^nP^{-1}$ and $e^{tA}=Pe^{tD}P^{-1}$ for applications.</li>
+        </ul>
+      </div>
+
+    </section><!-- /diagonalization -->
+
+  </main><!-- /topic-content -->
+</div><!-- /topic-layout -->
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer class="footer">
+  <p>Cal-Alge — 26MAB1001T Calculus &amp; Linear Algebra &nbsp;·&nbsp;
+    <a href="../index.html">Home</a> &nbsp;·&nbsp;
+    Unit 1: Vector Spaces &amp; Matrices &nbsp;·&nbsp;
+    Made by <a href="https://github.com/ajlikeadj" target="_blank" rel="noopener noreferrer" style="color: var(--mint); text-decoration: underline; font-weight: 500;">Ajlikeadj</a>
+  </p>
+</footer>
+
+<!-- Mobile TOC toggle -->
+<button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">☰</button>
+
+<!-- ═══════════════════════════ JS ═══════════════════════════ -->
+<script src="../js/main.js"></script>
+<script>
+  /* ── Progress bar ── */
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    bar.style.width = (scrolled * 100) + '%';
+  });
+
+  /* ── Cursor glow ── */
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  /* ── Mobile TOC ── */
+  const tocBtn = document.getElementById('tocToggle');
+  const sidebar = document.getElementById('sidebar');
+  tocBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    tocBtn.textContent = sidebar.classList.contains('open') ? '✕' : '☰';
+  });
+
+  /* ── TOC active highlight on scroll ── */
+  const sections = document.querySelectorAll('.topic-content section[id]');
+  const tocLinks  = document.querySelectorAll('.toc-list a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

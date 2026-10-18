@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 4: Functions of Several Variables — Cal-Alge</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false},
+        {left:'\\(',right:'\\)',display:false},
+        {left:'\\[',right:'\\]',display:true}
+      ]
+    })"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/topic.css" />
+</head>
+<body>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Cursor Glow -->
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <div class="logo-mark">CA</div>
+        Cal-Alge
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../index.html#units">Units</a></li>
+      </ul>
+      <div class="nav-toggle" id="navToggle" onclick="this.classList.toggle('open'); document.getElementById('navLinks').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <header class="topic-hero">
+    <div class="topic-hero-bg"></div>
+    <div class="topic-hero-grid"></div>
+    <div class="container topic-hero-content">
+      <a href="../index.html" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to all units
+      </a>
+      <div class="topic-unit-badge">
+        <span>●</span> Unit IV — 26MAB1001T
+      </div>
+      <h1>Functions of <span style="background:linear-gradient(135deg,#4ade80,#cbf6e7,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Several Variables</span></h1>
+      <p class="topic-hero-desc">
+        Explore the rich landscape of multivariable calculus — from limits and continuity in higher dimensions through partial derivatives, total differentials, Euler's theorem, Jacobians, Taylor series, and constrained optimization via Lagrange multipliers.
+      </p>
+      <div class="topic-meta">
+        <div class="topic-meta-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>~5 hrs deep reading</span>
+        </div>
+        <div class="topic-meta-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>11 Core Topics</span>
+        </div>
+        <div class="topic-meta-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>40+ Worked Examples</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Layout ── -->
+  <div class="topic-layout">
+
+    <!-- ── Sidebar TOC ── -->
+    <aside class="topic-sidebar" id="sidebar">
+      <div class="toc-header">Contents</div>
+      <ul class="toc-list">
+        <li class="toc-item"><a class="toc-link" href="#limit-continuity">1. Limits &amp; Continuity</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#limit-continuity">Definition of Limit</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#limit-continuity">Path-Dependence Test</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#limit-continuity">Iterated vs Simultaneous</a></li>
+        <li class="toc-item"><a class="toc-link" href="#partial-derivatives">2. Partial Derivatives</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#partial-derivatives">Higher-Order Partials</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#partial-derivatives">Clairaut's Theorem</a></li>
+        <li class="toc-item"><a class="toc-link" href="#geometrical-interpretation">3. Geometric Interpretation</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#geometrical-interpretation">Tangent Plane &amp; Normal</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#geometrical-interpretation">Gradient &amp; Directional Deriv.</a></li>
+        <li class="toc-item"><a class="toc-link" href="#total-derivative">4. Total Derivative</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#total-derivative">Error Propagation</a></li>
+        <li class="toc-item"><a class="toc-link" href="#implicit-function">5. Implicit Functions</a></li>
+        <li class="toc-item"><a class="toc-link" href="#euler-theorem">6. Euler's Theorem</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#euler-theorem">Proof &amp; Corollaries</a></li>
+        <li class="toc-item"><a class="toc-link" href="#chain-rule">7. Chain Rule</a></li>
+        <li class="toc-item"><a class="toc-link" href="#jacobians">8. Jacobians</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#jacobians">Functional Dependence</a></li>
+        <li class="toc-item"><a class="toc-link" href="#taylors-series">9. Taylor's Series</a></li>
+        <li class="toc-item"><a class="toc-link" href="#extrema">10. Extrema</a></li>
+        <li class="toc-item toc-sub"><a class="toc-link" href="#extrema">Second Derivative Test</a></li>
+        <li class="toc-item"><a class="toc-link" href="#lagrange-multipliers">11. Lagrange Multipliers</a></li>
+      </ul>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="topic-content">
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 1: LIMITS AND CONTINUITY
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="limit-continuity">
+        <div class="section-number">Section 01</div>
+        <h2 class="section-title-main">Review of Limits, Continuity &amp; Differentiability</h2>
+        <p class="section-intro">
+          Extending the notion of limits and continuity from one variable to two (or more) variables introduces fundamentally new complexity. In one variable, a point can be approached from only two directions; in two variables, there are infinitely many approach paths, making limit calculations and existence proofs far more subtle.
+        </p>
+
+        <!-- Definition: Limit -->
+        <div class="subsection">
+          <h3 class="subsection-title">Definition of a Limit</h3>
+
+          <div class="def-box">
+            <p><strong>Limit of $f(x,y)$:</strong> We say $\displaystyle\lim_{(x,y)\to(a,b)} f(x,y) = L$ if for every $\varepsilon > 0$ there exists $\delta > 0$ such that</p>
+            $$0 < \sqrt{(x-a)^2 + (y-b)^2} < \delta \implies |f(x,y) - L| < \varepsilon$$
+            <p>That is, $f(x,y)$ can be made arbitrarily close to $L$ whenever $(x,y)$ is sufficiently close (but not equal) to $(a,b)$ — regardless of the direction of approach.</p>
+          </div>
+
+          <p>The key distinction from single-variable calculus is the phrase "regardless of the direction of approach." In single-variable calculus, only the left and right limits exist. In two variables, $(x,y)$ can approach $(a,b)$ along any curve, so the limit must be the same along all paths simultaneously.</p>
+
+          <div class="def-box" style="--before-content: 'Neighborhood';">
+            <p style="margin-bottom:8px;"><strong>Open Disk (Neighborhood):</strong> The <em>open disk</em> of radius $\delta$ centred at $(a,b)$ is the set</p>
+            $$D_\delta(a,b) = \{(x,y) \in \mathbb{R}^2 : \sqrt{(x-a)^2+(y-b)^2} < \delta\}$$
+            <p>The punctured disk excludes the centre point itself. The limit definition requires $f$ to be defined on some punctured neighbourhood of $(a,b)$.</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 1.1 — Basic Limit</div>
+            <p><strong>Find</strong> $\displaystyle\lim_{(x,y)\to(1,2)}\left(3x^2 + xy - y^2\right)$.</p>
+            <p><strong>Solution:</strong> Since $f(x,y) = 3x^2 + xy - y^2$ is a polynomial, it is continuous everywhere. Therefore we simply substitute:</p>
+            $$\lim_{(x,y)\to(1,2)} (3x^2 + xy - y^2) = 3(1)^2 + (1)(2) - (2)^2 = 3 + 2 - 4 = \boxed{1}$$
+          </div>
+
+          <h3 class="subsection-title">Path-Dependence Test for Non-Existence</h3>
+          <p>If $f(x,y)$ approaches different values along two different paths toward $(a,b)$, then $\lim_{(x,y)\to(a,b)} f(x,y)$ does <strong>not exist</strong>. This is the most powerful tool for disproving limits.</p>
+
+          <div class="example-box">
+            <div class="example-number">Example 1.2 — Limit Does Not Exist</div>
+            <p><strong>Show</strong> that $\displaystyle\lim_{(x,y)\to(0,0)} \frac{x^2 - y^2}{x^2 + y^2}$ does not exist.</p>
+            <ul class="steps">
+              <li>
+                <span><strong>Path 1: along $y=0$.</strong><br>
+                $f(x,0) = \dfrac{x^2 - 0}{x^2 + 0} = 1 \to 1$ as $x\to 0$.</span>
+              </li>
+              <li>
+                <span><strong>Path 2: along $x=0$.</strong><br>
+                $f(0,y) = \dfrac{0 - y^2}{0 + y^2} = -1 \to -1$ as $y\to 0$.</span>
+              </li>
+              <li>
+                <span>Since the two paths give different limits ($1 \neq -1$), the limit <strong>does not exist</strong>. $\blacksquare$</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 1.3 — A Subtler Non-Existence</div>
+            <p><strong>Investigate</strong> $\displaystyle\lim_{(x,y)\to(0,0)}\frac{xy}{x^2+y^2}$.</p>
+            <ul class="steps">
+              <li>Along $y = mx$: $f(x,mx) = \dfrac{x\cdot mx}{x^2+m^2x^2} = \dfrac{mx^2}{(1+m^2)x^2} = \dfrac{m}{1+m^2}$, which depends on $m$.</li>
+              <li>Since different straight-line paths give different limits, the limit does <strong>not exist</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 1.4 — A Limit That Does Exist (Squeeze Theorem)</div>
+            <p><strong>Show</strong> $\displaystyle\lim_{(x,y)\to(0,0)}\frac{x^2 y}{x^2+y^2} = 0$.</p>
+            <ul class="steps">
+              <li>Note $|y| \leq \sqrt{x^2+y^2}$, so $\left|\dfrac{x^2 y}{x^2+y^2}\right| \leq \dfrac{x^2\,|y|}{x^2+y^2} \leq \dfrac{(x^2+y^2)|y|}{x^2+y^2} = |y|$.</li>
+              <li>Also $\left|\dfrac{x^2 y}{x^2+y^2}\right| \leq |y| \to 0$ as $(x,y)\to(0,0)$.</li>
+              <li>By the Squeeze Theorem, the limit equals $0$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <h3 class="subsection-title">Continuity of Functions of Two Variables</h3>
+
+          <div class="def-box">
+            <p>A function $f(x,y)$ is <strong>continuous at $(a,b)$</strong> if:</p>
+            <ul style="margin-left:1.2em; margin-top:8px;">
+              <li style="margin-bottom:6px;">$f(a,b)$ is defined,</li>
+              <li style="margin-bottom:6px;">$\displaystyle\lim_{(x,y)\to(a,b)} f(x,y)$ exists,</li>
+              <li>$\displaystyle\lim_{(x,y)\to(a,b)} f(x,y) = f(a,b)$.</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 1.5 — Discontinuous at Origin</div>
+            <p>The function $f(x,y) = \begin{cases}\dfrac{xy}{x^2+y^2} & (x,y)\neq(0,0)\\ 0 & (x,y)=(0,0)\end{cases}$ is <strong>discontinuous at the origin</strong> because the limit does not exist (shown in Ex 1.3), yet $f(0,0)=0$ is defined.</p>
+          </div>
+
+          <h3 class="subsection-title">Iterated Limits vs Simultaneous Limits</h3>
+          <p>The <em>iterated limits</em> are computed by applying one variable at a time:</p>
+          $$\lim_{x\to a}\left[\lim_{y\to b} f(x,y)\right] \quad\text{and}\quad \lim_{y\to b}\left[\lim_{x\to a} f(x,y)\right]$$
+
+          <div class="warning-box">Even when both iterated limits exist and are equal, the simultaneous limit $\lim_{(x,y)\to(a,b)}f(x,y)$ need not exist. Equality of iterated limits is necessary but <em>not sufficient</em> for the simultaneous limit to exist.</div>
+
+          <div class="example-box">
+            <div class="example-number">Example 1.6 — Iterated ≠ Simultaneous</div>
+            <p>Let $f(x,y) = \dfrac{x^2-y^2}{x^2+y^2}$.</p>
+            <p>$\displaystyle\lim_{x\to 0}\left[\lim_{y\to 0}\frac{x^2-y^2}{x^2+y^2}\right] = \lim_{x\to 0}\frac{x^2}{x^2} = 1$</p>
+            <p>$\displaystyle\lim_{y\to 0}\left[\lim_{x\to 0}\frac{x^2-y^2}{x^2+y^2}\right] = \lim_{y\to 0}\frac{-y^2}{y^2} = -1$</p>
+            <p>Both iterated limits exist but differ — confirming the simultaneous limit does not exist.</p>
+          </div>
+
+          <div class="key-points">
+            <div class="key-points-header">Key Takeaways — Limits &amp; Continuity</div>
+            <ul>
+              <li>The simultaneous limit requires agreement along <em>all</em> paths, not just straight lines.</li>
+              <li>To show a limit <em>doesn't</em> exist: find two paths giving different values.</li>
+              <li>To show a limit <em>does</em> exist: use the $\varepsilon$-$\delta$ definition or Squeeze Theorem.</li>
+              <li>Polynomials and rational functions (away from zeros of denominator) are continuous.</li>
+              <li>Compositions of continuous functions are continuous.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 2: PARTIAL DERIVATIVES
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="partial-derivatives">
+        <div class="section-number">Section 02</div>
+        <h2 class="section-title-main">Introduction to Partial Derivatives</h2>
+        <p class="section-intro">
+          A partial derivative measures the rate of change of a multivariable function with respect to one variable while all other variables are held constant. It is the fundamental building block of multivariable differential calculus.
+        </p>
+
+        <div class="def-box">
+          <p>The <strong>partial derivative of $f(x,y)$ with respect to $x$</strong> at the point $(a,b)$ is</p>
+          $$f_x(a,b) = \frac{\partial f}{\partial x}\bigg|_{(a,b)} = \lim_{h\to 0}\frac{f(a+h,b) - f(a,b)}{h}$$
+          <p>Similarly, the partial derivative with respect to $y$ is</p>
+          $$f_y(a,b) = \frac{\partial f}{\partial y}\bigg|_{(a,b)} = \lim_{k\to 0}\frac{f(a,b+k) - f(a,b)}{k}$$
+          <p>Notations: $\partial f/\partial x$, $f_x$, $D_x f$, $\partial_x f$ are all equivalent.</p>
+        </div>
+
+        <div class="note-box">To compute $\partial f/\partial x$: treat $y$ as a constant and differentiate with respect to $x$ using the ordinary rules of single-variable calculus.</div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Worked Examples — First Partial Derivatives</h3>
+
+          <div class="example-box">
+            <div class="example-number">Example 2.1</div>
+            <p>Find $f_x$ and $f_y$ for $f(x,y) = x^3y^2 - 4x^2y + 7xy^3$.</p>
+            $$f_x = 3x^2 y^2 - 8xy + 7y^3, \qquad f_y = 2x^3 y - 4x^2 + 21xy^2$$
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 2.2</div>
+            <p>Find all first partial derivatives of $f(x,y) = e^{xy}\sin(x+y)$.</p>
+            <ul class="steps">
+              <li>$f_x = ye^{xy}\sin(x+y) + e^{xy}\cos(x+y) = e^{xy}[y\sin(x+y)+\cos(x+y)]$</li>
+              <li>$f_y = xe^{xy}\sin(x+y) + e^{xy}\cos(x+y) = e^{xy}[x\sin(x+y)+\cos(x+y)]$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 2.3</div>
+            <p>Find $\partial f/\partial x$ and $\partial f/\partial y$ for $f(x,y) = \ln(x^2+y^2)$ (for $(x,y)\neq(0,0)$).</p>
+            $$\frac{\partial f}{\partial x} = \frac{2x}{x^2+y^2}, \qquad \frac{\partial f}{\partial y} = \frac{2y}{x^2+y^2}$$
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 2.4</div>
+            <p>For $f(x,y,z) = x^2 yz + \cos(xz) - e^{yz}$, find all three first partials.</p>
+            $$f_x = 2xyz - z\sin(xz)$$
+            $$f_y = x^2 z - ze^{yz}$$
+            $$f_z = x^2 y - x\sin(xz) - ye^{yz}$$
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 2.5</div>
+            <p>Find $\partial f/\partial x$ for $f(x,y) = \tan^{-1}(y/x)$.</p>
+            $$\frac{\partial f}{\partial x} = \frac{1}{1+(y/x)^2}\cdot\left(-\frac{y}{x^2}\right) = \frac{-y}{x^2+y^2}$$
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Higher-Order Partial Derivatives</h3>
+
+          <p>We may differentiate again to obtain <em>second-order</em> partial derivatives. There are four of them for a function of two variables:</p>
+
+          <div class="formula-box">
+            $$f_{xx} = \frac{\partial^2 f}{\partial x^2}, \quad f_{xy} = \frac{\partial^2 f}{\partial y\,\partial x}, \quad f_{yx} = \frac{\partial^2 f}{\partial x\,\partial y}, \quad f_{yy} = \frac{\partial^2 f}{\partial y^2}$$
+          </div>
+
+          <p>Note the notational convention: $f_{xy}$ means "differentiate first with respect to $x$, then with respect to $y$." The notation $\partial^2 f/\partial y\,\partial x$ means the same — differentiate first (inner) with respect to $x$, then (outer) with respect to $y$.</p>
+
+          <div class="theorem-box named" data-name="Clairaut's Theorem (Schwarz's Theorem)">
+            <p>Let $f$ be defined on an open set $D \subset \mathbb{R}^2$ containing $(a,b)$. If $f_{xy}$ and $f_{yx}$ are both continuous on $D$, then</p>
+            $$f_{xy}(a,b) = f_{yx}(a,b)$$
+            <p>That is, the order of mixed partial differentiation may be interchanged whenever the mixed partials are continuous.</p>
+          </div>
+
+          <div class="note-box">Clairaut's theorem fails when the mixed partials are discontinuous. The classic counterexample: $f(x,y) = xy(x^2-y^2)/(x^2+y^2)$ for $(x,y)\neq(0,0)$, $f(0,0)=0$ — here $f_{xy}(0,0)\neq f_{yx}(0,0)$.</div>
+
+          <div class="example-box">
+            <div class="example-number">Example 2.6 — All Second Partials</div>
+            <p>Find all second partial derivatives of $f(x,y) = x^3y - 2x^2y^3 + 5y$.</p>
+            <ul class="steps">
+              <li>$f_x = 3x^2y - 4xy^3$, $\quad f_y = x^3 - 6x^2y^2 + 5$</li>
+              <li>$f_{xx} = \dfrac{\partial}{\partial x}(3x^2y - 4xy^3) = 6xy - 4y^3$</li>
+              <li>$f_{yy} = \dfrac{\partial}{\partial y}(x^3 - 6x^2y^2 + 5) = -12x^2 y$</li>
+              <li>$f_{xy} = \dfrac{\partial}{\partial y}(3x^2y - 4xy^3) = 3x^2 - 12xy^2$</li>
+              <li>$f_{yx} = \dfrac{\partial}{\partial x}(x^3 - 6x^2y^2 + 5) = 3x^2 - 12xy^2 = f_{xy}$ ✓ (Clairaut's verified)</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 2.7 — Partial Derivatives of Implicit Function</div>
+            <p>If $z$ is defined implicitly by $x^2 + y^2 + z^2 = a^2$, find $\partial z/\partial x$ and $\partial z/\partial y$.</p>
+            <ul class="steps">
+              <li>Differentiate both sides w.r.t. $x$, treating $y$ as constant and $z$ as function of $x$: $2x + 2z\dfrac{\partial z}{\partial x} = 0$</li>
+              <li>$\dfrac{\partial z}{\partial x} = -\dfrac{x}{z}$</li>
+              <li>Similarly: $\dfrac{\partial z}{\partial y} = -\dfrac{y}{z}$</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 3: GEOMETRICAL INTERPRETATION
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="geometrical-interpretation">
+        <div class="section-number">Section 03</div>
+        <h2 class="section-title-main">Geometric Interpretation of Partial Derivatives</h2>
+        <p class="section-intro">
+          Partial derivatives have beautiful geometric meanings: they represent slopes of cross-sectional curves, define the tangent plane to a surface, and generate the gradient vector that points in the direction of steepest ascent.
+        </p>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Tangent Plane to a Surface</h3>
+          <p>Geometrically, $\partial f/\partial x$ at $(a,b)$ is the slope of the curve formed by intersecting the surface $z=f(x,y)$ with the plane $y=b$. Similarly, $\partial f/\partial y$ is the slope of the cross-section in the plane $x=a$.</p>
+
+          <div class="theorem-box">
+            <p>The equation of the <strong>tangent plane</strong> to the surface $z = f(x,y)$ at the point $P_0 = (x_0, y_0, z_0)$ where $z_0 = f(x_0,y_0)$ is:</p>
+            $$z - z_0 = f_x(x_0,y_0)(x-x_0) + f_y(x_0,y_0)(y-y_0)$$
+          </div>
+
+          <div class="theorem-box">
+            <p>The <strong>normal line</strong> to the surface at $P_0$ has parametric equations:</p>
+            $$\frac{x-x_0}{f_x(x_0,y_0)} = \frac{y-y_0}{f_y(x_0,y_0)} = \frac{z-z_0}{-1}$$
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 3.1 — Tangent Plane</div>
+            <p>Find the tangent plane to $z = x^2 + y^2$ at $(1, 2, 5)$.</p>
+            <ul class="steps">
+              <li>$f_x = 2x$, so $f_x(1,2) = 2$. $\quad f_y = 2y$, so $f_y(1,2) = 4$.</li>
+              <li>Tangent plane: $z - 5 = 2(x-1) + 4(y-2)$</li>
+              <li>Simplified: $z = 2x + 4y - 5$ or $2x + 4y - z = 5$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 3.2 — Tangent Plane and Normal Line</div>
+            <p>Find the tangent plane and normal line to $z = x^2 - 2xy + y^3$ at $(1,1,0)$.</p>
+            <ul class="steps">
+              <li>$f_x = 2x - 2y$; at $(1,1)$: $f_x = 0$. $\quad f_y = -2x + 3y^2$; at $(1,1)$: $f_y = 1$.</li>
+              <li>Tangent plane: $z - 0 = 0(x-1) + 1(y-1)$, i.e., $z = y-1$.</li>
+              <li>Normal line: $\dfrac{x-1}{0} = \dfrac{y-1}{1} = \dfrac{z}{-1}$, i.e., $x=1$, $y = 1-t$, $z = t$. $\blacksquare$</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Gradient Vector</h3>
+
+          <div class="def-box">
+            <p>The <strong>gradient</strong> of $f(x,y)$ is the vector</p>
+            $$\nabla f = \text{grad}\, f = \left(\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}\right) = f_x\,\mathbf{i} + f_y\,\mathbf{j}$$
+            <p>For $f(x,y,z)$: $\nabla f = f_x\,\mathbf{i} + f_y\,\mathbf{j} + f_z\,\mathbf{k}$.</p>
+          </div>
+
+          <p>The gradient has two fundamental geometric meanings:</p>
+          <ol style="color:var(--text-muted);padding-left:1.4em;line-height:1.9;">
+            <li>$\nabla f(a,b)$ points in the direction of <strong>steepest ascent</strong> of $f$ at $(a,b)$.</li>
+            <li>$\nabla f$ is <strong>perpendicular to level curves</strong> $f(x,y) = c$.</li>
+          </ol>
+
+          <h3 class="subsection-title">Directional Derivative</h3>
+
+          <div class="def-box">
+            <p>The <strong>directional derivative</strong> of $f$ at $(a,b)$ in the direction of the unit vector $\hat{u} = \langle \cos\theta, \sin\theta\rangle$ is</p>
+            $$D_{\hat{u}}f(a,b) = \lim_{t\to 0}\frac{f(a+t\cos\theta,\, b+t\sin\theta) - f(a,b)}{t} = \nabla f(a,b)\cdot\hat{u}$$
+          </div>
+
+          <div class="formula-box">
+            $$D_{\hat{u}}f = |\nabla f|\cos\alpha \quad\text{where $\alpha$ is the angle between $\nabla f$ and $\hat{u}$}$$
+          </div>
+
+          <p>The directional derivative is maximised when $\hat{u}$ is parallel to $\nabla f$ (maximum rate of increase = $|\nabla f|$), and minimised when $\hat{u}$ is anti-parallel (maximum rate of decrease = $-|\nabla f|$).</p>
+
+          <div class="example-box">
+            <div class="example-number">Example 3.3 — Directional Derivative</div>
+            <p>Find the directional derivative of $f(x,y) = x^2y + 3y^2$ at $(1,1)$ in the direction of $\vec{v} = \langle 2, -1\rangle$.</p>
+            <ul class="steps">
+              <li>$f_x = 2xy = 2(1)(1) = 2$; $\quad f_y = x^2 + 6y = 1 + 6 = 7$. So $\nabla f(1,1) = \langle 2, 7\rangle$.</li>
+              <li>Unit vector: $\hat{u} = \dfrac{\langle 2,-1\rangle}{\sqrt{4+1}} = \left\langle\dfrac{2}{\sqrt{5}}, \dfrac{-1}{\sqrt{5}}\right\rangle$.</li>
+              <li>$D_{\hat{u}}f = \langle 2,7\rangle\cdot\left\langle\dfrac{2}{\sqrt{5}},\dfrac{-1}{\sqrt{5}}\right\rangle = \dfrac{4-7}{\sqrt{5}} = \dfrac{-3}{\sqrt{5}}$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <h3 class="subsection-title">Level Curves and Level Surfaces</h3>
+          <p>A <strong>level curve</strong> of $f(x,y)$ is the set $\{(x,y) : f(x,y) = c\}$ for a constant $c$. Level curves are the contours seen on topographic maps. The gradient $\nabla f$ at any point is perpendicular to the level curve through that point.</p>
+          <p>A <strong>level surface</strong> of $f(x,y,z)$ is $\{(x,y,z) : f(x,y,z) = c\}$. $\nabla f$ is the normal vector to this surface.</p>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 4: TOTAL DERIVATIVE
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="total-derivative">
+        <div class="section-number">Section 04</div>
+        <h2 class="section-title-main">Total Derivative</h2>
+        <p class="section-intro">
+          The total derivative generalises the concept of the derivative to functions of several variables. It captures the combined effect of small changes in all independent variables simultaneously.
+        </p>
+
+        <div class="def-box">
+          <p>The <strong>total differential</strong> of $z = f(x,y)$ is</p>
+          $$dz = \frac{\partial f}{\partial x}\,dx + \frac{\partial f}{\partial y}\,dy = f_x\,dx + f_y\,dy$$
+          <p>For $w = f(x,y,z)$: $\quad dw = f_x\,dx + f_y\,dy + f_z\,dz$</p>
+        </div>
+
+        <div class="theorem-box named" data-name="Differentiability Condition">
+          <p>$f(x,y)$ is <strong>differentiable at $(a,b)$</strong> if there exist functions $\varepsilon_1, \varepsilon_2$ such that</p>
+          $$\Delta z = f_x\Delta x + f_y\Delta y + \varepsilon_1\Delta x + \varepsilon_2\Delta y$$
+          <p>where $\varepsilon_1, \varepsilon_2 \to 0$ as $(\Delta x, \Delta y) \to (0,0)$. Equivalently, the function has a <em>linear approximation</em> at $(a,b)$:</p>
+          $$f(a+\Delta x, b+\Delta y) \approx f(a,b) + f_x(a,b)\Delta x + f_y(a,b)\Delta y$$
+        </div>
+
+        <div class="warning-box">The existence of partial derivatives does NOT guarantee differentiability. A function can have partial derivatives everywhere but fail to be differentiable. However, if $f_x$ and $f_y$ are continuous at $(a,b)$, then $f$ is differentiable there.</div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Approximate Calculations Using Total Differential</h3>
+          <p>For small increments $\Delta x$ and $\Delta y$:</p>
+          <div class="formula-box">
+            $$\Delta z \approx dz = f_x\,\Delta x + f_y\,\Delta y$$
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 4.1 — Small Change</div>
+            <p>Find the approximate change in $z = x^3 y^2$ when $x$ changes from $2$ to $2.01$ and $y$ changes from $3$ to $2.98$.</p>
+            <ul class="steps">
+              <li>$\Delta x = 0.01$, $\Delta y = -0.02$; base point $(2,3)$.</li>
+              <li>$f_x = 3x^2y^2 = 3(4)(9) = 108$; $\quad f_y = 2x^3 y = 2(8)(3) = 48$.</li>
+              <li>$dz = 108(0.01) + 48(-0.02) = 1.08 - 0.96 = 0.12$.</li>
+              <li>So $z$ increases by approximately $0.12$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 4.2 — Error Propagation</div>
+            <p>The volume of a cylinder is $V = \pi r^2 h$. If $r$ is measured as $5$ cm with error $\pm 0.03$ cm, and $h$ as $10$ cm with error $\pm 0.05$ cm, find the maximum possible error in $V$.</p>
+            <ul class="steps">
+              <li>$dV = \dfrac{\partial V}{\partial r}\,dr + \dfrac{\partial V}{\partial h}\,dh = 2\pi rh\,dr + \pi r^2\,dh$</li>
+              <li>$= 2\pi(5)(10)(0.03) + \pi(25)(0.05) = 3\pi + 1.25\pi = 4.25\pi \approx 13.35\text{ cm}^3$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 4.3 — Relative Error</div>
+            <p>For $f(x,y) = x^m y^n$, show that the relative error in $f$ is $m\,\dfrac{dx}{x} + n\,\dfrac{dy}{y}$.</p>
+            <ul class="steps">
+              <li>$df = mx^{m-1}y^n\,dx + nx^m y^{n-1}\,dy$</li>
+              <li>$\dfrac{df}{f} = m\cdot\dfrac{dx}{x} + n\cdot\dfrac{dy}{y}$ $\blacksquare$</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 5: IMPLICIT FUNCTION
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="implicit-function">
+        <div class="section-number">Section 05</div>
+        <h2 class="section-title-main">Total Derivative and Implicit Functions</h2>
+        <p class="section-intro">
+          The implicit function theorem allows us to find derivatives of functions defined implicitly by equations, without first solving for the dependent variable explicitly.
+        </p>
+
+        <div class="theorem-box named" data-name="Implicit Function Theorem (2 Variables)">
+          <p>Suppose $F(x,y) = 0$ defines $y$ implicitly as a differentiable function of $x$ near a point $(a,b)$ with $F(a,b)=0$. If $F_y(a,b)\neq 0$, then</p>
+          $$\frac{dy}{dx} = -\frac{F_x}{F_y} = -\frac{\partial F/\partial x}{\partial F/\partial y}$$
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-label">Proof</div>
+          <p>Differentiating $F(x,y)=0$ totally with respect to $x$:</p>
+          $$\frac{\partial F}{\partial x}\cdot 1 + \frac{\partial F}{\partial y}\cdot\frac{dy}{dx} = 0 \implies \frac{dy}{dx} = -\frac{F_x}{F_y} \qquad (F_y \neq 0)$$
+          <div class="proof-qed">□</div>
+        </div>
+
+        <div class="theorem-box named" data-name="Implicit Function Theorem (3 Variables)">
+          <p>If $F(x,y,z) = 0$ defines $z$ implicitly as a function of $x$ and $y$, and $F_z \neq 0$, then</p>
+          $$\frac{\partial z}{\partial x} = -\frac{F_x}{F_z}, \qquad \frac{\partial z}{\partial y} = -\frac{F_y}{F_z}$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-number">Example 5.1</div>
+          <p>Find $dy/dx$ given $x^3 + y^3 - 3axy = 0$.</p>
+          <ul class="steps">
+            <li>Let $F(x,y) = x^3 + y^3 - 3axy$.</li>
+            <li>$F_x = 3x^2 - 3ay$, $\quad F_y = 3y^2 - 3ax$.</li>
+            <li>$\dfrac{dy}{dx} = -\dfrac{3x^2 - 3ay}{3y^2 - 3ax} = -\dfrac{x^2 - ay}{y^2 - ax} = \dfrac{ay - x^2}{y^2 - ax}$. $\blacksquare$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-number">Example 5.2</div>
+          <p>If $F(x,y,z) = x^2+y^2+z^2 - xyz = 0$, find $\partial z/\partial x$.</p>
+          <ul class="steps">
+            <li>$F_x = 2x - yz$, $\quad F_z = 2z - xy$.</li>
+            <li>$\dfrac{\partial z}{\partial x} = -\dfrac{F_x}{F_z} = -\dfrac{2x - yz}{2z - xy} = \dfrac{yz - 2x}{2z - xy}$. $\blacksquare$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-number">Example 5.3</div>
+          <p>If $u = f(x,y)$ and $y = g(x)$ (so $u$ ultimately depends only on $x$), find $du/dx$.</p>
+          $$\frac{du}{dx} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial y}\cdot\frac{dy}{dx}$$
+          <p>This is the chain rule for a function of two variables where one depends on the independent variable.</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-number">Example 5.4 — Second Implicit Derivative</div>
+          <p>Given $x^2 + y^2 = r^2$, find $d^2y/dx^2$.</p>
+          <ul class="steps">
+            <li>$F(x,y) = x^2 + y^2 - r^2$; $F_x = 2x$, $F_y = 2y$, so $y' = -x/y$.</li>
+            <li>$y'' = \dfrac{d}{dx}\!\left(-\dfrac{x}{y}\right) = -\dfrac{y - x\,y'}{y^2} = -\dfrac{y - x(-x/y)}{y^2} = -\dfrac{y^2+x^2}{y^3} = -\dfrac{r^2}{y^3}$. $\blacksquare$</li>
+          </ul>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 6: EULER'S THEOREM
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="euler-theorem">
+        <div class="section-number">Section 06</div>
+        <h2 class="section-title-main">Euler's Theorem on Homogeneous Functions</h2>
+        <p class="section-intro">
+          Homogeneous functions arise naturally in economics (returns to scale), physics (dimensional analysis), and geometry. Euler's theorem provides an elegant characterisation of these functions via their partial derivatives.
+        </p>
+
+        <div class="def-box">
+          <p>A function $f(x,y)$ is said to be a <strong>homogeneous function of degree $n$</strong> if for every $t > 0$:</p>
+          $$f(tx, ty) = t^n f(x,y)$$
+          <p>Equivalently, $f(\lambda x, \lambda y) = \lambda^n f(x,y)$ for all scalars $\lambda$.</p>
+          <p><strong>Examples:</strong> $f(x,y) = x^3 + x^2 y + y^3$ (degree 3); $f(x,y) = \dfrac{x^2+y^2}{x+y}$ (degree 1); $f(x,y) = \sin(x/y)$ (degree 0).</p>
+        </div>
+
+        <div class="theorem-box named" data-name="Euler's Theorem on Homogeneous Functions">
+          <p>If $f(x,y)$ is a homogeneous function of degree $n$ with continuous first partial derivatives, then</p>
+          $$x\,\frac{\partial f}{\partial x} + y\,\frac{\partial f}{\partial y} = n\,f(x,y)$$
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-label">Proof of Euler's Theorem</div>
+          <p>Since $f$ is homogeneous of degree $n$, we have $f(tx,ty) = t^n f(x,y)$ for all $t>0$.</p>
+          <p>Differentiate both sides with respect to $t$:</p>
+          $$\frac{d}{dt}[f(tx,ty)] = \frac{d}{dt}[t^n f(x,y)]$$
+          <p>Left side (chain rule): $\dfrac{\partial f}{\partial(tx)}\cdot x + \dfrac{\partial f}{\partial(ty)}\cdot y$.</p>
+          <p>Right side: $nt^{n-1}f(x,y)$.</p>
+          <p>Setting $t=1$:</p>
+          $$x\,f_x(x,y) + y\,f_y(x,y) = n\,f(x,y)$$
+          <div class="proof-qed">□</div>
+        </div>
+
+        <div class="theorem-box named" data-name="Corollary — Second-Order Euler's Identity">
+          <p>If $f(x,y)$ is homogeneous of degree $n$ with continuous second partial derivatives, then</p>
+          $$x^2\,f_{xx} + 2xy\,f_{xy} + y^2\,f_{yy} = n(n-1)\,f$$
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-label">Derivation of the Corollary</div>
+          <p>From Euler's theorem: $x\,f_x + y\,f_y = n\,f$. Since $f_x$ is homogeneous of degree $(n-1)$, applying Euler's theorem to $f_x$:</p>
+          $$x\,f_{xx} + y\,f_{yx} = (n-1)\,f_x \quad\cdots(1)$$
+          <p>Applying Euler's theorem to $f_y$ (homogeneous of degree $n-1$):</p>
+          $$x\,f_{xy} + y\,f_{yy} = (n-1)\,f_y \quad\cdots(2)$$
+          <p>Multiply (1) by $x$ and (2) by $y$, then add:</p>
+          $$x^2 f_{xx} + xy\,f_{yx} + xy\,f_{xy} + y^2 f_{yy} = (n-1)(xf_x + yf_y) = (n-1)\cdot nf$$
+          <p>Using $f_{xy} = f_{yx}$ (Clairaut): $x^2 f_{xx} + 2xy\,f_{xy} + y^2 f_{yy} = n(n-1)f$. $\blacksquare$</p>
+          <div class="proof-qed">□</div>
+        </div>
+
+        <div class="theorem-box named" data-name="Euler's Theorem — Three Variables">
+          <p>If $f(x,y,z)$ is homogeneous of degree $n$, then</p>
+          $$x\,\frac{\partial f}{\partial x} + y\,\frac{\partial f}{\partial y} + z\,\frac{\partial f}{\partial z} = n\,f$$
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Worked Examples — Euler's Theorem</h3>
+
+          <div class="example-box">
+            <div class="example-number">Example 6.1</div>
+            <p>Verify Euler's theorem for $f(x,y) = x^3 + 3x^2y + 3xy^2 + y^3 = (x+y)^3$.</p>
+            <ul class="steps">
+              <li>Degree $n=3$. $f_x = 3x^2 + 6xy + 3y^2$; $f_y = 3x^2 + 6xy + 3y^2$. Wait — let us compute carefully.</li>
+              <li>$f_x = 3x^2 + 6xy + 3y^2$, $f_y = 3x^2 + 6xy + 3y^2$.</li>
+              <li>$xf_x + yf_y = x(3x^2+6xy+3y^2)+y(3x^2+6xy+3y^2) = (x+y)(3x^2+6xy+3y^2) = 3(x+y)^3 = 3f$. ✓</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 6.2</div>
+            <p>If $u = \dfrac{x^4+y^4}{x+y}$, find the value of $x\,u_x + y\,u_y$.</p>
+            <ul class="steps">
+              <li>Check homogeneity: $u(tx,ty) = \dfrac{t^4x^4+t^4y^4}{t(x+y)} = t^3\,u$. So degree $n=3$.</li>
+              <li>By Euler's theorem: $xu_x + yu_y = 3u = \dfrac{3(x^4+y^4)}{x+y}$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 6.3</div>
+            <p>If $u = \sin^{-1}\!\left(\dfrac{x^2+y^2}{x+y}\right)$, prove that $xu_x + yu_y = \tan u$.</p>
+            <ul class="steps">
+              <li>Let $v = \sin u = \dfrac{x^2+y^2}{x+y}$. Check: $v$ is homogeneous of degree 1 in $x,y$.</li>
+              <li>By Euler's theorem applied to $v$: $xv_x + yv_y = 1\cdot v = v = \sin u$.</li>
+              <li>Since $v = \sin u$, $v_x = \cos u\cdot u_x$ and $v_y = \cos u\cdot u_y$.</li>
+              <li>Thus $\cos u\,(xu_x + yu_y) = \sin u \implies xu_x + yu_y = \dfrac{\sin u}{\cos u} = \tan u$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 6.4 — Verify the Corollary</div>
+            <p>For $f(x,y) = x^2 + xy + y^2$ (degree 2), verify $x^2 f_{xx} + 2xy f_{xy} + y^2 f_{yy} = n(n-1)f$.</p>
+            <ul class="steps">
+              <li>$f_x = 2x+y$, $f_y = x+2y$, $f_{xx}=2$, $f_{xy}=1$, $f_{yy}=2$.</li>
+              <li>$x^2(2)+2xy(1)+y^2(2) = 2x^2+2xy+2y^2 = 2(x^2+xy+y^2) = 2(1)f = n(n-1)f$ with $n=2$: $n(n-1)=2$. ✓</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 6.5 — Composite Homogeneous</div>
+            <p>If $f(x,y) = \ln\!\left(\dfrac{x^3+y^3}{x-y}\right)$, find $x\,f_x + y\,f_y$.</p>
+            <ul class="steps">
+              <li>Let $g = \dfrac{x^3+y^3}{x-y}$; then $g(tx,ty) = t^2 g$, so $g$ is homogeneous of degree 2.</li>
+              <li>$f = \ln g$, so $f_x = g_x/g$ and $f_y = g_y/g$.</li>
+              <li>$xf_x + yf_y = (xg_x + yg_y)/g = 2g/g = 2$. $\blacksquare$</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 7: CHAIN RULE
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="chain-rule">
+        <div class="section-number">Section 07</div>
+        <h2 class="section-title-main">Chain Rule for Functions of Several Variables</h2>
+        <p class="section-intro">
+          The chain rule extends the single-variable rule to multivariable settings, telling us how to differentiate composite functions where the intermediate variables themselves depend on parameters.
+        </p>
+
+        <div class="theorem-box named" data-name="Chain Rule — Case 1">
+          <p>If $u = f(x,y)$ is differentiable, and $x = g(t)$, $y = h(t)$ are differentiable functions of $t$, then</p>
+          $$\frac{du}{dt} = \frac{\partial f}{\partial x}\cdot\frac{dx}{dt} + \frac{\partial f}{\partial y}\cdot\frac{dy}{dt}$$
+        </div>
+
+        <div class="theorem-box named" data-name="Chain Rule — Case 2">
+          <p>If $u = f(x,y)$, $x = g(s,t)$, $y = h(s,t)$, then</p>
+          $$\frac{\partial u}{\partial s} = \frac{\partial f}{\partial x}\cdot\frac{\partial x}{\partial s} + \frac{\partial f}{\partial y}\cdot\frac{\partial y}{\partial s}$$
+          $$\frac{\partial u}{\partial t} = \frac{\partial f}{\partial x}\cdot\frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\cdot\frac{\partial y}{\partial t}$$
+        </div>
+
+        <div class="note-box">
+          <strong>Tree Diagram Technique:</strong> Draw a tree: $u$ at top, branches to $x$ and $y$ (labelled $\partial u/\partial x$, $\partial u/\partial y$), then branches from $x$ to $s,t$ and from $y$ to $s,t$ labelled $\partial x/\partial s$, etc. Each path from $u$ to a leaf gives a product of partial derivatives; the chain rule sum collects all such products.
+        </div>
+
+        <div class="example-box">
+          <div class="example-number">Example 7.1</div>
+          <p>If $u = x^2 + y^2$, $x = t^2$, $y = e^t$, find $du/dt$.</p>
+          <ul class="steps">
+            <li>$\partial u/\partial x = 2x = 2t^2$; $\quad dx/dt = 2t$.</li>
+            <li>$\partial u/\partial y = 2y = 2e^t$; $\quad dy/dt = e^t$.</li>
+            <li>$\dfrac{du}{dt} = 2t^2\cdot 2t + 2e^t\cdot e^t = 4t^3 + 2e^{2t}$. $\blacksquare$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-number">Example 7.2 — Chain Rule with Two Parameters</div>
+          <p>If $z = e^{xy}$, $x = s^2 t$, $y = s/t$, find $\partial z/\partial s$ and $\partial z/\partial t$.</p>
+          <ul class="steps">
+            <li>$\partial z/\partial x = ye^{xy}$, $\partial z/\partial y = xe^{xy}$.</li>
+            <li>$\partial x/\partial s = 2st$, $\partial y/\partial s = 1/t$.</li>
+            <li>$\dfrac{\partial z}{\partial s} = ye^{xy}\cdot 2st + xe^{xy}\cdot\dfrac{1}{t} = e^{xy}\!\left(2sty + \dfrac{x}{t}\right) = e^{s^2} \!\left(2s^2 + \dfrac{s^2}{t^2}\cdot t\right)$. Substitute $xy = s^2t\cdot s/t = s^3$: $\dfrac{\partial z}{\partial s} = e^{s^3}\!\left(2s\cdot\frac{s}{t}\cdot t + \frac{s^2t}{t}\right) = e^{s^3}(2s^2 + s^2) = 3s^2 e^{s^3}$.</li>
+            <li>Similarly $\partial z/\partial t$ can be computed.</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-number">Example 7.3 — Three-Variable Chain Rule</div>
+          <p>If $w = f(x,y,z)$, $x = r\sin\phi\cos\theta$, $y = r\sin\phi\sin\theta$, $z = r\cos\phi$ (spherical coordinates), write the chain rule for $\partial w/\partial r$.</p>
+          $$\frac{\partial w}{\partial r} = f_x\sin\phi\cos\theta + f_y\sin\phi\sin\theta + f_z\cos\phi$$
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 8: JACOBIANS
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="jacobians">
+        <div class="section-number">Section 08</div>
+        <h2 class="section-title-main">Jacobians</h2>
+        <p class="section-intro">
+          The Jacobian determinant is a fundamental tool in multivariable calculus. It measures how much a transformation stretches or compresses area/volume, and it appears crucially in change-of-variable formulas for multiple integrals.
+        </p>
+
+        <div class="def-box">
+          <p>If $u = u(x,y)$ and $v = v(x,y)$ are functions of $x$ and $y$, the <strong>Jacobian</strong> of $(u,v)$ with respect to $(x,y)$ is the determinant</p>
+          $$J = \frac{\partial(u,v)}{\partial(x,y)} = \begin{vmatrix}\dfrac{\partial u}{\partial x} & \dfrac{\partial u}{\partial y}\\[10pt] \dfrac{\partial v}{\partial x} & \dfrac{\partial v}{\partial y}\end{vmatrix} = \frac{\partial u}{\partial x}\cdot\frac{\partial v}{\partial y} - \frac{\partial u}{\partial y}\cdot\frac{\partial v}{\partial x}$$
+        </div>
+
+        <div class="def-box">
+          <p>For three functions $u=u(x,y,z)$, $v=v(x,y,z)$, $w=w(x,y,z)$, the Jacobian is the $3\times 3$ determinant:</p>
+          $$\frac{\partial(u,v,w)}{\partial(x,y,z)} = \begin{vmatrix} u_x & u_y & u_z \\ v_x & v_y & v_z \\ w_x & w_y & w_z\end{vmatrix}$$
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Properties of Jacobians</h3>
+
+          <div class="theorem-box">
+            <p><strong>Chain Rule for Jacobians:</strong> If $(u,v)$ is a function of $(x,y)$ and $(x,y)$ is a function of $(r,s)$, then</p>
+            $$\frac{\partial(u,v)}{\partial(r,s)} = \frac{\partial(u,v)}{\partial(x,y)}\cdot\frac{\partial(x,y)}{\partial(r,s)}$$
+          </div>
+
+          <div class="theorem-box">
+            <p><strong>Inverse Transformation:</strong> If $J = \partial(u,v)/\partial(x,y)$ and $J' = \partial(x,y)/\partial(u,v)$, then</p>
+            $$J\cdot J' = 1 \quad\text{(when the transformation is invertible)}$$
+          </div>
+
+          <div class="theorem-box named" data-name="Functional Dependence Test">
+            <p>$u$ and $v$ are <strong>functionally dependent</strong> (i.e., one is a function of the other) if and only if</p>
+            $$\frac{\partial(u,v)}{\partial(x,y)} = 0 \quad\text{identically}$$
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Worked Examples — Jacobians</h3>
+
+          <div class="example-box">
+            <div class="example-number">Example 8.1 — Polar Coordinates</div>
+            <p>Find the Jacobian $\partial(x,y)/\partial(r,\theta)$ for the transformation $x = r\cos\theta$, $y = r\sin\theta$.</p>
+            $$J = \begin{vmatrix}\cos\theta & -r\sin\theta\\ \sin\theta & r\cos\theta\end{vmatrix} = r\cos^2\theta + r\sin^2\theta = r$$
+            <p>This confirms the familiar area element formula: $dx\,dy = r\,dr\,d\theta$. $\blacksquare$</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 8.2 — Spherical Coordinates</div>
+            <p>For $x = r\sin\phi\cos\theta$, $y = r\sin\phi\sin\theta$, $z = r\cos\phi$, find $\partial(x,y,z)/\partial(r,\phi,\theta)$.</p>
+            $$J = \begin{vmatrix} \sin\phi\cos\theta & r\cos\phi\cos\theta & -r\sin\phi\sin\theta\\ \sin\phi\sin\theta & r\cos\phi\sin\theta & r\sin\phi\cos\theta\\ \cos\phi & -r\sin\phi & 0\end{vmatrix} = r^2\sin\phi$$
+            <p>This gives the volume element $dV = r^2\sin\phi\,dr\,d\phi\,d\theta$. $\blacksquare$</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 8.3 — Jacobian Computation</div>
+            <p>If $u = x^2 - y^2$ and $v = 2xy$, find $\partial(u,v)/\partial(x,y)$.</p>
+            $$J = \begin{vmatrix} 2x & -2y \\ 2y & 2x\end{vmatrix} = 4x^2 + 4y^2 = 4(x^2+y^2) \neq 0 \text{ (away from origin)}$$
+            <p>So $u$ and $v$ are functionally independent. $\blacksquare$</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 8.4 — Functional Dependence</div>
+            <p>Check if $u = x+y+z$, $v = x^2+y^2+z^2-2(xy+yz+zx)$, $w = x^3+y^3+z^3-3xyz$ are functionally dependent.</p>
+            <p>Compute $\partial(u,v,w)/\partial(x,y,z)$. One can verify that $v = (x+y+z)^2 - 4(xy+yz+zx)$ and $w = u^3 - 3u(xy+yz+zx)+3xyz$, showing $v$ and $w$ can be expressed as functions of $u$ and elementary symmetric polynomials. The Jacobian determinant equals $0$ identically, confirming functional dependence.</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 8.5 — Inverse Jacobian</div>
+            <p>For $u = e^x\cos y$, $v = e^x\sin y$, verify that $J\cdot J' = 1$.</p>
+            <ul class="steps">
+              <li>$J = \partial(u,v)/\partial(x,y) = \begin{vmatrix}e^x\cos y & -e^x\sin y \\ e^x\sin y & e^x\cos y\end{vmatrix} = e^{2x}\cos^2y + e^{2x}\sin^2 y = e^{2x}$.</li>
+              <li>The inverse: $x = \tfrac{1}{2}\ln(u^2+v^2)$, $y = \tan^{-1}(v/u)$.</li>
+              <li>$J' = \partial(x,y)/\partial(u,v) = e^{-2x} = 1/e^{2x}$, so $J\cdot J' = 1$. ✓</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 9: TAYLOR'S SERIES
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="taylors-series">
+        <div class="section-number">Section 09</div>
+        <h2 class="section-title-main">Taylor's Series for Two Variables</h2>
+        <p class="section-intro">
+          Taylor's theorem generalises from one variable to two, expressing a smooth function as a power series in increments from a base point. This is essential for local analysis, approximations, and the second derivative test.
+        </p>
+
+        <div class="theorem-box named" data-name="Taylor's Theorem for f(x,y)">
+          <p>If $f(x,y)$ has continuous partial derivatives of all orders in a neighborhood of $(a,b)$, and $h = x-a$, $k = y-b$, then</p>
+          $$f(a+h, b+k) = \sum_{n=0}^{\infty}\frac{1}{n!}\left(h\frac{\partial}{\partial x}+k\frac{\partial}{\partial y}\right)^n f(a,b)$$
+          <p>Explicitly, up to second-order terms:</p>
+          $$f(a+h,b+k) = f(a,b) + (hf_x + kf_y) + \frac{1}{2!}(h^2 f_{xx} + 2hk\,f_{xy} + k^2 f_{yy}) + \cdots$$
+          <p>where all partial derivatives are evaluated at $(a,b)$.</p>
+        </div>
+
+        <div class="note-box">The symbolic operator $(h\partial/\partial x + k\partial/\partial y)^n$ is expanded using the binomial theorem and applied term by term to $f$ at $(a,b)$.</div>
+
+        <div class="theorem-box named" data-name="Maclaurin's Series (about the origin)">
+          <p>Setting $a=b=0$ (expand about the origin), $h=x$, $k=y$:</p>
+          $$f(x,y) = f(0,0) + (xf_x + yf_y)_0 + \frac{1}{2!}(x^2f_{xx}+2xy\,f_{xy}+y^2 f_{yy})_0 + \frac{1}{3!}(x^3 f_{xxx}+3x^2y\,f_{xxy}+3xy^2 f_{xyy}+y^3 f_{yyy})_0 + \cdots$$
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Worked Examples — Taylor Expansions</h3>
+
+          <div class="example-box">
+            <div class="example-number">Example 9.1 — Expand $e^x\cos y$ about $(0,0)$ up to 3rd degree</div>
+            <ul class="steps">
+              <li>Build a table of values at $(0,0)$:</li>
+            </ul>
+            <table class="math-table" style="margin:16px 0;">
+              <thead><tr><th>$f$ and Derivatives</th><th>Value at $(0,0)$</th></tr></thead>
+              <tbody>
+                <tr><td>$f = e^x\cos y$</td><td>$1$</td></tr>
+                <tr><td>$f_x = e^x\cos y$</td><td>$1$</td></tr>
+                <tr><td>$f_y = -e^x\sin y$</td><td>$0$</td></tr>
+                <tr><td>$f_{xx} = e^x\cos y$</td><td>$1$</td></tr>
+                <tr><td>$f_{xy} = -e^x\sin y$</td><td>$0$</td></tr>
+                <tr><td>$f_{yy} = -e^x\cos y$</td><td>$-1$</td></tr>
+                <tr><td>$f_{xxx} = e^x\cos y$</td><td>$1$</td></tr>
+                <tr><td>$f_{xxy} = -e^x\sin y$</td><td>$0$</td></tr>
+                <tr><td>$f_{xyy} = -e^x\cos y$</td><td>$-1$</td></tr>
+                <tr><td>$f_{yyy} = e^x\sin y$</td><td>$0$</td></tr>
+              </tbody>
+            </table>
+            <p>Therefore:</p>
+            $$e^x\cos y = 1 + x + \frac{1}{2!}(x^2 - y^2) + \frac{1}{3!}(x^3 - 3xy^2) + \cdots$$
+            $$= 1 + x + \frac{x^2-y^2}{2} + \frac{x^3 - 3xy^2}{6} + \cdots \quad\blacksquare$$
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 9.2 — Expand $e^{x+y}$ about $(0,0)$</div>
+            <p>Note that $e^{x+y} = e^x\cdot e^y$. Using Maclaurin:</p>
+            $$e^{x+y} = \sum_{n=0}^\infty \frac{(x+y)^n}{n!} = 1 + (x+y) + \frac{(x+y)^2}{2!} + \frac{(x+y)^3}{3!}+\cdots$$
+            $$= 1 + x+y + \frac{x^2+2xy+y^2}{2} + \frac{x^3+3x^2y+3xy^2+y^3}{6}+\cdots\quad\blacksquare$$
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 9.3 — Expand $\sin(xy)$ up to 3rd degree terms</div>
+            <ul class="steps">
+              <li>$f = \sin(xy)$, $f(0,0)=0$.</li>
+              <li>$f_x = y\cos(xy)$, $f_x(0,0)=0$. $f_y = x\cos(xy)$, $f_y(0,0)=0$.</li>
+              <li>$f_{xx} = -y^2\sin(xy)=0$, $f_{xy} = \cos(xy)-xy\sin(xy)=1$ at origin. $f_{yy}=-x^2\sin(xy)=0$.</li>
+              <li>The second-degree contribution: $\dfrac{1}{2!}\cdot 2\cdot(1)\cdot xy = xy$.</li>
+              <li>For third-degree terms, all third partials at origin are zero.</li>
+              <li>Therefore: $\sin(xy) = xy - \dfrac{(xy)^3}{3!} + \cdots \approx xy$ to third degree. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 9.4 — Taylor's Series about $(1,1)$</div>
+            <p>Expand $f(x,y) = xy + \ln(xy)$ about the point $(1,1)$ up to second-order terms.</p>
+            <ul class="steps">
+              <li>$f(1,1) = 1+0 = 1$.</li>
+              <li>$f_x = y + 1/x$; $f_x(1,1) = 2$. $f_y = x + 1/y$; $f_y(1,1) = 2$.</li>
+              <li>$f_{xx} = -1/x^2$; at $(1,1)$: $-1$. $f_{yy} = -1/y^2$; at $(1,1)$: $-1$. $f_{xy} = 1$; at $(1,1)$: $1$.</li>
+              <li>Let $h = x-1$, $k = y-1$:</li>
+            </ul>
+            $$f(x,y) \approx 1 + 2h + 2k + \frac{1}{2!}(-h^2 + 2hk - k^2) = 1+2(x-1)+2(y-1) - \frac{(x-1)^2-2(x-1)(y-1)+(y-1)^2}{2}\quad\blacksquare$$
+          </div>
+        </div>
+
+        <div class="key-points">
+          <div class="key-points-header">Standard Taylor Series Reference</div>
+          <ul>
+            <li>$e^{x+y} = \displaystyle\sum_{n=0}^\infty \frac{(x+y)^n}{n!}$</li>
+            <li>$\sin(x+y) = (x+y) - \dfrac{(x+y)^3}{6} + \cdots$</li>
+            <li>$\cos(x+y) = 1 - \dfrac{(x+y)^2}{2} + \cdots$</li>
+            <li>$\ln(1+x+y) \approx (x+y) - \dfrac{(x+y)^2}{2}+\cdots$</li>
+          </ul>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 10: EXTREMA
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="extrema">
+        <div class="section-number">Section 10</div>
+        <h2 class="section-title-main">Extrema of Functions of Two Variables</h2>
+        <p class="section-intro">
+          Finding maxima and minima of $f(x,y)$ — and distinguishing them from saddle points — is a central problem in optimisation. The theory uses the second-order Taylor expansion and the Hessian determinant.
+        </p>
+
+        <div class="def-box">
+          <p>$f$ has a <strong>local maximum</strong> at $(a,b)$ if $f(x,y)\leq f(a,b)$ for all $(x,y)$ near $(a,b)$.</p>
+          <p>$f$ has a <strong>local minimum</strong> at $(a,b)$ if $f(x,y)\geq f(a,b)$ for all $(x,y)$ near $(a,b)$.</p>
+          <p>$(a,b)$ is a <strong>saddle point</strong> if it is a critical point but neither a local max nor a local min — $f$ increases in some directions and decreases in others.</p>
+        </div>
+
+        <div class="theorem-box named" data-name="Necessary Condition (First-Order)">
+          <p>If $f$ has a local extremum at an interior point $(a,b)$ and the partial derivatives exist there, then</p>
+          $$f_x(a,b) = 0 \quad\text{and}\quad f_y(a,b) = 0$$
+          <p>Such points are called <strong>critical points</strong> (stationary points) of $f$.</p>
+        </div>
+
+        <div class="theorem-box named" data-name="Second Derivative Test — Hessian Criterion">
+          <p>Let $(a,b)$ be a critical point of $f$ with continuous second partial derivatives. Define the <strong>Hessian discriminant</strong>:</p>
+          $$H = f_{xx}(a,b)\cdot f_{yy}(a,b) - \bigl[f_{xy}(a,b)\bigr]^2$$
+          <ul style="margin-top:12px;">
+            <li style="margin-bottom:6px;">$H > 0$ and $f_{xx}(a,b) > 0$: $(a,b)$ is a <strong>local minimum</strong>.</li>
+            <li style="margin-bottom:6px;">$H > 0$ and $f_{xx}(a,b) < 0$: $(a,b)$ is a <strong>local maximum</strong>.</li>
+            <li style="margin-bottom:6px;">$H < 0$: $(a,b)$ is a <strong>saddle point</strong>.</li>
+            <li>$H = 0$: <strong>inconclusive</strong> — higher-order analysis needed.</li>
+          </ul>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-label">Derivation of the Second Derivative Test</div>
+          <p>Near a critical point $(a,b)$, by Taylor's theorem with $h = x-a$, $k=y-b$:</p>
+          $$f(a+h,b+k) - f(a,b) \approx \frac{1}{2}\!\left[f_{xx}h^2 + 2f_{xy}hk + f_{yy}k^2\right]$$
+          <p>(The first-order terms vanish since $f_x=f_y=0$.) Write the quadratic form as $Q(h,k) = Ah^2+2Bhk+Ck^2$ where $A=f_{xx}$, $B=f_{xy}$, $C=f_{yy}$. Complete the square in $h$:</p>
+          $$Q = \frac{1}{A}\!\left[(Ah+Bk)^2 + (AC-B^2)k^2\right]$$
+          <p>If $AC-B^2 > 0$ and $A>0$: both squares contribute positively, $Q>0$ always (except at origin), so $f$ has a local minimum. If $A<0$: $Q<0$ always, so $f$ has a local maximum. If $AC-B^2 < 0$: $Q$ changes sign (saddle). $\blacksquare$</p>
+          <div class="proof-qed">□</div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Worked Examples — Finding Extrema</h3>
+
+          <div class="example-box">
+            <div class="example-number">Example 10.1</div>
+            <p>Find and classify all critical points of $f(x,y) = x^3 + y^3 - 3xy$.</p>
+            <ul class="steps">
+              <li>Set $f_x = 3x^2 - 3y = 0$ and $f_y = 3y^2 - 3x = 0$, giving $y = x^2$ and $x = y^2$.</li>
+              <li>Substituting: $x = (x^2)^2 = x^4 \implies x^4 - x = 0 \implies x(x^3-1)=0$, so $x=0$ or $x=1$.</li>
+              <li>Critical points: $(0,0)$ and $(1,1)$.</li>
+              <li>$f_{xx}=6x$, $f_{xy}=-3$, $f_{yy}=6y$.</li>
+              <li>At $(0,0)$: $H = (0)(0)-9 = -9 < 0$ ⟹ <strong>saddle point</strong>.</li>
+              <li>At $(1,1)$: $H = (6)(6)-9 = 27 > 0$ and $f_{xx}=6>0$ ⟹ <strong>local minimum</strong>, $f(1,1)=1+1-3=-1$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 10.2</div>
+            <p>Find the maximum and minimum values of $f(x,y) = x^2 + y^2 - 2x - 4y + 8$.</p>
+            <ul class="steps">
+              <li>$f_x = 2x-2 = 0 \implies x=1$; $f_y = 2y-4=0 \implies y=2$. Critical point: $(1,2)$.</li>
+              <li>$f_{xx}=2$, $f_{xy}=0$, $f_{yy}=2$. $H = 4-0 = 4 > 0$, $f_{xx}=2>0$.</li>
+              <li><strong>Local minimum</strong> at $(1,2)$: $f(1,2) = 1+4-2-8+8 = 3$. $\blacksquare$</li>
+            </ul>
+            <p>Note: Since $f = (x-1)^2+(y-2)^2+3 \geq 3$, this is actually the global minimum.</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 10.3</div>
+            <p>Find all critical points of $f(x,y) = 4xy - x^4 - y^4$ and classify them.</p>
+            <ul class="steps">
+              <li>$f_x = 4y - 4x^3 = 0 \implies y = x^3$. $f_y = 4x - 4y^3 = 0 \implies x = y^3$.</li>
+              <li>From $y=x^3$ and $x=y^3$: $x = (x^3)^3 = x^9 \implies x(x^8-1)=0$, so $x=0,\,1,-1$.</li>
+              <li>Critical points: $(0,0)$, $(1,1)$, $(-1,-1)$.</li>
+              <li>$f_{xx}=-12x^2$, $f_{xy}=4$, $f_{yy}=-12y^2$.</li>
+              <li>At $(0,0)$: $H = 0\cdot 0 - 16 = -16 < 0$ ⟹ <strong>saddle point</strong>.</li>
+              <li>At $(1,1)$: $H = (-12)(-12) - 16 = 128 > 0$, $f_{xx}=-12 < 0$ ⟹ <strong>local maximum</strong>, $f(1,1)=4-1-1=2$.</li>
+              <li>At $(-1,-1)$: Same as $(1,1)$ by symmetry ⟹ <strong>local maximum</strong>, $f(-1,-1)=2$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 10.4 — Finding Global Extrema on a Closed Region</div>
+            <p>Find the absolute maximum and minimum of $f(x,y) = xy$ on the closed region $D = \{(x,y): x^2+y^2\leq 1\}$.</p>
+            <ul class="steps">
+              <li><strong>Interior critical points:</strong> $f_x = y = 0$, $f_y = x = 0 \implies (0,0)$. $f(0,0)=0$.</li>
+              <li><strong>Boundary:</strong> On $x^2+y^2=1$, let $x=\cos\theta$, $y=\sin\theta$. Then $f = \cos\theta\sin\theta = \tfrac{1}{2}\sin 2\theta$.</li>
+              <li>Maximum of $\tfrac{1}{2}\sin 2\theta$: at $\theta=\pi/4$ (giving $x=y=1/\sqrt{2}$), $f=1/2$.</li>
+              <li>Minimum: at $\theta=3\pi/4$, $f=-1/2$.</li>
+              <li>Absolute maximum = $1/2$; Absolute minimum = $-1/2$. $\blacksquare$</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="content-divider" />
+
+      <!-- ═══════════════════════════════════════════════
+           SECTION 11: LAGRANGE MULTIPLIERS
+      ═══════════════════════════════════════════════ -->
+      <section class="content-section" id="lagrange-multipliers">
+        <div class="section-number">Section 11</div>
+        <h2 class="section-title-main">Lagrange's Method of Undetermined Multipliers</h2>
+        <p class="section-intro">
+          Lagrange multipliers provide an elegant method for solving <em>constrained optimisation</em> problems — maximising or minimising an objective function subject to one or more constraint equations — without the need to eliminate variables explicitly.
+        </p>
+
+        <div class="theorem-box named" data-name="Lagrange's Theorem (One Constraint)">
+          <p>To find the extrema of $f(x,y,z)$ subject to the constraint $g(x,y,z) = 0$, solve the system:</p>
+          $$\nabla f = \lambda\,\nabla g$$
+          <p>i.e., the three equations $f_x = \lambda g_x$, $f_y = \lambda g_y$, $f_z = \lambda g_z$, together with the constraint $g=0$. The constant $\lambda$ is called the <strong>Lagrange multiplier</strong>.</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-label">Geometric Derivation</div>
+          <p>At a constrained extremum, the level surface $f=c$ is tangent to the constraint surface $g=0$. Tangency means they share the same tangent plane, which means their normals are parallel. Since $\nabla f$ is normal to level surfaces of $f$ and $\nabla g$ is normal to the constraint surface:</p>
+          $$\nabla f = \lambda\,\nabla g \quad\text{for some scalar $\lambda$.}$$
+          <div class="proof-qed">□</div>
+        </div>
+
+        <div class="theorem-box named" data-name="Two Constraints">
+          <p>To extremise $f(x,y,z)$ subject to $g(x,y,z)=0$ and $h(x,y,z)=0$:</p>
+          $$\nabla f = \lambda\,\nabla g + \mu\,\nabla h$$
+          <p>giving the system $f_x=\lambda g_x+\mu h_x$, $f_y=\lambda g_y+\mu h_y$, $f_z=\lambda g_z+\mu h_z$, plus both constraints.</p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Worked Examples — Lagrange Multipliers</h3>
+
+          <div class="example-box">
+            <div class="example-number">Example 11.1 — Rectangular Box of Maximum Volume</div>
+            <p>Find the dimensions of a rectangular box of maximum volume such that the sum of its edges is $12a$ (i.e., $4(x+y+z) = 12a$, so $x+y+z = 3a$).</p>
+            <ul class="steps">
+              <li>Maximise $V = xyz$ subject to $g = x+y+z-3a = 0$.</li>
+              <li>$\nabla V = \lambda\nabla g$: $(yz, xz, xy) = \lambda(1,1,1)$, so $yz = xz = xy = \lambda$.</li>
+              <li>From $yz = xz$: $y=x$ (since $z\neq 0$). From $xz = xy$: $z=y$. So $x=y=z$.</li>
+              <li>From constraint: $3x = 3a \implies x=a$.</li>
+              <li>Maximum volume: $V = a^3$ at $x=y=z=a$ (cube). $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 11.2 — Closest Point on a Plane to the Origin</div>
+            <p>Find the point on the plane $2x + y + 2z = 9$ closest to the origin.</p>
+            <ul class="steps">
+              <li>Minimise $f = x^2+y^2+z^2$ subject to $g = 2x+y+2z-9=0$.</li>
+              <li>$\nabla f = \lambda\nabla g$: $(2x,2y,2z) = \lambda(2,1,2)$.</li>
+              <li>$x = \lambda$, $y = \lambda/2$, $z = \lambda$.</li>
+              <li>Constraint: $2\lambda + \lambda/2 + 2\lambda = 9 \implies (9/2)\lambda = 9 \implies \lambda = 2$.</li>
+              <li>Closest point: $(2, 1, 2)$, with distance $\sqrt{4+1+4}=3$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 11.3 — Two Constraints</div>
+            <p>Find the maximum value of $f = xy + yz$ subject to $y^2 = xz$ and $x+y+z = a$.</p>
+            <ul class="steps">
+              <li>Let $g = y^2 - xz = 0$ and $h = x+y+z-a = 0$.</li>
+              <li>$\nabla f = \lambda\nabla g + \mu\nabla h$:</li>
+              <li>$f_x = y = \lambda(-z)+\mu(1)$, so $y = -\lambda z + \mu$.</li>
+              <li>$f_y = x+z = \lambda(2y)+\mu$.</li>
+              <li>$f_z = y = \lambda(-x)+\mu$, so $y = -\lambda x + \mu$.</li>
+              <li>From equations 1 and 3: $-\lambda z + \mu = -\lambda x + \mu \implies z=x$.</li>
+              <li>From $y^2=xz=x^2 \implies y=x$ (taking positive root). From $x+x+x=a$: $x=a/3$.</li>
+              <li>So $x=y=z=a/3$ and $f = xy+yz = (a/3)^2+(a/3)^2 = 2a^2/9$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 11.4 — Minimum Distance from a Point to an Ellipse</div>
+            <p>Find the points on the ellipse $x^2/4 + y^2/9 = 1$ closest and farthest from the origin.</p>
+            <ul class="steps">
+              <li>Extremise $f = x^2+y^2$ subject to $g = x^2/4+y^2/9-1 = 0$.</li>
+              <li>$2x = \lambda(x/2)$ and $2y = \lambda(2y/9)$, giving $\lambda = 4$ or $x=0$, and $\lambda = 9$ or $y=0$.</li>
+              <li>If $x\neq 0$ and $y\neq 0$: $\lambda=4$ and $\lambda=9$ simultaneously — impossible.</li>
+              <li>Case $x=0$: constraint gives $y^2=9$, $y=\pm 3$. $f=9$.</li>
+              <li>Case $y=0$: constraint gives $x^2=4$, $x=\pm 2$. $f=4$.</li>
+              <li>Closest points: $(\pm 2, 0)$ at distance $2$. Farthest: $(0,\pm 3)$ at distance $3$. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 11.5 — Production Optimisation</div>
+            <p>A firm's production function is $Q = 5L^{2/3}K^{1/3}$, where $L$ = labour and $K$ = capital. The cost constraint is $2L + 3K = 120$. Find the values of $L$ and $K$ that maximise output.</p>
+            <ul class="steps">
+              <li>Maximise $Q = 5L^{2/3}K^{1/3}$ subject to $g = 2L+3K-120=0$.</li>
+              <li>$Q_L = \dfrac{10}{3}L^{-1/3}K^{1/3} = 2\lambda$; $\quad Q_K = \dfrac{5}{3}L^{2/3}K^{-2/3} = 3\lambda$.</li>
+              <li>Dividing: $\dfrac{Q_L}{Q_K} = \dfrac{10K/3}{5L/3} = \dfrac{2K}{L} = \dfrac{2}{3} \implies \dfrac{K}{L} = \dfrac{1}{3} \implies K = L/3$.</li>
+              <li>Constraint: $2L + 3(L/3) = 2L+L = 3L = 120 \implies L = 40$, $K = 40/3$.</li>
+              <li>Max output: $Q = 5(40)^{2/3}(40/3)^{1/3} = 5\cdot 40\cdot 3^{-1/3} = \dfrac{200}{3^{1/3}}\approx 144.2$ units. $\blacksquare$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <div class="example-number">Example 11.6 — Box with Maximum Volume and Fixed Surface Area</div>
+            <p>Find the dimensions of a closed rectangular box with maximum volume and surface area $S = 150$ cm².</p>
+            <ul class="steps">
+              <li>Maximise $V = xyz$ subject to $2(xy+yz+xz) = 150$, i.e., $g = xy+yz+xz-75 = 0$.</li>
+              <li>$yz = \lambda(y+z)$, $xz = \lambda(x+z)$, $xy = \lambda(x+y)$.</li>
+              <li>By symmetry of the equations, suppose $x=y=z$. Then $g = 3x^2-75=0 \implies x=5$.</li>
+              <li>The box is a cube of side $5$ cm, $V_{\max} = 125$ cm³. $\blacksquare$</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="key-points">
+          <div class="key-points-header">Key Takeaways — Lagrange Multipliers</div>
+          <ul>
+            <li>The method converts a constrained problem into solving a system of algebraic equations.</li>
+            <li>The multiplier $\lambda$ has an economic interpretation: it is the marginal value of relaxing the constraint.</li>
+            <li>The method finds candidates — always verify by comparing values or using second-order conditions.</li>
+            <li>For $n$ variables and $m$ constraints, we need $\nabla f = \sum_i \lambda_i \nabla g_i$ — yielding $n+m$ equations for $n+m$ unknowns.</li>
+            <li>By symmetry: if $f$ and $g$ are symmetric in variables and a symmetric solution exists, it is often the extremum.</li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ── Mobile TOC Toggle ── -->
+  <button class="toc-mobile-toggle" id="tocToggle" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')" aria-label="Toggle Table of Contents">☰</button>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark" style="width:28px;height:28px;background:linear-gradient(135deg,#4ade80,#14b8a6);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.7rem;color:#050d0b;">CA</div>
+        Cal-Alge
+      </div>
+      <span class="footer-copy">Unit IV — Functions of Several Variables · 26MAB1001T &nbsp;·&nbsp; Made by <a href="https://github.com/ajlikeadj" target="_blank" rel="noopener noreferrer" style="color: var(--mint); text-decoration: underline; font-weight: 500;">Ajlikeadj</a></span>
+      <div class="footer-links">
+        <a href="../index.html">All Units</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── Main JS ── -->
+  <script src="../js/main.js"></script>
+
+  <script>
+    // ── Progress bar ──
+    window.addEventListener('scroll', () => {
+      const el = document.getElementById('progressBar');
+      const scrolled = document.documentElement.scrollTop;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      el.style.width = (scrolled / max * 100) + '%';
+    });
+
+    // ── Cursor glow ──
+    document.addEventListener('mousemove', e => {
+      const g = document.getElementById('cursorGlow');
+      g.style.left = e.clientX + 'px';
+      g.style.top = e.clientY + 'px';
+    });
+
+    // ── Active TOC link highlight ──
+    const sections = document.querySelectorAll('.content-section');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(link => link.classList.remove('active'));
+          const id = entry.target.getAttribute('id');
+          const active = document.querySelector(`.toc-link[href="#${id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+
+    // ── Reveal on scroll ──
+    const revealEls = document.querySelectorAll('.def-box, .theorem-box, .example-box, .key-points, .proof-box, .formula-box, .warning-box, .note-box');
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); } });
+    }, { threshold: 0.08 });
+    revealEls.forEach(el => { el.classList.add('reveal'); revealObs.observe(el); });
+  </script>
+</body>
+</html>

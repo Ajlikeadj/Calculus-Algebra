@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculus & Linear Algebra — 26MAB1001T</title>
+  <meta name="description" content="Complete study resource for Calculus and Linear Algebra. Covers Vector Spaces, Differential Equations, Differential Calculus, Functions of Several Variables, and Sequences & Series." />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+
+  <!-- Scroll Progress -->
+  <div class="progress-bar" role="progressbar" aria-label="Reading progress"></div>
+
+  <!-- Cursor Glow -->
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════ -->
+  <header>
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo" aria-label="Home">
+          <div class="logo-mark" aria-hidden="true">∫∑</div>
+          <span>Cal&nbsp;&amp;&nbsp;LinAlg</span>
+        </a>
+
+        <ul class="nav-links" role="list">
+          <li><a href="units/unit1.html">Vector Spaces</a></li>
+          <li><a href="units/unit2.html">ODEs</a></li>
+          <li><a href="units/unit3.html">Diff. Calculus</a></li>
+          <li><a href="units/unit4.html">Several Variables</a></li>
+          <li><a href="units/unit5.html">Sequences &amp; Series</a></li>
+        </ul>
+
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ══════════════════════════════════════════
+         HERO
+    ══════════════════════════════════════════ -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-grid" aria-hidden="true"></div>
+      <canvas class="particles-canvas" aria-hidden="true"></canvas>
+
+      <div class="container hero-content">
+        <p class="hero-eyebrow">26MAB1001T &bull; Discipline Course B/E/C</p>
+
+        <h1 class="hero-title" id="hero-heading">
+          Calculus<br />
+          <span class="accent">&amp; Linear Algebra</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          A comprehensive, in-depth resource covering all five units of the course —
+          from Vector Spaces to Sequences, built for deep understanding.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#units" class="btn btn-primary">
+            Explore Units
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </a>
+          <a href="units/unit1.html" class="btn btn-outline">
+            Start with Unit 1
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         MARQUEE — Topic Tags
+    ══════════════════════════════════════════ -->
+    <div class="marquee-section" aria-hidden="true">
+      <div class="marquee-track">
+        <!-- Group 1 -->
+        <span class="marquee-tag"><span class="dot"></span>Vector Spaces</span>
+        <span class="marquee-tag"><span class="dot"></span>Eigenvalues</span>
+        <span class="marquee-tag"><span class="dot"></span>Eigenvectors</span>
+        <span class="marquee-tag"><span class="dot"></span>Cayley–Hamilton</span>
+        <span class="marquee-tag"><span class="dot"></span>Linear Dependence</span>
+        <span class="marquee-tag"><span class="dot"></span>ODE</span>
+        <span class="marquee-tag"><span class="dot"></span>First Order</span>
+        <span class="marquee-tag"><span class="dot"></span>Legendre's Equation</span>
+        <span class="marquee-tag"><span class="dot"></span>Variation of Parameters</span>
+        <span class="marquee-tag"><span class="dot"></span>Curve Tracing</span>
+        <span class="marquee-tag"><span class="dot"></span>Curvature</span>
+        <span class="marquee-tag"><span class="dot"></span>Radius of Curvature</span>
+        <span class="marquee-tag"><span class="dot"></span>Involutes &amp; Evolutes</span>
+        <span class="marquee-tag"><span class="dot"></span>Envelopes</span>
+        <span class="marquee-tag"><span class="dot"></span>Partial Derivatives</span>
+        <span class="marquee-tag"><span class="dot"></span>Euler's Theorem</span>
+        <span class="marquee-tag"><span class="dot"></span>Taylor's Series</span>
+        <span class="marquee-tag"><span class="dot"></span>Lagrange Multipliers</span>
+        <span class="marquee-tag"><span class="dot"></span>Convergence Tests</span>
+        <span class="marquee-tag"><span class="dot"></span>Power Series</span>
+        <span class="marquee-tag"><span class="dot"></span>Alternating Series</span>
+        <!-- Group 2 (duplicate for seamless loop) -->
+        <span class="marquee-tag"><span class="dot"></span>Vector Spaces</span>
+        <span class="marquee-tag"><span class="dot"></span>Eigenvalues</span>
+        <span class="marquee-tag"><span class="dot"></span>Eigenvectors</span>
+        <span class="marquee-tag"><span class="dot"></span>Cayley–Hamilton</span>
+        <span class="marquee-tag"><span class="dot"></span>Linear Dependence</span>
+        <span class="marquee-tag"><span class="dot"></span>ODE</span>
+        <span class="marquee-tag"><span class="dot"></span>First Order</span>
+        <span class="marquee-tag"><span class="dot"></span>Legendre's Equation</span>
+        <span class="marquee-tag"><span class="dot"></span>Variation of Parameters</span>
+        <span class="marquee-tag"><span class="dot"></span>Curve Tracing</span>
+        <span class="marquee-tag"><span class="dot"></span>Curvature</span>
+        <span class="marquee-tag"><span class="dot"></span>Radius of Curvature</span>
+        <span class="marquee-tag"><span class="dot"></span>Involutes &amp; Evolutes</span>
+        <span class="marquee-tag"><span class="dot"></span>Envelopes</span>
+        <span class="marquee-tag"><span class="dot"></span>Partial Derivatives</span>
+        <span class="marquee-tag"><span class="dot"></span>Euler's Theorem</span>
+        <span class="marquee-tag"><span class="dot"></span>Taylor's Series</span>
+        <span class="marquee-tag"><span class="dot"></span>Lagrange Multipliers</span>
+        <span class="marquee-tag"><span class="dot"></span>Convergence Tests</span>
+        <span class="marquee-tag"><span class="dot"></span>Power Series</span>
+        <span class="marquee-tag"><span class="dot"></span>Alternating Series</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         STATS
+    ══════════════════════════════════════════ -->
+    <section class="stats-section" aria-label="Course statistics">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item reveal">
+            <div class="stat-number" data-target="5" data-suffix=" Units">0 Units</div>
+            <div class="stat-label">Core Modules</div>
+          </div>
+          <div class="stat-item reveal reveal-delay-1">
+            <div class="stat-number" data-target="60" data-suffix=" Sessions">0 Sessions</div>
+            <div class="stat-label">Total Sessions</div>
+          </div>
+          <div class="stat-item reveal reveal-delay-2">
+            <div class="stat-number" data-target="3" data-suffix="L + 1T">0</div>
+            <div class="stat-label">Credits L/T/P</div>
+          </div>
+          <div class="stat-item reveal reveal-delay-3">
+            <div class="stat-number" data-target="50" data-suffix="+ Topics">0+</div>
+            <div class="stat-label">Topics Covered</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         UNITS GRID
+    ══════════════════════════════════════════ -->
+    <section id="units" class="units-section" aria-labelledby="units-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <p class="section-label">Course Curriculum</p>
+          <h2 class="section-title" id="units-heading">Five Units.<br />Complete Coverage.</h2>
+          <p class="section-desc">Each unit dives deep into the theory, proofs, worked examples, and applications you need.</p>
+        </div>
+
+        <div class="units-grid">
+
+          <!-- Unit 1 -->
+          <a href="units/unit1.html" class="unit-card reveal">
+            <div class="card-arrow" aria-hidden="true">→</div>
+            <span class="unit-icon" aria-hidden="true">⬛</span>
+            <div class="unit-number">Unit 01</div>
+            <h3>Vector Space and Matrices</h3>
+            <p>Foundations of linear algebra — vector spaces, subspaces, transformations, eigenvalues, and the Cayley–Hamilton theorem.</p>
+            <ul class="unit-topics" aria-label="Topics in this unit">
+              <li>Review of Matrices</li>
+              <li>Vector Subspaces</li>
+              <li>Linear Independence</li>
+              <li>Characteristic Equation</li>
+              <li>Eigenvalues &amp; Eigenvectors</li>
+              <li>Cayley–Hamilton</li>
+              <li>Linear Transformations on ℝⁿ</li>
+              <li>Orthogonal Transformation</li>
+              <li>Diagonalization</li>
+            </ul>
+          </a>
+
+          <!-- Unit 2 -->
+          <a href="units/unit2.html" class="unit-card reveal reveal-delay-1">
+            <div class="card-arrow" aria-hidden="true">→</div>
+            <span class="unit-icon" aria-hidden="true">〜</span>
+            <div class="unit-number">Unit 02</div>
+            <h3>Ordinary Differential Equations</h3>
+            <p>First and second-order ODEs with constant and variable coefficients, including Cauchy–Euler and Legendre equations.</p>
+            <ul class="unit-topics" aria-label="Topics in this unit">
+              <li>Continuity &amp; Differentiability</li>
+              <li>First-Order ODE</li>
+              <li>2nd Order (Const. Coeff.)</li>
+              <li>Cauchy–Euler Equation</li>
+              <li>Legendre's Equation</li>
+              <li>Variation of Parameters</li>
+            </ul>
+          </a>
+
+          <!-- Unit 3 -->
+          <a href="units/unit3.html" class="unit-card reveal reveal-delay-2">
+            <div class="card-arrow" aria-hidden="true">→</div>
+            <span class="unit-icon" aria-hidden="true">∫</span>
+            <div class="unit-number">Unit 03</div>
+            <h3>Differential Calculus &amp; Applications</h3>
+            <p>Curve tracing, curvature, radius of curvature in Cartesian, polar, and parametric forms, plus envelopes and pedal equations.</p>
+            <ul class="unit-topics" aria-label="Topics in this unit">
+              <li>Curve Tracing</li>
+              <li>Curvature</li>
+              <li>Radius of Curvature</li>
+              <li>Circle of Curvature</li>
+              <li>Evolutes &amp; Involutes</li>
+              <li>Envelopes</li>
+              <li>Pedal Equations</li>
+            </ul>
+          </a>
+
+          <!-- Unit 4 -->
+          <a href="units/unit4.html" class="unit-card reveal reveal-delay-3">
+            <div class="card-arrow" aria-hidden="true">→</div>
+            <span class="unit-icon" aria-hidden="true">∂</span>
+            <div class="unit-number">Unit 04</div>
+            <h3>Functions of Several Variables</h3>
+            <p>Multivariable calculus: partial derivatives, total derivative, Euler's theorem, Jacobians, Taylor's series, and Lagrange multipliers.</p>
+            <ul class="unit-topics" aria-label="Topics in this unit">
+              <li>Limits &amp; Continuity</li>
+              <li>Partial Derivatives</li>
+              <li>Total Derivative</li>
+              <li>Euler's Theorem</li>
+              <li>Chain Rule &amp; Jacobians</li>
+              <li>Taylor's Series (2 vars)</li>
+              <li>Extrema of Functions</li>
+              <li>Lagrange Multipliers</li>
+            </ul>
+          </a>
+
+          <!-- Unit 5 -->
+          <a href="units/unit5.html" class="unit-card reveal reveal-delay-4">
+            <div class="card-arrow" aria-hidden="true">→</div>
+            <span class="unit-icon" aria-hidden="true">∑</span>
+            <div class="unit-number">Unit 05</div>
+            <h3>Sequence and Series</h3>
+            <p>Convergence and divergence of sequences and series — Cauchy, comparison, D'Alembert, Raabe's, Cauchy root, and Leibniz tests.</p>
+            <ul class="unit-topics" aria-label="Topics in this unit">
+              <li>Sequences &amp; Series Review</li>
+              <li>Series of Positive Terms</li>
+              <li>Cauchy Integral Test</li>
+              <li>Comparison Test</li>
+              <li>D'Alembert Ratio Test</li>
+              <li>Raabe's Test</li>
+              <li>Cauchy Root Test</li>
+              <li>Alternating Series</li>
+              <li>Leibniz Test</li>
+              <li>Absolute Convergence</li>
+              <li>Conditional Convergence</li>
+            </ul>
+          </a>
+
+          <!-- Assessment Card -->
+          <div class="unit-card reveal reveal-delay-5" style="background: rgba(74,222,128,0.04); border-color: rgba(74,222,128,0.15); cursor: default;">
+            <span class="unit-icon" aria-hidden="true">📋</span>
+            <div class="unit-number" style="color: var(--teal);">Assessment</div>
+            <h3>Continuous Assessment</h3>
+            <p>Three continuous assessments cover all units cumulatively, testing theory and applications.</p>
+            <ul class="unit-topics">
+              <li>CLA-1: Units I–II</li>
+              <li>CLA-2: Units III–V</li>
+              <li>CLA-3: Units I–V</li>
+            </ul>
+          </div>
+
+        </div><!-- /units-grid -->
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         COURSE INFO SECTION
+    ══════════════════════════════════════════ -->
+    <section style="padding: 80px 0 120px;" aria-labelledby="info-heading">
+      <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;" class="responsive-info-grid">
+
+          <div class="reveal">
+            <p class="section-label">About the Course</p>
+            <h2 style="font-size: clamp(1.5rem, 3vw, 2.2rem); margin-bottom: 20px;" id="info-heading">
+              Designed for Deep<br /><span style="color: var(--green);">Mathematical Fluency</span>
+            </h2>
+            <p style="margin-bottom: 16px;">
+              This course (code <strong style="color: var(--mint);">26MAB1001T</strong>) is a core discipline course offered by the
+              Department of Mathematics. It integrates linear algebra with differential and
+              integral calculus, providing the mathematical backbone for engineering, physics, and computing.
+            </p>
+            <p>
+              Each topic is covered with formal definitions, rigorous theorems, step-by-step
+              worked examples, and visual intuitions — so you build lasting understanding, not
+              just formula recall.
+            </p>
+            <div style="margin-top: 32px;">
+              <a href="units/unit1.html" class="btn btn-primary">Begin Unit 1 →</a>
+            </div>
+          </div>
+
+          <div class="reveal reveal-delay-2">
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; backdrop-filter: blur(10px);">
+              <table class="math-table" style="margin: 0;">
+                <thead>
+                  <tr>
+                    <th>Component</th>
+                    <th>Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Course Code</td><td style="color: var(--mint);">26MAB1001T</td></tr>
+                  <tr><td>Category</td><td>Discipline Course (B/E/C)</td></tr>
+                  <tr><td>Credits L/T/P/O/C</td><td>3/1/0/0/4</td></tr>
+                  <tr><td>Sessions per Unit</td><td>12</td></tr>
+                  <tr><td>Total Sessions</td><td>60</td></tr>
+                  <tr><td>Pre-requisites</td><td style="color: var(--text-muted);">Nil</td></tr>
+                  <tr><td>Department</td><td>Mathematics</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo-mark" aria-hidden="true" style="width:24px; height:24px; font-size: 0.6rem;">∫∑</div>
+          Cal &amp; LinAlg · 26MAB1001T
+        </div>
+
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="units/unit1.html">Unit 1</a>
+          <a href="units/unit2.html">Unit 2</a>
+          <a href="units/unit3.html">Unit 3</a>
+          <a href="units/unit4.html">Unit 4</a>
+          <a href="units/unit5.html">Unit 5</a>
+        </nav>
+
+        <p class="footer-copy">Department of Mathematics &mdash; Calculus &amp; Linear Algebra &nbsp;·&nbsp; Made by <a href="https://github.com/ajlikeadj" target="_blank" rel="noopener noreferrer" style="color: var(--mint); text-decoration: underline; font-weight: 500;">Ajlikeadj</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+
+  <style>
+    /* Quick responsive fix for info grid */
+    @media (max-width: 768px) {
+      .responsive-info-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+
+</body>
+</html>

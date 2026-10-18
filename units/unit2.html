@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 2: Ordinary Differential Equations — Cal-Alge</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false},
+        {left:'\\(',right:'\\)',display:false},
+        {left:'\\[',right:'\\]',display:true}
+      ]
+    })"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/topic.css" />
+
+  <style>
+    /* ── Inline overrides / additions ── */
+    :root {
+      --bg:       #050d0b;
+      --surface:  #0a1a16;
+      --border:   rgba(203,246,231,0.10);
+      --accent:   #cbf6e7;
+      --green:    #4ade80;
+      --text:     #f0fdf4;
+      --muted:    #6b7280;
+      --card:     rgba(10,26,22,0.80);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      line-height:1.75;
+      overflow-x:hidden;
+    }
+
+    /* progress bar */
+    .progress-bar{
+      position:fixed;top:0;left:0;height:3px;width:0%;
+      background:linear-gradient(90deg,#4ade80,#cbf6e7);
+      z-index:9999;transition:width .15s;
+    }
+    /* cursor glow */
+    .cursor-glow{
+      position:fixed;pointer-events:none;
+      width:500px;height:500px;border-radius:50%;
+      background:radial-gradient(circle,rgba(74,222,128,0.06) 0%,transparent 70%);
+      transform:translate(-50%,-50%);
+      z-index:0;transition:left .08s,top .08s;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar{
+      position:sticky;top:0;z-index:100;
+      background:rgba(5,13,11,0.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+      padding:.9rem 2rem;
+      display:flex;align-items:center;gap:1.2rem;
+    }
+    .back-btn{
+      display:inline-flex;align-items:center;gap:.45rem;
+      color:var(--accent);text-decoration:none;font-size:.85rem;
+      border:1px solid var(--border);border-radius:8px;
+      padding:.35rem .85rem;transition:all .2s;
+    }
+    .back-btn:hover{background:rgba(203,246,231,.08);border-color:var(--accent)}
+    .navbar-title{
+      font-size:1rem;font-weight:600;color:var(--text);
+      opacity:.85;
+    }
+    .navbar-badge{
+      margin-left:auto;font-size:.72rem;padding:.2rem .65rem;
+      border-radius:20px;border:1px solid var(--border);
+      color:var(--muted);
+    }
+
+    /* ── HERO ── */
+    .hero{
+      padding:4rem 2rem 3rem;
+      max-width:900px;margin:0 auto;text-align:center;
+    }
+    .unit-label{
+      font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;
+      color:var(--green);font-weight:600;margin-bottom:.8rem;
+    }
+    .hero h1{
+      font-size:clamp(2rem,5vw,3.2rem);font-weight:800;
+      line-height:1.15;
+      background:linear-gradient(135deg,#f0fdf4 40%,#4ade80);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:1rem;
+    }
+    .hero p{
+      color:var(--muted);font-size:1.05rem;max-width:640px;margin:0 auto;
+    }
+    .hero-meta{
+      margin-top:1.5rem;display:flex;justify-content:center;
+      gap:1.5rem;flex-wrap:wrap;
+    }
+    .meta-chip{
+      font-size:.8rem;color:var(--muted);
+      border:1px solid var(--border);border-radius:20px;
+      padding:.25rem .8rem;
+    }
+    .meta-chip span{color:var(--accent);}
+
+    /* ── LAYOUT ── */
+    .layout{
+      display:grid;
+      grid-template-columns:260px 1fr;
+      gap:0;
+      max-width:1280px;margin:0 auto;
+      align-items:start;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar{
+      position:sticky;top:60px;
+      height:calc(100vh - 60px);overflow-y:auto;
+      padding:2rem 1.2rem 2rem 1.5rem;
+      border-right:1px solid var(--border);
+      scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+    }
+    .sidebar h3{
+      font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;
+      color:var(--muted);margin-bottom:1rem;
+    }
+    .toc-list{list-style:none;}
+    .toc-list li{margin-bottom:.1rem;}
+    .toc-list a{
+      display:block;padding:.42rem .75rem;
+      border-radius:8px;font-size:.84rem;color:var(--muted);
+      text-decoration:none;transition:all .2s;
+      border-left:2px solid transparent;
+    }
+    .toc-list a:hover,
+    .toc-list a.active{
+      color:var(--accent);background:rgba(203,246,231,.06);
+      border-left-color:var(--green);
+    }
+    .toc-list .sub{padding-left:1.4rem;font-size:.78rem;}
+
+    /* ── MAIN CONTENT ── */
+    .content{
+      padding:2.5rem 3rem 4rem;
+      min-width:0;
+    }
+
+    /* ── SECTIONS ── */
+    .section{
+      margin-bottom:5rem;
+      scroll-margin-top:80px;
+    }
+    .section-header{
+      display:flex;align-items:center;gap:.8rem;
+      margin-bottom:1.8rem;
+      padding-bottom:1rem;
+      border-bottom:1px solid var(--border);
+    }
+    .section-num{
+      font-size:.72rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:.12em;color:var(--green);
+      background:rgba(74,222,128,.1);
+      border:1px solid rgba(74,222,128,.2);
+      border-radius:6px;padding:.25rem .6rem;
+      white-space:nowrap;
+    }
+    .section h2{
+      font-size:1.75rem;font-weight:700;color:var(--text);
+    }
+    .section h3{
+      font-size:1.2rem;font-weight:600;color:var(--accent);
+      margin:2rem 0 .8rem;
+    }
+    .section h4{
+      font-size:1rem;font-weight:600;color:#86efac;
+      margin:1.4rem 0 .5rem;
+    }
+    .section p{margin-bottom:.9rem;color:#d1fae5;opacity:.9;}
+
+    /* ── BOXES ── */
+    .def-box,.theorem-box,.example-box,.formula-box,.proof-box,.key-points,.warning-box{
+      border-radius:12px;padding:1.4rem 1.6rem;margin:1.6rem 0;
+      position:relative;overflow:hidden;
+    }
+    .def-box{
+      background:rgba(74,222,128,.06);
+      border:1px solid rgba(74,222,128,.25);
+    }
+    .def-box::before{
+      content:'Definition';position:absolute;top:.7rem;right:1rem;
+      font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;
+      color:var(--green);opacity:.6;font-weight:700;
+    }
+    .theorem-box{
+      background:rgba(96,165,250,.06);
+      border:1px solid rgba(96,165,250,.25);
+    }
+    .theorem-box::before{
+      content:'Theorem';position:absolute;top:.7rem;right:1rem;
+      font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;
+      color:#60a5fa;opacity:.6;font-weight:700;
+    }
+    .example-box{
+      background:rgba(251,191,36,.05);
+      border:1px solid rgba(251,191,36,.2);
+    }
+    .example-box::before{
+      content:'Example';position:absolute;top:.7rem;right:1rem;
+      font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;
+      color:#fbbf24;opacity:.6;font-weight:700;
+    }
+    .formula-box{
+      background:rgba(167,139,250,.06);
+      border:1px solid rgba(167,139,250,.25);
+      text-align:center;
+    }
+    .formula-box::before{
+      content:'Formula';position:absolute;top:.7rem;right:1rem;
+      font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;
+      color:#a78bfa;opacity:.6;font-weight:700;
+    }
+    .proof-box{
+      background:rgba(203,246,231,.03);
+      border:1px solid rgba(203,246,231,.12);
+      border-left:3px solid var(--green);
+    }
+    .proof-box::before{
+      content:'Proof';position:absolute;top:.7rem;right:1rem;
+      font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;
+      color:var(--accent);opacity:.5;font-weight:700;
+    }
+    .key-points{
+      background:rgba(74,222,128,.04);
+      border:1px solid rgba(74,222,128,.18);
+    }
+    .key-points h4{color:var(--green);margin:0 0 .7rem;font-size:.9rem;text-transform:uppercase;letter-spacing:.08em;}
+    .key-points ul{list-style:none;padding:0;}
+    .key-points ul li{padding:.3rem 0;padding-left:1.2rem;position:relative;color:#d1fae5;}
+    .key-points ul li::before{content:'→';position:absolute;left:0;color:var(--green);}
+    .warning-box{
+      background:rgba(251,191,36,.05);
+      border:1px solid rgba(251,191,36,.2);
+      border-left:3px solid #fbbf24;
+    }
+
+    /* Box titles */
+    .box-title{
+      font-weight:700;font-size:.95rem;margin-bottom:.7rem;
+      display:block;
+    }
+    .def-box .box-title{color:var(--green);}
+    .theorem-box .box-title{color:#60a5fa;}
+    .example-box .box-title{color:#fbbf24;}
+    .formula-box .box-title{color:#a78bfa;}
+    .proof-box .box-title{color:var(--accent);}
+
+    /* Steps */
+    .steps{
+      counter-reset:step;list-style:none;padding:0;margin:.8rem 0;
+    }
+    .steps li{
+      counter-increment:step;
+      padding:.55rem 0 .55rem 3rem;
+      position:relative;
+      border-bottom:1px solid var(--border);
+      color:#d1fae5;
+    }
+    .steps li:last-child{border-bottom:none;}
+    .steps li::before{
+      content:counter(step);
+      position:absolute;left:0;top:.5rem;
+      width:1.6rem;height:1.6rem;
+      background:rgba(74,222,128,.15);
+      border:1px solid rgba(74,222,128,.3);
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.72rem;font-weight:700;color:var(--green);
+      text-align:center;line-height:1.6rem;
+    }
+
+    /* Math table */
+    .math-table{
+      width:100%;border-collapse:collapse;margin:1.2rem 0;
+      font-size:.88rem;
+    }
+    .math-table th{
+      background:rgba(74,222,128,.1);
+      color:var(--accent);font-weight:600;
+      padding:.7rem 1rem;text-align:left;
+      border:1px solid var(--border);
+    }
+    .math-table td{
+      padding:.65rem 1rem;
+      border:1px solid var(--border);
+      color:#d1fae5;
+      vertical-align:top;
+    }
+    .math-table tr:nth-child(even) td{
+      background:rgba(203,246,231,.02);
+    }
+
+    /* Divider */
+    .divider{
+      border:none;border-top:1px solid var(--border);
+      margin:3rem 0;
+    }
+
+    /* Mobile toggle */
+    .mobile-toc-toggle{
+      display:none;position:fixed;bottom:2rem;right:2rem;
+      z-index:200;width:50px;height:50px;border-radius:50%;
+      background:var(--green);color:#050d0b;
+      border:none;cursor:pointer;font-size:1.3rem;
+      box-shadow:0 4px 20px rgba(74,222,128,.4);
+    }
+    @media(max-width:900px){
+      .layout{grid-template-columns:1fr;}
+      .sidebar{
+        display:none;position:fixed;top:0;left:0;width:280px;
+        height:100vh;z-index:150;border-right:1px solid var(--border);
+        background:rgba(5,13,11,.97);backdrop-filter:blur(12px);
+      }
+      .sidebar.open{display:block;}
+      .mobile-toc-toggle{display:flex;align-items:center;justify-content:center;}
+      .content{padding:1.5rem 1.2rem 3rem;}
+    }
+
+    /* Footer */
+    .footer{
+      border-top:1px solid var(--border);
+      padding:2rem;text-align:center;
+      color:var(--muted);font-size:.82rem;
+      max-width:1280px;margin:0 auto;
+    }
+    .footer a{color:var(--accent);text-decoration:none;}
+
+    /* Inline code */
+    code{
+      background:rgba(203,246,231,.08);
+      border:1px solid var(--border);
+      border-radius:4px;padding:.1rem .4rem;
+      font-family:'Fira Code',monospace;font-size:.85em;
+      color:var(--accent);
+    }
+
+    /* KaTeX display override */
+    .katex-display{
+      overflow-x:auto;padding:.5rem 0;
+    }
+    .katex{font-size:1.05em;}
+
+    /* Sub-section separator */
+    .sub-divider{
+      border:none;border-top:1px dashed rgba(203,246,231,.08);
+      margin:2rem 0;
+    }
+
+    /* Highlight */
+    .hl{color:var(--green);font-weight:600;}
+    .hl-blue{color:#60a5fa;font-weight:600;}
+    .hl-purple{color:#a78bfa;font-weight:600;}
+    .hl-yellow{color:#fbbf24;font-weight:600;}
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- ══════════════════════ NAVBAR ══════════════════════ -->
+<nav class="navbar">
+  <a href="../index.html" class="back-btn">
+    ← Back to Home
+  </a>
+  <span class="navbar-title">Unit 2 — Ordinary Differential Equations</span>
+  <span class="navbar-badge">26MAB1001T</span>
+</nav>
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<header class="hero">
+  <div class="unit-label">Unit 2 · Calculus &amp; Linear Algebra</div>
+  <h1>Ordinary Differential Equations</h1>
+  <p>A deep exploration of ODEs — from first-order methods to Legendre polynomials, Cauchy–Euler equations, and variation of parameters.</p>
+  <div class="hero-meta">
+    <span class="meta-chip">Topics: <span>7</span></span>
+    <span class="meta-chip">Course: <span>26MAB1001T</span></span>
+    <span class="meta-chip">Level: <span>Undergraduate</span></span>
+  </div>
+</header>
+
+<!-- ══════════════════════ LAYOUT ══════════════════════ -->
+<div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <h3>Contents</h3>
+    <ul class="toc-list">
+      <li><a href="#continuity-differentiability">1. Continuity &amp; Differentiability</a></li>
+      <li><a href="#first-order-ode" class="sub">2. First-Order ODEs</a></li>
+      <li><a href="#second-order-const" class="sub">3. 2nd-Order Const. Coeff.</a></li>
+      <li><a href="#higher-order-const" class="sub">4. Higher-Order Const. Coeff.</a></li>
+      <li><a href="#cauchy-euler" class="sub">5. Cauchy–Euler Equation</a></li>
+      <li><a href="#legendre-equation" class="sub">6. Legendre's Equation</a></li>
+      <li><a href="#variation-parameters" class="sub">7. Variation of Parameters</a></li>
+    </ul>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="content">
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 1: CONTINUITY & DIFFERENTIABILITY
+    ═══════════════════════════════════════════ -->
+    <section class="section" id="continuity-differentiability">
+      <div class="section-header">
+        <span class="section-num">§ 1</span>
+        <h2>Review of Continuity &amp; Differentiability</h2>
+      </div>
+
+      <p>Before studying differential equations, we review the foundational concepts of limits, continuity, and differentiability which underpin all subsequent theory.</p>
+
+      <h3>1.1 Limits and the ε–δ Definition</h3>
+      <div class="def-box">
+        <span class="box-title">Formal (ε–δ) Definition of a Limit</span>
+        <p>We say $\displaystyle\lim_{x \to a} f(x) = L$ if and only if:</p>
+        $$\forall\,\varepsilon > 0,\;\exists\,\delta > 0 \text{ such that } 0 < |x - a| < \delta \implies |f(x) - L| < \varepsilon$$
+        <p>Intuitively: we can make $f(x)$ as close to $L$ as desired by taking $x$ sufficiently close to $a$ (but not equal to $a$).</p>
+      </div>
+
+      <h4>Key Limit Laws</h4>
+      <table class="math-table">
+        <thead>
+          <tr><th>Law</th><th>Statement</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sum</td><td>$\lim(f \pm g) = \lim f \pm \lim g$</td></tr>
+          <tr><td>Product</td><td>$\lim(f \cdot g) = \lim f \cdot \lim g$</td></tr>
+          <tr><td>Quotient</td><td>$\displaystyle\lim\frac{f}{g} = \frac{\lim f}{\lim g}$, provided $\lim g \neq 0$</td></tr>
+          <tr><td>Squeeze</td><td>If $g(x)\le f(x)\le h(x)$ near $a$ and $\lim g=\lim h=L$, then $\lim f=L$</td></tr>
+          <tr><td>Composition</td><td>If $f$ is continuous at $\lim g(x)=b$, then $\lim f(g(x))=f(b)$</td></tr>
+        </tbody>
+      </table>
+
+      <h3>1.2 Continuity</h3>
+      <div class="def-box">
+        <span class="box-title">Continuity at a Point</span>
+        <p>A function $f$ is <strong>continuous at</strong> $x = a$ if all three conditions hold:</p>
+        <ol class="steps">
+          <li>$f(a)$ is defined (exists in the domain)</li>
+          <li>$\displaystyle\lim_{x\to a} f(x)$ exists (finite)</li>
+          <li>$\displaystyle\lim_{x\to a} f(x) = f(a)$ (the limit equals the function value)</li>
+        </ol>
+        <p>$f$ is continuous on an interval $[a,b]$ if it is continuous at every interior point and has one-sided continuity at the endpoints.</p>
+      </div>
+
+      <h4>Types of Discontinuities</h4>
+      <table class="math-table">
+        <thead>
+          <tr><th>Type</th><th>Condition</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Removable</strong></td>
+            <td>$\lim_{x\to a}f(x)$ exists but $\neq f(a)$ or $f(a)$ undefined</td>
+            <td>$f(x)=\frac{\sin x}{x}$ at $x=0$</td>
+          </tr>
+          <tr>
+            <td><strong>Jump</strong></td>
+            <td>Left and right limits exist but are not equal: $f(a^-)\neq f(a^+)$</td>
+            <td>Heaviside step function</td>
+          </tr>
+          <tr>
+            <td><strong>Infinite (Essential)</strong></td>
+            <td>$\lim_{x\to a}|f(x)|=\infty$</td>
+            <td>$f(x)=\frac{1}{x}$ at $x=0$</td>
+          </tr>
+          <tr>
+            <td><strong>Oscillatory</strong></td>
+            <td>Limit does not exist due to oscillation</td>
+            <td>$\sin(1/x)$ at $x=0$</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="theorem-box">
+        <span class="box-title">Intermediate Value Theorem (IVT)</span>
+        <p>If $f$ is continuous on $[a,b]$ and $N$ is any value between $f(a)$ and $f(b)$, then there exists $c\in(a,b)$ such that $f(c)=N$. In particular, if $f(a)$ and $f(b)$ have opposite signs, $f$ has at least one root in $(a,b)$.</p>
+      </div>
+
+      <h3>1.3 Differentiability</h3>
+      <div class="def-box">
+        <span class="box-title">Derivative — First Principles</span>
+        $$f'(x) = \lim_{h\to 0}\frac{f(x+h)-f(x)}{h}$$
+        <p>The function $f$ is differentiable at $x=a$ if this limit exists and is finite. Geometrically, $f'(a)$ is the slope of the tangent line to $y=f(x)$ at $x=a$.</p>
+      </div>
+
+      <div class="theorem-box">
+        <span class="box-title">Differentiability ⟹ Continuity</span>
+        <p>If $f$ is differentiable at $x=a$, then $f$ is continuous at $x=a$. The converse is <em>false</em> — the absolute value function $|x|$ is continuous at $0$ but not differentiable there (corner point).</p>
+      </div>
+
+      <h3>1.4 Rolle's Theorem</h3>
+      <div class="theorem-box">
+        <span class="box-title">Rolle's Theorem</span>
+        <p>If $f$ is:</p>
+        <ul style="list-style:disc;padding-left:1.5rem;color:#d1fae5;">
+          <li>Continuous on $[a,b]$</li>
+          <li>Differentiable on $(a,b)$</li>
+          <li>$f(a) = f(b)$</li>
+        </ul>
+        <p>Then there exists at least one $c\in(a,b)$ such that $f'(c) = 0$.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Rolle's Theorem — Example</span>
+        <p>Verify Rolle's theorem for $f(x)=x^2-4x+3$ on $[1,3]$.</p>
+        <ol class="steps">
+          <li>$f(1)=1-4+3=0$, $f(3)=9-12+3=0$ — equal ✓</li>
+          <li>$f$ is a polynomial — continuous and differentiable everywhere ✓</li>
+          <li>$f'(x)=2x-4=0 \Rightarrow x=2\in(1,3)$ ✓</li>
+        </ol>
+        <p>So $c=2$ is the guaranteed point where $f'(c)=0$.</p>
+      </div>
+
+      <h3>1.5 Mean Value Theorem (MVT / LMVT)</h3>
+      <div class="theorem-box">
+        <span class="box-title">Lagrange's Mean Value Theorem (LMVT)</span>
+        <p>If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$, then there exists $c\in(a,b)$ such that:</p>
+        $$f'(c) = \frac{f(b)-f(a)}{b-a}$$
+        <p>Geometrically: there is a point where the tangent is parallel to the secant line joining $(a,f(a))$ and $(b,f(b))$.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">LMVT — Example</span>
+        <p>Apply LMVT to $f(x)=x^3-x$ on $[0,2]$.</p>
+        <ol class="steps">
+          <li>$f(0)=0$, $f(2)=8-2=6$; slope of secant $=\frac{6-0}{2-0}=3$</li>
+          <li>$f'(x)=3x^2-1$; set $3x^2-1=3 \Rightarrow x^2=\frac{4}{3} \Rightarrow x=\frac{2}{\sqrt{3}}\approx1.155$</li>
+          <li>$c=\frac{2}{\sqrt{3}}\in(0,2)$ ✓</li>
+        </ol>
+      </div>
+
+      <h3>1.6 L'Hôpital's Rule</h3>
+      <div class="theorem-box">
+        <span class="box-title">L'Hôpital's Rule</span>
+        <p>If $\displaystyle\lim_{x\to a}\frac{f(x)}{g(x)}$ yields the indeterminate form $\frac{0}{0}$ or $\frac{\infty}{\infty}$, and $f,g$ are differentiable near $a$, and $g'(x)\neq0$ near $a$, then:</p>
+        $$\lim_{x\to a}\frac{f(x)}{g(x)} = \lim_{x\to a}\frac{f'(x)}{g'(x)}$$
+        <p>(provided the right-hand limit exists). The rule may be applied repeatedly.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">L'Hôpital Examples</span>
+        <p><strong>Example 1:</strong> $\displaystyle\lim_{x\to 0}\frac{\sin x}{x}$ → form $\frac{0}{0}$</p>
+        $$\lim_{x\to 0}\frac{\cos x}{1} = 1$$
+        <p><strong>Example 2:</strong> $\displaystyle\lim_{x\to\infty}\frac{x^2}{e^x}$ → form $\frac{\infty}{\infty}$</p>
+        $$\lim_{x\to\infty}\frac{2x}{e^x} \xrightarrow{\text{again}} \lim_{x\to\infty}\frac{2}{e^x} = 0$$
+        <p><strong>Example 3:</strong> $\displaystyle\lim_{x\to 0^+}x\ln x$ → form $0\cdot(-\infty)$; rewrite as $\frac{\ln x}{1/x}$:</p>
+        $$\lim_{x\to0^+}\frac{1/x}{-1/x^2}=\lim_{x\to0^+}(-x)=0$$
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 2: FIRST-ORDER ODE
+    ═══════════════════════════════════════════ -->
+    <section class="section" id="first-order-ode">
+      <div class="section-header">
+        <span class="section-num">§ 2</span>
+        <h2>First-Order Ordinary Differential Equations</h2>
+      </div>
+
+      <h3>2.1 Classification of ODEs</h3>
+      <div class="def-box">
+        <span class="box-title">Basic Terminology</span>
+        <ul style="list-style:disc;padding-left:1.5rem;color:#d1fae5;">
+          <li><strong>Order:</strong> The order of the highest derivative present. $y'+y=0$ is 1st order; $y''+y=0$ is 2nd order.</li>
+          <li><strong>Degree:</strong> The power of the highest-order derivative after clearing fractions and radicals. Only defined if the ODE is polynomial in its derivatives.</li>
+          <li><strong>Linear ODE:</strong> Can be written as $a_n(x)y^{(n)}+\cdots+a_1(x)y'+a_0(x)y=f(x)$. Coefficients depend only on $x$, not on $y$ or its derivatives.</li>
+          <li><strong>Nonlinear ODE:</strong> Any ODE that cannot be written in the above linear form (e.g., $yy'=x$ or $(y')^2+y=0$).</li>
+        </ul>
+      </div>
+
+      <table class="math-table">
+        <thead>
+          <tr><th>ODE</th><th>Order</th><th>Degree</th><th>Linear?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>$\frac{dy}{dx}+2y=e^x$</td><td>1</td><td>1</td><td>Yes</td></tr>
+          <tr><td>$\left(\frac{dy}{dx}\right)^2+y=0$</td><td>1</td><td>2</td><td>No</td></tr>
+          <tr><td>$y''+\sin y=0$</td><td>2</td><td>1</td><td>No (because of $\sin y$)</td></tr>
+          <tr><td>$y'''+3y''-y=x^2$</td><td>3</td><td>1</td><td>Yes</td></tr>
+          <tr><td>$\sqrt{1+(y')^2}=y''$</td><td>2</td><td>2 (after squaring)</td><td>No</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2.2 Separable Equations</h3>
+      <div class="def-box">
+        <span class="box-title">Separable ODE</span>
+        <p>An ODE is <strong>separable</strong> if it can be written in the form:</p>
+        $$\frac{dy}{dx} = g(x)\,h(y) \quad\Longleftrightarrow\quad \frac{dy}{h(y)} = g(x)\,dx$$
+        <p>Integrating both sides: $\displaystyle\int\frac{dy}{h(y)} = \int g(x)\,dx + C$</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 1 — Separable ODE</span>
+        <p>Solve $\dfrac{dy}{dx} = \dfrac{x^2}{1-y^2}$</p>
+        <ol class="steps">
+          <li>Separate: $(1-y^2)\,dy = x^2\,dx$</li>
+          <li>Integrate: $\displaystyle\int(1-y^2)\,dy = \int x^2\,dx$</li>
+          <li>Result: $y - \dfrac{y^3}{3} = \dfrac{x^3}{3} + C$</li>
+          <li>General solution: $3y - y^3 = x^3 + C_1$ (implicit form)</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 2 — Separable ODE with IVP</span>
+        <p>Solve $\dfrac{dy}{dx} = -2xy$, $y(0)=3$</p>
+        <ol class="steps">
+          <li>Separate: $\dfrac{dy}{y} = -2x\,dx$</li>
+          <li>Integrate: $\ln|y| = -x^2 + C$</li>
+          <li>Exponentiate: $y = Ae^{-x^2}$ where $A=e^C$</li>
+          <li>Apply IC: $y(0)=A=3$</li>
+          <li>Particular solution: $\boxed{y = 3e^{-x^2}}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 3 — Separable ODE</span>
+        <p>Solve $\dfrac{dy}{dx} = \dfrac{y^2 + 1}{xy}$</p>
+        <ol class="steps">
+          <li>Separate: $\dfrac{y\,dy}{y^2+1} = \dfrac{dx}{x}$</li>
+          <li>Integrate LHS: $\dfrac{1}{2}\ln(y^2+1)$; RHS: $\ln|x|+C$</li>
+          <li>$\ln(y^2+1) = 2\ln|x|+C_1 = \ln x^2 + C_1$</li>
+          <li>$y^2+1 = Ax^2$ (where $A=e^{C_1}$)</li>
+          <li>General solution: $y^2 = Ax^2 - 1$</li>
+        </ol>
+      </div>
+
+      <h3>2.3 Exact Equations</h3>
+      <div class="def-box">
+        <span class="box-title">Exact ODE</span>
+        <p>The equation $M(x,y)\,dx + N(x,y)\,dy = 0$ is <strong>exact</strong> if there exists a function $F(x,y)$ such that $\dfrac{\partial F}{\partial x}=M$ and $\dfrac{\partial F}{\partial y}=N$, i.e., $dF=0$ and the solution is $F(x,y)=C$.</p>
+      </div>
+
+      <div class="theorem-box">
+        <span class="box-title">Test for Exactness</span>
+        <p>The ODE $M\,dx+N\,dy=0$ is exact if and only if:</p>
+        $$\frac{\partial M}{\partial y} = \frac{\partial N}{\partial x}$$
+        <p>To find $F$: integrate $M$ with respect to $x$ to get $F=\int M\,dx+g(y)$; then differentiate with respect to $y$ and compare with $N$ to find $g(y)$.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Exact ODE — Example 1</span>
+        <p>Solve $(2xy+3)\,dx+(x^2-4y)\,dy=0$</p>
+        <ol class="steps">
+          <li>$M=2xy+3$, $N=x^2-4y$. Check: $M_y=2x$, $N_x=2x$ ✓ Exact</li>
+          <li>$F=\int M\,dx=x^2y+3x+g(y)$</li>
+          <li>$F_y=x^2+g'(y)=N=x^2-4y \Rightarrow g'(y)=-4y \Rightarrow g(y)=-2y^2$</li>
+          <li>$F=x^2y+3x-2y^2$</li>
+          <li>General solution: $\boxed{x^2y+3x-2y^2=C}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Exact ODE — Example 2</span>
+        <p>Solve $(e^x\sin y+2x)\,dx+(e^x\cos y)\,dy=0$</p>
+        <ol class="steps">
+          <li>$M=e^x\sin y+2x$, $N=e^x\cos y$. $M_y=e^x\cos y=N_x$ ✓</li>
+          <li>$F=\int(e^x\sin y+2x)\,dx = e^x\sin y+x^2+g(y)$</li>
+          <li>$F_y=e^x\cos y+g'(y)=e^x\cos y \Rightarrow g'(y)=0 \Rightarrow g=C_0$</li>
+          <li>Solution: $\boxed{e^x\sin y+x^2=C}$</li>
+        </ol>
+      </div>
+
+      <h4>Integrating Factor</h4>
+      <p>If the equation is not exact, an integrating factor $\mu$ can make it exact.</p>
+      <div class="formula-box">
+        <p><strong>If $\dfrac{M_y-N_x}{N}=f(x)$ alone:</strong> $\mu=e^{\int f(x)\,dx}$</p>
+        <p><strong>If $\dfrac{N_x-M_y}{M}=g(y)$ alone:</strong> $\mu=e^{\int g(y)\,dy}$</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Integrating Factor — Example</span>
+        <p>Solve $(y^2+2xy)\,dx - x^2\,dy=0$</p>
+        <ol class="steps">
+          <li>$M=y^2+2xy$, $N=-x^2$. $M_y=2y+2x$, $N_x=-2x$. Not exact.</li>
+          <li>$\dfrac{M_y-N_x}{N}=\dfrac{2y+2x+2x}{-x^2}=\dfrac{2y+4x}{-x^2}$ — depends on both $x,y$. Try the other: $\dfrac{N_x-M_y}{M}=\dfrac{-2x-2y-2x}{y^2+2xy}=\dfrac{-4x-2y}{y(y+2x)}=\dfrac{-2}{y}$</li>
+          <li>$\mu=e^{\int(-2/y)\,dy}=e^{-2\ln y}=y^{-2}$</li>
+          <li>Multiply through by $y^{-2}$: $(1+2x/y)\,dx-(x^2/y^2)\,dy=0$</li>
+          <li>New $M^*=1+2x/y$, $N^*=-x^2/y^2$. Check: $M^*_y=-2x/y^2=N^*_x$ ✓</li>
+          <li>$F=\int M^*\,dx=x+x^2/y+g(y)$; $F_y=-x^2/y^2+g'(y)=N^*=-x^2/y^2\Rightarrow g'=0$</li>
+          <li>Solution: $\boxed{x+\dfrac{x^2}{y}=C}$, i.e., $xy+x^2=Cy$</li>
+        </ol>
+      </div>
+
+      <h3>2.4 Linear First-Order ODE</h3>
+      <div class="def-box">
+        <span class="box-title">Standard Form</span>
+        $$\frac{dy}{dx} + P(x)\,y = Q(x)$$
+        <p>This is a first-order linear ODE in $y$. The solution uses an integrating factor.</p>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-title">Derivation of Solution via Integrating Factor</span>
+        <p>Multiply both sides by $\mu(x)=e^{\int P\,dx}$:</p>
+        $$e^{\int P\,dx}\frac{dy}{dx} + P(x)e^{\int P\,dx}y = Q(x)e^{\int P\,dx}$$
+        <p>The left side is exactly $\dfrac{d}{dx}\!\left[e^{\int P\,dx}\cdot y\right]$ (product rule). So:</p>
+        $$\frac{d}{dx}\left[\mu y\right] = Q\mu$$
+        <p>Integrate both sides:</p>
+        $$\mu y = \int Q\mu\,dx + C$$
+        $$\boxed{y = \frac{1}{\mu}\left[\int Q\mu\,dx + C\right], \quad \mu=e^{\int P(x)\,dx}}$$
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Linear First-Order — Example 1</span>
+        <p>Solve $\dfrac{dy}{dx}+\dfrac{2y}{x}=x^2$</p>
+        <ol class="steps">
+          <li>$P=2/x$, $Q=x^2$. $\mu=e^{\int(2/x)\,dx}=e^{2\ln x}=x^2$</li>
+          <li>Multiply: $x^2y'+2xy=(x^2y)'=x^4$</li>
+          <li>Integrate: $x^2y=\dfrac{x^5}{5}+C$</li>
+          <li>Solution: $\boxed{y=\dfrac{x^3}{5}+\dfrac{C}{x^2}}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Linear First-Order — Example 2</span>
+        <p>Solve $\dfrac{dy}{dx}-3y=e^{2x}$</p>
+        <ol class="steps">
+          <li>$P=-3$, $\mu=e^{-3x}$</li>
+          <li>$(e^{-3x}y)'=e^{-3x}\cdot e^{2x}=e^{-x}$</li>
+          <li>Integrate: $e^{-3x}y = -e^{-x}+C$</li>
+          <li>Solution: $\boxed{y=-e^{2x}+Ce^{3x}}$</li>
+        </ol>
+      </div>
+
+      <h3>2.5 Bernoulli Equation</h3>
+      <div class="def-box">
+        <span class="box-title">Bernoulli ODE</span>
+        $$\frac{dy}{dx}+P(x)y = Q(x)y^n, \quad n\neq 0,1$$
+        <p>Substitution: $v = y^{1-n}$, so $\dfrac{dv}{dx}=(1-n)y^{-n}\dfrac{dy}{dx}$. Dividing through by $y^n$ converts the Bernoulli equation into a <em>linear</em> ODE in $v$:</p>
+        $$\frac{dv}{dx}+(1-n)P(x)v=(1-n)Q(x)$$
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Bernoulli — Example</span>
+        <p>Solve $\dfrac{dy}{dx}+\dfrac{y}{x}=x^2y^3$</p>
+        <ol class="steps">
+          <li>$n=3$; let $v=y^{-2}$, $v'=-2y^{-3}y'$</li>
+          <li>Divide original by $y^3$: $y^{-3}y'+\dfrac{y^{-2}}{x}=x^2$</li>
+          <li>$-\frac{1}{2}v'+\frac{v}{x}=x^2 \Rightarrow v'-\frac{2v}{x}=-2x^2$</li>
+          <li>$\mu=e^{-2\int dx/x}=x^{-2}$</li>
+          <li>$(x^{-2}v)'=-2$; integrate: $x^{-2}v=-2x+C$</li>
+          <li>$v=y^{-2}=-2x^3+Cx^2$</li>
+          <li>Solution: $\boxed{\dfrac{1}{y^2}=Cx^2-2x^3}$</li>
+        </ol>
+      </div>
+
+      <h3>2.6 Applications of First-Order ODEs</h3>
+
+      <h4>Population Growth / Decay</h4>
+      <div class="example-box">
+        <span class="box-title">Exponential Model</span>
+        <p>If rate of growth is proportional to population: $\dfrac{dP}{dt}=kP$</p>
+        <p>Separating and integrating: $P(t)=P_0e^{kt}$</p>
+        <p>For decay (radioactive): $k&lt;0$, giving $P(t)=P_0e^{-\lambda t}$. Half-life: $t_{1/2}=\dfrac{\ln 2}{\lambda}$</p>
+      </div>
+
+      <h4>Newton's Law of Cooling</h4>
+      <div class="example-box">
+        <span class="box-title">Newton's Cooling</span>
+        <p>Rate of cooling proportional to temperature difference with surroundings:</p>
+        $$\frac{dT}{dt}=-k(T-T_s), \quad k>0$$
+        <p>This is linear; solution: $T(t)=T_s+(T_0-T_s)e^{-kt}$</p>
+        <p><strong>Problem:</strong> A body at $100°C$ cools to $60°C$ in $10$ min in a $20°C$ room. Find temperature after $20$ min.</p>
+        <ol class="steps">
+          <li>$T(t)=20+(100-20)e^{-kt}=20+80e^{-kt}$</li>
+          <li>$T(10)=60$: $60=20+80e^{-10k}\Rightarrow e^{-10k}=\frac{1}{2}\Rightarrow k=\frac{\ln2}{10}$</li>
+          <li>$T(20)=20+80e^{-20k}=20+80\cdot\left(\frac{1}{2}\right)^2=20+20=40°C$</li>
+        </ol>
+      </div>
+
+      <h4>RC Circuit</h4>
+      <div class="example-box">
+        <span class="box-title">RC Circuit (Series)</span>
+        <p>By Kirchhoff's voltage law for a series RC circuit with EMF $E(t)$:</p>
+        $$R\,\frac{dq}{dt}+\frac{q}{C}=E(t)$$
+        <p>This is linear in $q(t)$. With $E=E_0$ (constant), the solution is:</p>
+        $$q(t)=CE_0+\left(q_0-CE_0\right)e^{-t/(RC)}$$
+        <p>The current is $I(t)=\dfrac{dq}{dt}=\dfrac{E_0-q_0/C}{R}e^{-t/(RC)}$. The time constant is $\tau=RC$.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 3: SECOND-ORDER CONST COEFF
+    ═══════════════════════════════════════════ -->
+    <section class="section" id="second-order-const">
+      <div class="section-header">
+        <span class="section-num">§ 3</span>
+        <h2>Linear 2nd-Order ODE with Constant Coefficients</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-title">Standard Form</span>
+        $$ay''+by'+cy=f(x)$$
+        <p>where $a,b,c$ are real constants, $a\neq0$. When $f(x)=0$ the equation is <strong>homogeneous</strong>; otherwise it is <strong>non-homogeneous</strong>.</p>
+        <p>The general solution is: $y = y_c + y_p$ where $y_c$ is the <em>complementary function</em> (solution of the homogeneous equation) and $y_p$ is a <em>particular integral</em>.</p>
+      </div>
+
+      <h3>3.1 Complementary Function (CF)</h3>
+      <p>Assume $y=e^{rx}$ for the homogeneous equation $ay''+by'+cy=0$. Substituting:</p>
+      $$ar^2e^{rx}+bre^{rx}+ce^{rx}=0 \implies \boxed{ar^2+br+c=0}$$
+      <p>This is the <strong>characteristic (auxiliary) equation</strong>. Its discriminant $\Delta=b^2-4ac$ determines the three cases:</p>
+
+      <div class="theorem-box">
+        <span class="box-title">Three Cases for the CF</span>
+        <table class="math-table">
+          <thead>
+            <tr><th>Case</th><th>Condition</th><th>Roots</th><th>$y_c$</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>I</strong> — Distinct Real</td>
+              <td>$\Delta > 0$</td>
+              <td>$r_1,r_2\in\mathbb{R}$, $r_1\neq r_2$</td>
+              <td>$C_1e^{r_1x}+C_2e^{r_2x}$</td>
+            </tr>
+            <tr>
+              <td><strong>II</strong> — Repeated Real</td>
+              <td>$\Delta = 0$</td>
+              <td>$r_1=r_2=r=-\dfrac{b}{2a}$</td>
+              <td>$(C_1+C_2x)e^{rx}$</td>
+            </tr>
+            <tr>
+              <td><strong>III</strong> — Complex</td>
+              <td>$\Delta < 0$</td>
+              <td>$r=\alpha\pm i\beta$</td>
+              <td>$e^{\alpha x}(C_1\cos\beta x+C_2\sin\beta x)$</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>where $\alpha=-\dfrac{b}{2a}$ and $\beta=\dfrac{\sqrt{4ac-b^2}}{2a}$.</p>
+      </div>
+
+      <div class="proof-box">
+        <span class="box-title">Derivation: Repeated Root Case</span>
+        <p>When $r_1=r_2=r$, one solution is $y_1=e^{rx}$. We need a second linearly independent solution. Using <em>reduction of order</em>: let $y_2=v(x)e^{rx}$. Then:</p>
+        $$y_2'=(v'+rv)e^{rx},\quad y_2''=(v''+2rv'+r^2v)e^{rx}$$
+        <p>Substituting into $ay''+by'+cy=0$ and using $ar^2+br+c=0$ and $2ar+b=0$ (repeated root condition), we get $av''=0$, so $v''=0$, thus $v=C_1+C_2x$. Hence:</p>
+        $$y_2=(C_1+C_2x)e^{rx}$$
+      </div>
+
+      <h3>3.2 Particular Integral (PI) — Undetermined Coefficients</h3>
+      <p>For the non-homogeneous part $f(x)$, we guess a form for $y_p$ based on $f(x)$:</p>
+
+      <table class="math-table">
+        <thead>
+          <tr><th>$f(x)$ form</th><th>Trial $y_p$</th><th>Modification</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>$x^n$ (polynomial, degree $n$)</td><td>$A_nx^n+\cdots+A_1x+A_0$</td><td>—</td></tr>
+          <tr><td>$e^{\alpha x}$</td><td>$Ae^{\alpha x}$</td><td>Multiply by $x^s$ if $\alpha$ is a root of char. eq. ($s=1$ simple, $s=2$ repeated)</td></tr>
+          <tr><td>$\cos\beta x$ or $\sin\beta x$</td><td>$A\cos\beta x+B\sin\beta x$</td><td>Multiply by $x$ if $i\beta$ is a root</td></tr>
+          <tr><td>$e^{\alpha x}\cos\beta x$</td><td>$e^{\alpha x}(A\cos\beta x+B\sin\beta x)$</td><td>Multiply by $x$ if $\alpha+i\beta$ is a root</td></tr>
+          <tr><td>$x^ne^{\alpha x}$</td><td>$e^{\alpha x}(A_nx^n+\cdots+A_0)$</td><td>Multiply by $x^s$ as needed</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.3 Operator Method (D-notation)</h3>
+      <div class="def-box">
+        <span class="box-title">D-Operator</span>
+        <p>Let $D=\dfrac{d}{dx}$, so $D^2y=y''$, etc. The ODE becomes $f(D)y=Q(x)$ where $f(D)=aD^2+bD+c$.</p>
+        <p>The particular integral is $y_p=\dfrac{1}{f(D)}Q(x)$, evaluated by the following rules:</p>
+        <ul style="list-style:disc;padding-left:1.5rem;color:#d1fae5;margin-top:.5rem;">
+          <li><strong>Exponential:</strong> $\dfrac{1}{f(D)}e^{ax}=\dfrac{e^{ax}}{f(a)}$, provided $f(a)\neq0$</li>
+          <li><strong>Failure case:</strong> If $f(a)=0$, use $\dfrac{1}{f(D)}e^{ax}=x\dfrac{e^{ax}}{f'(a)}$, etc.</li>
+          <li><strong>Trig:</strong> Replace $D^2\to-\beta^2$ in $\dfrac{1}{f(D^2)}\sin\beta x$ or $\cos\beta x$</li>
+          <li><strong>Polynomial:</strong> Expand $\dfrac{1}{f(D)}$ as a power series in $D$ and operate term by term</li>
+        </ul>
+      </div>
+
+      <h3>3.4 Worked Examples (Full Solutions)</h3>
+
+      <div class="example-box">
+        <span class="box-title">Example 1 — Distinct Real Roots</span>
+        <p>Solve $y''-5y'+6y=e^{2x}$</p>
+        <ol class="steps">
+          <li><strong>CF:</strong> Char. eq. $r^2-5r+6=(r-2)(r-3)=0\Rightarrow r=2,3$</li>
+          <li>$y_c=C_1e^{2x}+C_2e^{3x}$</li>
+          <li><strong>PI:</strong> Since $\alpha=2$ is a root, trial $y_p=Axe^{2x}$</li>
+          <li>$y_p'=Ae^{2x}(1+2x)$, $y_p''=Ae^{2x}(4+4x)$</li>
+          <li>Sub: $A(4+4x)e^{2x}-5A(1+2x)e^{2x}+6Axe^{2x}=e^{2x}$</li>
+          <li>$Ae^{2x}(4+4x-5-10x+6x)=e^{2x}\Rightarrow A(-1)=1\Rightarrow A=-1$</li>
+          <li>$y_p=-xe^{2x}$</li>
+          <li><strong>General solution:</strong> $\boxed{y=C_1e^{2x}+C_2e^{3x}-xe^{2x}}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 2 — Complex Roots + Trig RHS</span>
+        <p>Solve $y''+4y=3\sin 2x$</p>
+        <ol class="steps">
+          <li><strong>CF:</strong> $r^2+4=0\Rightarrow r=\pm2i$; $\alpha=0$, $\beta=2$</li>
+          <li>$y_c=C_1\cos2x+C_2\sin2x$</li>
+          <li><strong>PI:</strong> Since $\pm2i$ are roots, multiply trial by $x$: $y_p=x(A\cos2x+B\sin2x)$</li>
+          <li>$y_p'=A\cos2x+B\sin2x+x(-2A\sin2x+2B\cos2x)$</li>
+          <li>$y_p''=-4A\sin2x+4B\cos2x+(-4Ax\cos2x-4Bx\sin2x)+(-4Ax\cos2x-4Bx\sin2x)$</li>
+          <li>$y_p''=4B\cos2x-4A\sin2x-4x(A\cos2x+B\sin2x)$</li>
+          <li>$y_p''+4y_p=4B\cos2x-4A\sin2x=3\sin2x$</li>
+          <li>$4B=0\Rightarrow B=0$; $-4A=3\Rightarrow A=-\frac{3}{4}$</li>
+          <li>$y_p=-\frac{3}{4}x\cos2x$</li>
+          <li><strong>General solution:</strong> $\boxed{y=C_1\cos2x+C_2\sin2x-\tfrac{3}{4}x\cos2x}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 3 — Repeated Roots + Polynomial RHS</span>
+        <p>Solve $y''-4y'+4y=x^2e^{2x}$</p>
+        <ol class="steps">
+          <li><strong>CF:</strong> $(r-2)^2=0\Rightarrow r=2$ (double root)</li>
+          <li>$y_c=(C_1+C_2x)e^{2x}$</li>
+          <li><strong>PI:</strong> $\alpha=2$ is a double root, so multiply by $x^2$: $y_p=e^{2x}(Ax^4+Bx^3+Cx^2)/1$</li>
+          <li>Actually: trial $y_p=x^2e^{2x}(Ax^2+Bx+C)$</li>
+          <li>Using D-operator: $y_p=\dfrac{e^{2x}x^2}{(D-2)^2}$. Since $(D-2)$ acting on $e^{2x}$ shifts $D\to D+2$: $y_p=e^{2x}\dfrac{x^2}{D^2}=e^{2x}\dfrac{x^4}{12}$</li>
+          <li><strong>General solution:</strong> $\boxed{y=\left(C_1+C_2x+\dfrac{x^4}{12}\right)e^{2x}}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 4 — IVP, Complex Roots</span>
+        <p>Solve $y''+2y'+5y=0$, $y(0)=1$, $y'(0)=0$</p>
+        <ol class="steps">
+          <li>Char. eq.: $r^2+2r+5=0\Rightarrow r=\dfrac{-2\pm\sqrt{4-20}}{2}=-1\pm2i$</li>
+          <li>$y=e^{-x}(C_1\cos2x+C_2\sin2x)$</li>
+          <li>$y(0)=C_1=1$</li>
+          <li>$y'=-e^{-x}(C_1\cos2x+C_2\sin2x)+e^{-x}(-2C_1\sin2x+2C_2\cos2x)$</li>
+          <li>$y'(0)=-C_1+2C_2=0\Rightarrow C_2=\frac{1}{2}$</li>
+          <li>Solution: $\boxed{y=e^{-x}\!\left(\cos2x+\tfrac{1}{2}\sin2x\right)}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 5 — $f(x)=xe^x+\cos x$</span>
+        <p>Find the PI of $y''-3y'+2y=xe^x+\cos x$</p>
+        <ol class="steps">
+          <li>Char. roots: $r=1,2$</li>
+          <li><strong>PI for $xe^x$:</strong> $\alpha=1$ is simple root; trial $y_{p1}=xe^x(Ax+B)$</li>
+          <li>$y_{p1}=e^x(Ax^2+Bx)$; after substitution: $A=-1$, $B=-2$; $y_{p1}=e^x(-x^2-2x)$</li>
+          <li><strong>PI for $\cos x$:</strong> try $y_{p2}=A\cos x+B\sin x$</li>
+          <li>$y_{p2}''=-A\cos x-B\sin x$; substituting: $(1-A-3B)\cos x+(1B-3A-B)\sin x$ wait let me redo:</li>
+          <li>$(y_{p2})'=-A\sin x+B\cos x$; $y_{p2}''=-A\cos x-B\sin x$</li>
+          <li>$-A\cos x-B\sin x-3(-A\sin x+B\cos x)+2(A\cos x+B\sin x)=\cos x$</li>
+          <li>$(A-3B)\cos x+(3A+B)\sin x=\cos x\Rightarrow A-3B=1$, $3A+B=0\Rightarrow B=-3A$</li>
+          <li>$A+9A=1\Rightarrow A=\frac{1}{10}$, $B=-\frac{3}{10}$</li>
+          <li>$y_p=e^x(-x^2-2x)+\frac{1}{10}\cos x-\frac{3}{10}\sin x$</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 4: HIGHER-ORDER CONST COEFF
+    ═══════════════════════════════════════════ -->
+    <section class="section" id="higher-order-const">
+      <div class="section-header">
+        <span class="section-num">§ 4</span>
+        <h2>Higher-Order Linear ODE with Constant Coefficients</h2>
+      </div>
+
+      <p>The methods of §3 extend naturally to $n$th-order equations:</p>
+      <div class="def-box">
+        <span class="box-title">$n$th-Order Linear ODE</span>
+        $$a_ny^{(n)}+a_{n-1}y^{(n-1)}+\cdots+a_1y'+a_0y=f(x)$$
+        <p>Characteristic equation: $a_nr^n+a_{n-1}r^{n-1}+\cdots+a_1r+a_0=0$, which has $n$ roots (counting multiplicity, possibly complex).</p>
+      </div>
+
+      <div class="theorem-box">
+        <span class="box-title">Superposition Principle</span>
+        <p>If $y_1,\ldots,y_n$ are $n$ linearly independent solutions of the homogeneous equation, then the general solution of the homogeneous equation is $y_c=C_1y_1+\cdots+C_ny_n$. The general solution of the non-homogeneous equation is $y=y_c+y_p$.</p>
+      </div>
+
+      <h4>Rules for the CF of Higher-Order ODEs</h4>
+      <table class="math-table">
+        <thead>
+          <tr><th>Root type</th><th>Multiplicity</th><th>Contribution to $y_c$</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Real $r=m$</td><td>Simple</td><td>$Ce^{mx}$</td></tr>
+          <tr><td>Real $r=m$</td><td>$k$-fold</td><td>$(C_1+C_2x+\cdots+C_kx^{k-1})e^{mx}$</td></tr>
+          <tr><td>Complex $r=\alpha\pm i\beta$</td><td>Simple pair</td><td>$e^{\alpha x}(C_1\cos\beta x+C_2\sin\beta x)$</td></tr>
+          <tr><td>Complex $r=\alpha\pm i\beta$</td><td>$k$-fold pair</td><td>$e^{\alpha x}[(C_1+C_2x+\cdots+C_kx^{k-1})\cos\beta x+(D_1+\cdots+D_kx^{k-1})\sin\beta x]$</td></tr>
+        </tbody>
+      </table>
+
+      <div class="example-box">
+        <span class="box-title">4th-Order ODE — Complete Example</span>
+        <p>Solve $y^{(4)}-y=0$</p>
+        <ol class="steps">
+          <li>Characteristic equation: $r^4-1=0\Rightarrow(r^2-1)(r^2+1)=0$</li>
+          <li>Roots: $r=1,-1,i,-i$</li>
+          <li>CF: $y_c=C_1e^x+C_2e^{-x}+C_3\cos x+C_4\sin x$</li>
+          <li>This is also $y_c=A\cosh x+B\sinh x+C_3\cos x+C_4\sin x$</li>
+          <li>General solution: $\boxed{y=C_1e^x+C_2e^{-x}+C_3\cos x+C_4\sin x}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">4th-Order ODE with RHS</span>
+        <p>Solve $y^{(4)}-2y'''+y''=e^x+x$</p>
+        <ol class="steps">
+          <li>Char. eq.: $r^4-2r^3+r^2=r^2(r^2-2r+1)=r^2(r-1)^2=0$</li>
+          <li>Roots: $r=0$ (double), $r=1$ (double)</li>
+          <li>$y_c=(C_1+C_2x)+(C_3+C_4x)e^x$</li>
+          <li><strong>PI for $e^x$:</strong> $\alpha=1$ is double root; $y_{p1}=\dfrac{x^2e^x}{f''(1)}$; $f(r)=r^2(r-1)^2$, $f''(1)=2$; $y_{p1}=\dfrac{x^2e^x}{2}$</li>
+          <li><strong>PI for $x$:</strong> $y_{p2}=Ax^3+Bx^2$ (multiply $x$ by $x^2$ for double zero root)</li>
+          <li>$(y_{p2})''=6Ax+2B$, $(y_{p2})'=3Ax^2+2Bx$, $(y_{p2})'''=6A$, $(y_{p2})^{(4)}=0$</li>
+          <li>Substituting: $0-2(6A)+6Ax+2B=x\Rightarrow 6Ax+(2B-12A)=x$</li>
+          <li>$6A=1\Rightarrow A=1/6$; $2B-12A=0\Rightarrow B=1$</li>
+          <li>$y_{p2}=\dfrac{x^3}{6}+x^2$</li>
+          <li>General solution: $y=(C_1+C_2x)+(C_3+C_4x)e^x+\dfrac{x^2e^x}{2}+\dfrac{x^3}{6}+x^2$</li>
+        </ol>
+      </div>
+
+      <div class="key-points">
+        <h4>Key Points — Higher-Order ODEs</h4>
+        <ul>
+          <li>The number of arbitrary constants in $y_c$ equals the order of the ODE</li>
+          <li>Each distinct real root contributes one exponential term</li>
+          <li>A $k$-fold root contributes $k$ independent solutions (polynomial-times-exponential)</li>
+          <li>Complex roots always come in conjugate pairs for real-coefficient ODEs</li>
+          <li>PI method is the same; superposition applies for sums in $f(x)$</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 5: CAUCHY-EULER
+    ═══════════════════════════════════════════ -->
+    <section class="section" id="cauchy-euler">
+      <div class="section-header">
+        <span class="section-num">§ 5</span>
+        <h2>Cauchy–Euler Equation</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-title">Cauchy–Euler (Equidimensional) Equation</span>
+        $$x^2y''+axy'+by=f(x)$$
+        <p>or more generally the $n$th-order form: $a_nx^ny^{(n)}+a_{n-1}x^{n-1}y^{(n-1)}+\cdots+a_0y=f(x)$. Note that the coefficient of $y^{(k)}$ is $x^k$ (times a constant). This is also called the <strong>equidimensional equation</strong> because under the scaling $x\to\lambda x$, the equation has the same form.</p>
+      </div>
+
+      <h3>5.1 Substitution $x = e^t$ (or $t = \ln x$)</h3>
+      <div class="proof-box">
+        <span class="box-title">Full Derivation of the Reduction</span>
+        <p>Let $x=e^t$, so $t=\ln x$ (for $x>0$). Then:</p>
+        $$\frac{dy}{dx}=\frac{dy}{dt}\cdot\frac{dt}{dx}=\frac{1}{x}\frac{dy}{dt} \implies x\frac{dy}{dx}=\frac{dy}{dt}\equiv Dy \text{ (with }D=d/dt\text{)}$$
+        <p>For the second derivative:</p>
+        $$\frac{d^2y}{dx^2}=\frac{d}{dx}\left(\frac{1}{x}\frac{dy}{dt}\right)=-\frac{1}{x^2}\frac{dy}{dt}+\frac{1}{x^2}\frac{d^2y}{dt^2}$$
+        $$x^2\frac{d^2y}{dx^2}=\frac{d^2y}{dt^2}-\frac{dy}{dt}=(D^2-D)y=D(D-1)y$$
+        <p>Similarly: $x^3y'''=D(D-1)(D-2)y$, and in general $x^ky^{(k)}=D(D-1)\cdots(D-k+1)y$.</p>
+        <p>The Cauchy–Euler equation $x^2y''+axy'+by=0$ becomes:</p>
+        $$D(D-1)y+aDy+by=0 \implies [D^2+(a-1)D+b]y=0$$
+        <p>This is a <strong>linear ODE with constant coefficients</strong> in the variable $t$!</p>
+      </div>
+
+      <div class="formula-box">
+        <span class="box-title">Characteristic Equation for Cauchy–Euler</span>
+        $$m(m-1)+am+b=0 \implies m^2+(a-1)m+b=0$$
+        <p>Equivalently, try $y=x^m$ directly in $x^2y''+axy'+by=0$:</p>
+        $$m(m-1)x^m+amx^m+bx^m=0 \implies m^2+(a-1)m+b=0$$
+      </div>
+
+      <div class="theorem-box">
+        <span class="box-title">Three Cases for Cauchy–Euler CF</span>
+        <table class="math-table">
+          <thead>
+            <tr><th>Case</th><th>Roots $m_1,m_2$</th><th>$y_c$</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Distinct real</td>
+              <td>$m_1\neq m_2$, both real</td>
+              <td>$C_1x^{m_1}+C_2x^{m_2}$</td>
+            </tr>
+            <tr>
+              <td>Repeated real</td>
+              <td>$m_1=m_2=m$</td>
+              <td>$x^m(C_1+C_2\ln x)$</td>
+            </tr>
+            <tr>
+              <td>Complex</td>
+              <td>$m=\alpha\pm i\beta$</td>
+              <td>$x^\alpha[C_1\cos(\beta\ln x)+C_2\sin(\beta\ln x)]$</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>The complex case follows from $x^{\alpha+i\beta}=x^\alpha e^{i\beta\ln x}=x^\alpha[\cos(\beta\ln x)+i\sin(\beta\ln x)]$.</p>
+      </div>
+
+      <h3>5.2 Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-title">Example 1 — Distinct Real Roots</span>
+        <p>Solve $x^2y''-2xy'-4y=0$ (for $x>0$)</p>
+        <ol class="steps">
+          <li>Try $y=x^m$: $m(m-1)-2m-4=0\Rightarrow m^2-3m-4=0$</li>
+          <li>$(m-4)(m+1)=0\Rightarrow m=4,-1$</li>
+          <li>General solution: $\boxed{y=C_1x^4+C_2x^{-1}}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 2 — Repeated Root</span>
+        <p>Solve $x^2y''-xy'+y=0$</p>
+        <ol class="steps">
+          <li>$m(m-1)-m+1=0\Rightarrow m^2-2m+1=0\Rightarrow(m-1)^2=0$</li>
+          <li>$m=1$ (double root)</li>
+          <li>General solution: $\boxed{y=x(C_1+C_2\ln x)}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 3 — Complex Roots</span>
+        <p>Solve $x^2y''+xy'+y=0$</p>
+        <ol class="steps">
+          <li>$m(m-1)+m+1=0\Rightarrow m^2+1=0\Rightarrow m=\pm i$</li>
+          <li>$\alpha=0$, $\beta=1$</li>
+          <li>General solution: $\boxed{y=C_1\cos(\ln x)+C_2\sin(\ln x)}$</li>
+        </ol>
+      </div>
+
+      <h3>5.3 Non-Homogeneous Cauchy–Euler</h3>
+      <p>For $x^2y''+axy'+by=f(x)$, substitute $x=e^t$ to convert to a constant-coefficient ODE, solve in $t$ (find CF + PI in $t$), then back-substitute $t=\ln x$.</p>
+
+      <div class="example-box">
+        <span class="box-title">Example 4 — Non-Homogeneous</span>
+        <p>Solve $x^2y''+2xy'-2y=x^2$</p>
+        <ol class="steps">
+          <li>Char. eq.: $m^2+m-2=0\Rightarrow(m+2)(m-1)=0\Rightarrow m=-2,1$</li>
+          <li>$y_c=C_1x+C_2x^{-2}$</li>
+          <li><strong>PI:</strong> Try $y_p=Ax^2$; $y_p'=2Ax$, $y_p''=2A$</li>
+          <li>$x^2(2A)+2x(2Ax)-2Ax^2=x^2\Rightarrow2A+4A-2A=1\Rightarrow4A=1\Rightarrow A=\frac{1}{4}$</li>
+          <li>General solution: $\boxed{y=C_1x+C_2x^{-2}+\dfrac{x^2}{4}}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 5 — Via Substitution</span>
+        <p>Solve $x^2y''-3xy'+4y=x^2\ln x$</p>
+        <ol class="steps">
+          <li>Let $x=e^t$: $[D(D-1)-3D+4]y=e^{2t}\cdot t$, i.e., $(D^2-4D+4)y=te^{2t}$</li>
+          <li>$(D-2)^2y=te^{2t}$. CF: $y_c=(C_1+C_2t)e^{2t}$</li>
+          <li>$r=2$ is a double root; PI $=\dfrac{te^{2t}}{(D-2)^2}=e^{2t}\dfrac{t}{D^2}=e^{2t}\cdot\dfrac{t^3}{6}$</li>
+          <li>Back-substitute $t=\ln x$, $e^t=x$: $y_c=(C_1+C_2\ln x)x^2$</li>
+          <li>$y_p=x^2\cdot\dfrac{(\ln x)^3}{6}$</li>
+          <li>General solution: $\boxed{y=x^2\!\left(C_1+C_2\ln x+\dfrac{(\ln x)^3}{6}\right)}$</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 6: LEGENDRE'S EQUATION
+    ═══════════════════════════════════════════ -->
+    <section class="section" id="legendre-equation">
+      <div class="section-header">
+        <span class="section-num">§ 6</span>
+        <h2>Legendre's Equation &amp; Polynomials</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-title">Legendre's Differential Equation</span>
+        $$(1-x^2)y'' - 2xy' + n(n+1)y = 0, \quad x\in[-1,1]$$
+        <p>where $n$ is a non-negative integer. This equation arises in physics when solving Laplace's equation in spherical coordinates (separation of variables).</p>
+        <p>Rewritten in self-adjoint (Sturm–Liouville) form:</p>
+        $$\frac{d}{dx}\left[(1-x^2)\frac{dy}{dx}\right]+n(n+1)y=0$$
+      </div>
+
+      <h3>6.1 Power Series Solution</h3>
+      <p>Since $x=0$ is an ordinary point, assume $y=\displaystyle\sum_{k=0}^\infty a_k x^k$. Then $y'=\sum ka_kx^{k-1}$ and $y''=\sum k(k-1)a_kx^{k-2}$. Substituting into Legendre's equation and collecting powers of $x^k$:</p>
+
+      <div class="formula-box">
+        <span class="box-title">Recurrence Relation</span>
+        $$a_{k+2} = -\frac{(n-k)(n+k+1)}{(k+1)(k+2)}\,a_k$$
+        <p>This gives two independent series solutions: one in even powers (from $a_0$) and one in odd powers (from $a_1$). For non-negative integer $n$, one of these series terminates, giving a polynomial — the <strong>Legendre polynomial</strong> $P_n(x)$.</p>
+      </div>
+
+      <h3>6.2 Legendre Polynomials</h3>
+      <p>By convention, $P_n(1)=1$. The first several Legendre polynomials are:</p>
+
+      <table class="math-table">
+        <thead>
+          <tr><th>$n$</th><th>$P_n(x)$</th><th>$P_n(0)$</th><th>$P_n(1)$</th><th>$P_n(-1)$</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>$1$</td><td>$1$</td><td>$1$</td><td>$1$</td></tr>
+          <tr><td>1</td><td>$x$</td><td>$0$</td><td>$1$</td><td>$-1$</td></tr>
+          <tr><td>2</td><td>$\frac{1}{2}(3x^2-1)$</td><td>$-\frac{1}{2}$</td><td>$1$</td><td>$1$</td></tr>
+          <tr><td>3</td><td>$\frac{1}{2}(5x^3-3x)$</td><td>$0$</td><td>$1$</td><td>$-1$</td></tr>
+          <tr><td>4</td><td>$\frac{1}{8}(35x^4-30x^2+3)$</td><td>$\frac{3}{8}$</td><td>$1$</td><td>$1$</td></tr>
+          <tr><td>5</td><td>$\frac{1}{8}(63x^5-70x^3+15x)$</td><td>$0$</td><td>$1$</td><td>$-1$</td></tr>
+        </tbody>
+      </table>
+
+      <h3>6.3 Rodrigues' Formula</h3>
+      <div class="theorem-box">
+        <span class="box-title">Rodrigues' Formula</span>
+        $$P_n(x)=\frac{1}{2^n n!}\frac{d^n}{dx^n}\left[(x^2-1)^n\right]$$
+        <p>This provides a closed-form expression for each $P_n$ without using the series or recurrence directly.</p>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Rodrigues' Formula — Deriving $P_2$</span>
+        <ol class="steps">
+          <li>$n=2$: $\frac{1}{4\cdot2}\frac{d^2}{dx^2}(x^2-1)^2$</li>
+          <li>$(x^2-1)^2=x^4-2x^2+1$</li>
+          <li>First derivative: $4x^3-4x$; second derivative: $12x^2-4$</li>
+          <li>$P_2=\frac{1}{8}(12x^2-4)=\frac{3x^2-1}{2}$ ✓</li>
+        </ol>
+      </div>
+
+      <h3>6.4 Orthogonality of Legendre Polynomials</h3>
+      <div class="theorem-box">
+        <span class="box-title">Orthogonality Relation</span>
+        $$\int_{-1}^{1}P_m(x)P_n(x)\,dx = \begin{cases} 0 & m\neq n \\ \dfrac{2}{2n+1} & m=n \end{cases}$$
+        <p>This makes the Legendre polynomials an orthogonal basis for $L^2[-1,1]$. Any function $f(x)$ can be expanded as:</p>
+        $$f(x)=\sum_{n=0}^\infty c_n P_n(x), \quad c_n=\frac{2n+1}{2}\int_{-1}^1 f(x)P_n(x)\,dx$$
+      </div>
+
+      <h3>6.5 Recurrence Relations</h3>
+      <div class="formula-box">
+        <span class="box-title">Key Recurrence Relations</span>
+        <p><strong>Three-term recurrence (Bonnet's formula):</strong></p>
+        $$(n+1)P_{n+1}(x)=(2n+1)xP_n(x)-nP_{n-1}(x)$$
+        <p><strong>Derivative recurrence:</strong></p>
+        $$P_n'(x)-xP_{n-1}'(x)=nP_{n-1}(x)$$
+        $$(1-x^2)P_n'(x)=nP_{n-1}(x)-nxP_n(x)$$
+        <p><strong>Another relation:</strong></p>
+        $$P_{n+1}'(x)-P_{n-1}'(x)=(2n+1)P_n(x)$$
+      </div>
+
+      <h3>6.6 Generating Function</h3>
+      <div class="theorem-box">
+        <span class="box-title">Generating Function</span>
+        $$\frac{1}{\sqrt{1-2xt+t^2}}=\sum_{n=0}^\infty P_n(x)\,t^n, \quad |t|<1$$
+        <p>Expanding the left side in powers of $t$ and equating coefficients yields $P_n(x)$. This generating function is physically important: if $r$ and $r'$ are distances from the origin, and $\theta$ is the angle between them, then the electrostatic potential is $\propto\frac{1}{\sqrt{r^2+r'^2-2rr'\cos\theta}}=\frac{1}{r}\sum P_n(\cos\theta)(r'/r)^n$.</p>
+      </div>
+
+      <div class="key-points">
+        <h4>Properties of Legendre Polynomials</h4>
+        <ul>
+          <li>$P_n(x)$ has exactly $n$ distinct real zeros in $(-1,1)$</li>
+          <li>$P_n(-x)=(-1)^nP_n(x)$ — even/odd symmetry</li>
+          <li>$|P_n(x)|\le1$ for all $x\in[-1,1]$</li>
+          <li>The leading coefficient of $P_n$ is $\frac{(2n)!}{2^n(n!)^2}$</li>
+          <li>$P_n(1)=1$ and $P_n(-1)=(-1)^n$ for all $n$</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 7: VARIATION OF PARAMETERS
+    ═══════════════════════════════════════════ -->
+    <section class="section" id="variation-parameters">
+      <div class="section-header">
+        <span class="section-num">§ 7</span>
+        <h2>Method of Variation of Parameters</h2>
+      </div>
+
+      <div class="def-box">
+        <span class="box-title">Overview</span>
+        <p>Variation of parameters is a general method for finding a particular integral of <em>any</em> second-order linear ODE — even when $f(x)$ is not of the special forms required by undetermined coefficients. It works whenever we know the complementary function.</p>
+        <p>Consider: $y'' + P(x)y' + Q(x)y = R(x)$</p>
+        <p>Suppose the CF is $y_c = C_1y_1(x) + C_2y_2(x)$. We "vary" the constants by letting $C_1\to u_1(x)$ and $C_2\to u_2(x)$, so $y_p = u_1y_1 + u_2y_2$.</p>
+      </div>
+
+      <h3>7.1 Wronskian</h3>
+      <div class="def-box">
+        <span class="box-title">The Wronskian</span>
+        $$W(y_1,y_2) = \begin{vmatrix}y_1 & y_2\\ y_1' & y_2'\end{vmatrix} = y_1y_2'-y_2y_1'$$
+        <p>Abel's Identity states that $W(x)=W(x_0)\exp\!\left(-\displaystyle\int_{x_0}^xP(t)\,dt\right)$, so $W\neq0$ whenever $y_1,y_2$ are linearly independent.</p>
+      </div>
+
+      <h3>7.2 Derivation of the Formulas</h3>
+      <div class="proof-box">
+        <span class="box-title">Full Derivation</span>
+        <p>Let $y_p=u_1y_1+u_2y_2$. Then $y_p'=u_1'y_1+u_1y_1'+u_2'y_2+u_2y_2'$. We impose the condition:</p>
+        $$u_1'y_1+u_2'y_2=0 \quad\text{(Condition 1)}$$
+        <p>So $y_p'=u_1y_1'+u_2y_2'$ and $y_p''=u_1'y_1'+u_1y_1''+u_2'y_2'+u_2y_2''$. Substituting into $y''+Py'+Qy=R$:</p>
+        $$u_1(y_1''+Py_1'+Qy_1)+u_2(y_2''+Py_2'+Qy_2)+u_1'y_1'+u_2'y_2'=R$$
+        <p>Since $y_1,y_2$ satisfy the homogeneous equation, the bracketed terms vanish:</p>
+        $$u_1'y_1'+u_2'y_2'=R \quad\text{(Condition 2)}$$
+        <p>Solving the $2\times2$ system (Conditions 1 &amp; 2) by Cramer's rule:</p>
+        $$u_1'=\frac{-y_2R}{W},\quad u_2'=\frac{y_1R}{W}$$
+        $$\boxed{u_1=-\int\frac{y_2R}{W}\,dx,\qquad u_2=\int\frac{y_1R}{W}\,dx}$$
+        $$\boxed{y_p=-y_1\int\frac{y_2R}{W}\,dx+y_2\int\frac{y_1R}{W}\,dx}$$
+      </div>
+
+      <h3>7.3 Worked Examples</h3>
+
+      <div class="example-box">
+        <span class="box-title">Example 1 — Trig RHS (Classic)</span>
+        <p>Solve $y''+y=\sec x$ using variation of parameters.</p>
+        <ol class="steps">
+          <li><strong>CF:</strong> $r^2+1=0\Rightarrow r=\pm i$; $y_c=C_1\cos x+C_2\sin x$</li>
+          <li>$y_1=\cos x$, $y_2=\sin x$, $R=\sec x$</li>
+          <li>$W=\cos x\cdot\cos x-\sin x\cdot(-\sin x)=\cos^2x+\sin^2x=1$</li>
+          <li>$u_1'=-\dfrac{y_2R}{W}=-\sin x\sec x=-\tan x$</li>
+          <li>$u_1=\int(-\tan x)\,dx=\ln|\cos x|$</li>
+          <li>$u_2'=\dfrac{y_1R}{W}=\cos x\sec x=1$</li>
+          <li>$u_2=\int1\,dx=x$</li>
+          <li>$y_p=\ln|\cos x|\cdot\cos x+x\sin x$</li>
+          <li><strong>General solution:</strong> $\boxed{y=C_1\cos x+C_2\sin x+\cos x\ln|\cos x|+x\sin x}$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 2 — Exponential RHS</span>
+        <p>Solve $y''-3y'+2y=\dfrac{e^x}{1+e^x}$</p>
+        <ol class="steps">
+          <li><strong>CF:</strong> $(r-1)(r-2)=0$; $y_1=e^x$, $y_2=e^{2x}$</li>
+          <li>$W=e^x\cdot2e^{2x}-e^{2x}\cdot e^x=e^{3x}$</li>
+          <li>$R=\dfrac{e^x}{1+e^x}$</li>
+          <li>$u_1'=-\dfrac{y_2R}{W}=-\dfrac{e^{2x}\cdot e^x/(1+e^x)}{e^{3x}}=-\dfrac{1}{1+e^x}$</li>
+          <li>$u_1=-\int\dfrac{dx}{1+e^x}$. Substitute $e^x=t$: $\int\dfrac{dt}{t(1+t)}=\ln|t|-\ln|1+t|=\ln\dfrac{e^x}{1+e^x}=x-\ln(1+e^x)$</li>
+          <li>$u_1=-(x-\ln(1+e^x))=\ln(1+e^x)-x$</li>
+          <li>$u_2'=\dfrac{y_1R}{W}=\dfrac{e^x\cdot e^x/(1+e^x)}{e^{3x}}=\dfrac{e^{-x}}{1+e^x}=\dfrac{1}{e^x+e^{2x}}$</li>
+          <li>$u_2=\int\dfrac{e^{-x}}{1+e^x}\,dx$; let $u=e^{-x}$: $-\int\dfrac{du}{1+(1/u)}=-\int\dfrac{u\,du}{u+1}=-u+\ln(u+1)=-e^{-x}+\ln(1+e^{-x})$</li>
+          <li>$y_p=e^x[\ln(1+e^x)-x]+e^{2x}[-e^{-x}+\ln(1+e^{-x})]$</li>
+          <li>$=e^x\ln(1+e^x)-xe^x-e^x+e^{2x}\ln(1+e^{-x})$</li>
+          <li>This can be simplified using $e^{2x}\ln(1+e^{-x})=e^{2x}\ln\!\tfrac{e^x+1}{e^x}=e^{2x}[\ln(1+e^x)-x]$</li>
+          <li>General solution: $y=C_1e^x+C_2e^{2x}+y_p$</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <span class="box-title">Example 3 — $R(x)=x^{-2}e^x$</span>
+        <p>Solve $y''-2y'+y=\dfrac{e^x}{x^2}$ by variation of parameters.</p>
+        <ol class="steps">
+          <li><strong>CF:</strong> $(r-1)^2=0$; $y_1=e^x$, $y_2=xe^x$</li>
+          <li>$W=e^x(e^x+xe^x)-(xe^x)(e^x)=e^{2x}+xe^{2x}-xe^{2x}=e^{2x}$</li>
+          <li>$u_1'=-\dfrac{xe^x\cdot e^x/x^2}{e^{2x}}=-\dfrac{1}{x}$</li>
+          <li>$u_1=-\ln x$</li>
+          <li>$u_2'=\dfrac{e^x\cdot e^x/x^2}{e^{2x}}=\dfrac{1}{x^2}$</li>
+          <li>$u_2=-\dfrac{1}{x}$</li>
+          <li>$y_p=-e^x\ln x+xe^x\cdot\left(-\dfrac{1}{x}\right)=-e^x\ln x-e^x$</li>
+          <li>Since $-e^x$ is already in $y_c$ (absorbed into $C_1e^x$), write:</li>
+          <li><strong>General solution:</strong> $\boxed{y=(C_1+C_2x)e^x-e^x\ln x}$</li>
+        </ol>
+      </div>
+
+      <h3>7.4 When to Use Which Method</h3>
+      <table class="math-table">
+        <thead>
+          <tr><th>Method</th><th>Best for</th><th>Limitation</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Undetermined Coefficients</td>
+            <td>$R(x)$ is polynomial, exponential, sine/cosine, or their products; constant coefficient ODE</td>
+            <td>Fails for $R(x)=\ln x$, $\sec x$, $\dfrac{1}{x}$, etc.</td>
+          </tr>
+          <tr>
+            <td>Variation of Parameters</td>
+            <td>Any $R(x)$ (including non-elementary); variable coefficient ODE (if CF known)</td>
+            <td>Integrals may be difficult or non-elementary</td>
+          </tr>
+          <tr>
+            <td>Operator Method (D)</td>
+            <td>Constant-coefficient ODE with standard $R(x)$; often fastest</td>
+            <td>Limited to constant coefficients; requires $R(x)$ of special form</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>7.5 Extension to Higher-Order ODEs</h3>
+      <div class="theorem-box">
+        <span class="box-title">Variation of Parameters — $n$th Order</span>
+        <p>For $y^{(n)}+P_{n-1}y^{(n-1)}+\cdots+P_0y=R(x)$ with CF $y_c=\sum_{k=1}^nC_ky_k$, set $y_p=\sum_{k=1}^nu_ky_k$ and impose $n-1$ conditions:</p>
+        $$\sum_{k=1}^nu_k'y_k^{(j)}=0, \quad j=0,1,\ldots,n-2$$
+        $$\sum_{k=1}^nu_k'y_k^{(n-1)}=R(x)$$
+        <p>This $n\times n$ system (with coefficient matrix being the Wronskian matrix) is solved by Cramer's rule:</p>
+        $$u_j'=\frac{W_j}{W}, \quad u_j=\int\frac{W_j}{W}\,dx$$
+        <p>where $W_j$ is the Wronskian with the $j$th column replaced by $(0,0,\ldots,0,R)^T$.</p>
+      </div>
+
+      <div class="key-points">
+        <h4>Summary — Variation of Parameters</h4>
+        <ul>
+          <li>Always requires the CF (complementary function) to be known first</li>
+          <li>The Wronskian $W\neq0$ guarantees existence of the solution</li>
+          <li>Works for variable-coefficient ODEs if the CF solutions $y_1,y_2$ are known</li>
+          <li>Particular integral is $y_p=u_1y_1+u_2y_2$ where $u_1'=-y_2R/W$ and $u_2'=y_1R/W$</li>
+          <li>Always write the ODE in standard form (leading coefficient = 1) before applying the formulas</li>
+          <li>The method generalises systematically to any order $n$ via the Wronskian matrix</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="divider" />
+    <p style="text-align:center;color:var(--muted);font-size:.85rem;">
+      End of Unit 2 — Ordinary Differential Equations &nbsp;·&nbsp; 26MAB1001T
+    </p>
+
+  </main>
+</div><!-- /.layout -->
+
+<!-- Mobile Toggle -->
+<button class="mobile-toc-toggle" id="mobileToggle" aria-label="Toggle Table of Contents">☰</button>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>
+    <a href="../index.html">← Back to All Units</a> &nbsp;|&nbsp;
+    26MAB1001T — Calculus &amp; Linear Algebra &nbsp;|&nbsp;
+    Made by <a href="https://github.com/ajlikeadj" target="_blank" rel="noopener noreferrer" style="color: var(--mint); text-decoration: underline; font-weight: 500;">Ajlikeadj</a>
+  </p>
+  <p style="margin-top:.4rem;">Content rendered with <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a></p>
+</footer>
+
+<!-- Scripts -->
+<script src="../js/main.js"></script>
+<script>
+  /* ── Progress Bar ── */
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop;
+    const total = doc.scrollHeight - doc.clientHeight;
+    document.getElementById('progressBar').style.width = (scrolled/total*100)+'%';
+  });
+
+  /* ── Cursor Glow ── */
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  /* ── Mobile Sidebar Toggle ── */
+  const sidebar = document.getElementById('sidebar');
+  const toggle  = document.getElementById('mobileToggle');
+  toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+  document.addEventListener('click', e => {
+    if (!sidebar.contains(e.target) && e.target!==toggle)
+      sidebar.classList.remove('open');
+  });
+
+  /* ── Active TOC Link ── */
+  const sections = document.querySelectorAll('.section');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-20% 0px -60% 0px'});
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3: Differential Calculus &amp; Applications — Cal-Alge</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false},
+        {left:'\\(',right:'\\)',display:false},
+        {left:'\\[',right:'\\]',display:true}
+      ]
+    })"></script>
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/topic.css" />
+
+  <style>
+    /* ── Page-level overrides / extras ── */
+    :root{
+      --bg:#050d0b;
+      --surface:#0a1a16;
+      --border:rgba(203,246,231,.10);
+      --accent:#cbf6e7;
+      --green:#4ade80;
+      --text:#f0fdf4;
+      --muted:#6b7280;
+      --card:rgba(10,26,22,.85);
+      --sidebar-w:260px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7;overflow-x:hidden}
+
+    /* Progress bar */
+    .progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--green),var(--accent));z-index:9999;transition:width .1s linear}
+
+    /* Cursor glow */
+    .cursor-glow{pointer-events:none;position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.06) 0%,transparent 70%);transform:translate(-50%,-50%);z-index:0;transition:left .08s,top .08s}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:rgba(203,246,231,.2);border-radius:3px}
+
+    /* ── Header ── */
+    .site-header{position:sticky;top:3px;z-index:100;background:rgba(5,13,11,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px}
+    .back-btn{display:inline-flex;align-items:center;gap:.5rem;color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;padding:.4rem .85rem;border:1px solid var(--border);border-radius:6px;transition:all .2s}
+    .back-btn:hover{background:rgba(203,246,231,.07);border-color:var(--accent)}
+    .back-btn svg{width:16px;height:16px}
+    .header-meta{font-size:.8rem;color:var(--muted)}
+    .unit-badge{background:rgba(74,222,128,.12);color:var(--green);font-size:.75rem;font-weight:600;padding:.25rem .7rem;border-radius:999px;border:1px solid rgba(74,222,128,.25)}
+
+    /* ── Layout ── */
+    .layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:calc(100vh - 64px);max-width:1400px;margin:0 auto;padding:0 1rem}
+
+    /* ── Sidebar ── */
+    .sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;padding:2rem 1rem 2rem 0;border-right:1px solid var(--border)}
+    .sidebar::-webkit-scrollbar{width:3px}
+    .sidebar-title{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-left:.75rem}
+    .toc-list{list-style:none}
+    .toc-list li{margin-bottom:.15rem}
+    .toc-list a{display:block;font-size:.8rem;color:var(--muted);text-decoration:none;padding:.35rem .75rem;border-radius:6px;border-left:2px solid transparent;transition:all .18s;line-height:1.4}
+    .toc-list a:hover,.toc-list a.active{color:var(--accent);border-left-color:var(--green);background:rgba(203,246,231,.05)}
+    .toc-list .toc-sub{padding-left:1.25rem;font-size:.75rem}
+
+    /* ── Main content ── */
+    .main-content{padding:3rem 2.5rem 6rem;max-width:900px}
+    .page-hero{margin-bottom:3.5rem}
+    .page-hero .eyebrow{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem}
+    .page-hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;background:linear-gradient(135deg,var(--text) 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem}
+    .page-hero p{color:var(--muted);font-size:1.05rem;max-width:680px}
+
+    /* ── Sections ── */
+    .content-section{margin-bottom:5rem;scroll-margin-top:80px}
+    .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem}
+    .section-number{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:var(--green);font-size:.8rem;font-weight:700;flex-shrink:0}
+    .section-header h2{font-size:1.65rem;font-weight:700;color:var(--text)}
+    .section-intro{color:var(--muted);margin-bottom:1.75rem;font-size:1rem;line-height:1.75}
+    h3.sub-heading{font-size:1.15rem;font-weight:700;color:var(--accent);margin:2rem 0 .85rem}
+    h4.sub-sub-heading{font-size:1rem;font-weight:600;color:var(--text);margin:1.5rem 0 .6rem;opacity:.9}
+    p{margin-bottom:1rem;color:#d1fae5}
+    ul,ol{padding-left:1.4rem;margin-bottom:1rem;color:#d1fae5}
+    li{margin-bottom:.4rem}
+
+    /* ── Cards ── */
+    .def-box,.theorem-box,.example-box,.formula-box,.note-box,.warning-box,.info-box{border-radius:10px;padding:1.35rem 1.5rem;margin:1.5rem 0;position:relative;overflow:hidden}
+    .def-box{background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2)}
+    .def-box::before{content:'DEFINITION';position:absolute;top:.6rem;right:1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:var(--green);opacity:.6}
+    .theorem-box{background:rgba(99,179,237,.06);border:1px solid rgba(99,179,237,.2)}
+    .theorem-box::before{content:'THEOREM';position:absolute;top:.6rem;right:1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:#63b3ed;opacity:.6}
+    .example-box{background:rgba(203,246,231,.04);border:1px solid rgba(203,246,231,.12);border-left:3px solid var(--green)}
+    .example-box::before{content:'EXAMPLE';position:absolute;top:.6rem;right:1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:var(--accent);opacity:.55}
+    .formula-box{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);text-align:center}
+    .formula-box::before{content:'KEY FORMULA';position:absolute;top:.6rem;right:1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:#a78bfa;opacity:.6}
+    .note-box{background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.18)}
+    .note-box::before{content:'NOTE';position:absolute;top:.6rem;right:1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:#fbbf24;opacity:.6}
+    .info-box{background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.18)}
+    .info-box::before{content:'INFO';position:absolute;top:.6rem;right:1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:#38bdf8;opacity:.6}
+
+    .box-title{font-size:.85rem;font-weight:700;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.05em}
+    .def-box .box-title{color:var(--green)}
+    .theorem-box .box-title{color:#63b3ed}
+    .example-box .box-title{color:var(--accent)}
+    .formula-box .box-title{color:#a78bfa}
+    .note-box .box-title{color:#fbbf24}
+    .info-box .box-title{color:#38bdf8}
+
+    /* Steps */
+    .steps{counter-reset:step;list-style:none;padding:0;margin:1rem 0}
+    .steps li{counter-increment:step;display:flex;gap:1rem;margin-bottom:1rem;padding:.85rem 1rem;background:rgba(203,246,231,.03);border-radius:8px;border:1px solid var(--border)}
+    .steps li::before{content:counter(step);display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.15);color:var(--green);font-size:.78rem;font-weight:700;flex-shrink:0}
+
+    /* Grid */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:1.25rem 0}
+    @media(max-width:680px){.grid-2{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+    /* Divider */
+    .section-divider{height:1px;background:var(--border);margin:3rem 0}
+
+    /* KaTeX display override */
+    .katex-display{overflow-x:auto;overflow-y:hidden;padding:.5rem 0}
+    .katex{font-size:1.05em}
+
+    /* Table */
+    table{width:100%;border-collapse:collapse;margin:1.25rem 0;font-size:.9rem}
+    th{background:rgba(74,222,128,.1);color:var(--green);padding:.65rem 1rem;text-align:left;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid rgba(74,222,128,.2)}
+    td{padding:.6rem 1rem;border-bottom:1px solid var(--border);color:#d1fae5}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(203,246,231,.03)}
+
+    /* Tag chips */
+    .tag{display:inline-block;font-size:.7rem;font-weight:600;padding:.2rem .55rem;border-radius:4px;background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2);margin:.15rem}
+
+    /* Footer */
+    .page-footer{border-top:1px solid var(--border);padding:2rem 0;text-align:center;color:var(--muted);font-size:.85rem;margin-top:4rem}
+    .nav-cards{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+    .nav-card{display:block;padding:1.25rem 1.5rem;background:var(--card);border:1px solid var(--border);border-radius:10px;text-decoration:none;transition:all .2s}
+    .nav-card:hover{border-color:rgba(203,246,231,.3);background:rgba(203,246,231,.06)}
+    .nav-card .direction{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+    .nav-card .nav-title{color:var(--accent);font-weight:600;font-size:.95rem}
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="site-header">
+  <a href="../index.html" class="back-btn">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Back to Home
+  </a>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <span class="unit-badge">Unit 3</span>
+    <span class="header-meta">Differential Calculus &amp; Applications</span>
+  </div>
+</header>
+
+<!-- ═══════════ LAYOUT ═══════════ -->
+<div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <p class="sidebar-title">Contents</p>
+    <ul class="toc-list">
+      <li><a href="#curve-tracing">1. Curve Tracing</a></li>
+      <li><a href="#curvature" class="toc-sub">2. Curvature</a></li>
+      <li><a href="#radius-cartesian" class="toc-sub">3. Radius — Cartesian</a></li>
+      <li><a href="#radius-polar" class="toc-sub">4. Radius — Polar</a></li>
+      <li><a href="#radius-parametric" class="toc-sub">5. Radius — Parametric</a></li>
+      <li><a href="#circle-curvature">6. Circle of Curvature</a></li>
+      <li><a href="#evolutes-involutes">7. Evolutes &amp; Involutes</a></li>
+      <li><a href="#envelopes">8. Envelopes</a></li>
+      <li><a href="#pedal-equations">9. Pedal Equations</a></li>
+    </ul>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+
+    <!-- Hero -->
+    <div class="page-hero">
+      <p class="eyebrow">26MAB1001T · Unit 3</p>
+      <h1>Differential Calculus &amp; Applications</h1>
+      <p>A thorough treatment of curve tracing, curvature, radius of curvature in all coordinate systems, circles of curvature, evolutes, involutes, envelopes, and pedal equations — with full derivations and worked examples.</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 1 — CURVE TRACING
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="curve-tracing">
+      <div class="section-header">
+        <span class="section-number">1</span>
+        <h2>Review of Curve Tracing</h2>
+      </div>
+      <p class="section-intro">
+        Curve tracing is the systematic process of sketching the qualitative shape of a curve from its equation, without plotting dozens of points. The goal is to identify essential features — symmetry, intercepts, asymptotes, loops, cusps, and extent — and combine them into an accurate sketch.
+      </p>
+
+      <!-- 1a Cartesian -->
+      <h3 class="sub-heading">1.1 Cartesian Curves</h3>
+
+      <div class="def-box">
+        <p class="box-title">Standard Checklist for Cartesian Curves $y = f(x)$ or $F(x,y)=0$</p>
+        <ol class="steps">
+          <li><strong>Symmetry</strong> — Even $f$: symmetric about $y$-axis. Odd $f$: symmetric about origin. $f(-x) = -f(x)$: antisymmetric. For $F(x,y)=0$: replace $(x,y)\to(-x,y)$ or $(x,-y)$ or $(-x,-y)$.</li>
+          <li><strong>Intercepts</strong> — Set $y=0$ for $x$-intercepts; set $x=0$ for $y$-intercepts.</li>
+          <li><strong>Asymptotes</strong> — <em>Vertical</em>: values $x=a$ where $y\to\pm\infty$. <em>Horizontal</em>: $\lim_{x\to\pm\infty} f(x) = L$. <em>Oblique</em>: $y = mx+c$ where $m = \lim_{x\to\infty}\frac{f(x)}{x}$, $c = \lim_{x\to\infty}[f(x)-mx]$.</li>
+          <li><strong>Tangents at origin</strong> — Lowest-degree terms of $F(x,y)$ give tangent directions.</li>
+          <li><strong>Region of existence</strong> — Find $x$-values where $y^2 \geq 0$ (for implicit curves). Note forbidden regions.</li>
+          <li><strong>Monotonicity &amp; Extrema</strong> — Sign of $dy/dx$; critical points.</li>
+          <li><strong>Special points</strong> — Cusps ($dy/dx$ undefined), nodes (curve crosses itself), inflection points.</li>
+        </ol>
+      </div>
+
+      <h4 class="sub-sub-heading">Oblique Asymptote Method (Newton–McLaurin)</h4>
+      <p>For a polynomial curve $F(x,y) = 0$, substitute $y = mx + c$ and collect the highest-degree terms:</p>
+      $$\phi_n(m) = 0 \quad \text{(gives slopes } m\text{)}, \qquad c = -\frac{\phi_{n-1}(m)}{\phi_n'(m)}$$
+      <p>where $\phi_k(m)$ is formed by putting $y=m$ in the degree-$k$ homogeneous part of $F$.</p>
+
+      <!-- Example 1 -->
+      <div class="example-box">
+        <p class="box-title">Example 1 — Semi-cubical Parabola: $y^2 = x^3$</p>
+        <ul>
+          <li><strong>Symmetry:</strong> Replace $y\to -y$: equation unchanged ⟹ symmetric about $x$-axis.</li>
+          <li><strong>Intercepts:</strong> Only at origin $(0,0)$.</li>
+          <li><strong>Asymptotes:</strong> None (curve extends to $+\infty$ as $x\to+\infty$).</li>
+          <li><strong>Existence:</strong> $x^3 = y^2 \geq 0 \Rightarrow x \geq 0$. Curve lies entirely in right half-plane.</li>
+          <li><strong>Tangent at origin:</strong> Lowest-degree terms: $y^2 = 0 \Rightarrow y = 0$ (the $x$-axis is the tangent — a <em>cusp</em>).</li>
+          <li><strong>Shape:</strong> $y = \pm x^{3/2}$; the upper branch rises steeply, meeting the $x$-axis with a cusp at $O$.</li>
+        </ul>
+      </div>
+
+      <!-- Example 2 -->
+      <div class="example-box">
+        <p class="box-title">Example 2 — $y^2 = x(1-x)^2$</p>
+        <ul>
+          <li><strong>Symmetry:</strong> About $x$-axis ($y\to-y$ invariant).</li>
+          <li><strong>Intercepts:</strong> $x=0$: $y=0$. $x=1$: $y=0$. So the curve passes through $(0,0)$ and $(1,0)$.</li>
+          <li><strong>Existence:</strong> $x(1-x)^2 \geq 0 \Rightarrow x \geq 0$ (since $(1-x)^2 \geq 0$ always). No upper bound on $x$.</li>
+          <li><strong>Tangent at origin:</strong> Leading terms: $y^2 - x = 0 \Rightarrow y^2 = x$, i.e. two tangents $y = \pm\sqrt{x}$ — a <em>node</em>.</li>
+          <li><strong>Tangent at $(1,0)$:</strong> $x=1$ gives $y^2 = 0$, so the curve touches $x=1$ — a <em>cusp</em>.</li>
+          <li><strong>Large $x$:</strong> $y \approx \pm x(1-x) \to \pm(x - x^2)$; curve re-enters the region $x>1$ forming a loop that closes at $(1,0)$.</li>
+        </ul>
+      </div>
+
+      <!-- Example 3 -->
+      <div class="example-box">
+        <p class="box-title">Example 3 — Folium of Descartes: $x^3 + y^3 = 3axy$, $a>0$</p>
+        <ul>
+          <li><strong>Symmetry:</strong> Interchanging $x \leftrightarrow y$ leaves the equation unchanged — symmetric about $y = x$.</li>
+          <li><strong>Intercept:</strong> Passes through the origin.</li>
+          <li><strong>Tangent at origin:</strong> Degree-2 terms: $3axy = 0 \Rightarrow x = 0$ or $y = 0$. Two tangents — a node.</li>
+          <li><strong>Oblique asymptote:</strong> Substitute $y = mx + c$. The degree-3 part: $\phi_3(m) = 1 + m^3$. Setting $\phi_3(m)=0$ gives $m = -1$. Then $c = -\frac{\phi_2(-1)}{\phi_3'(-1)} = -\frac{-3a}{3(-1)^2} = a$. Asymptote: $\boxed{x + y + a = 0}$.</li>
+          <li><strong>Loop:</strong> Using parametric form $x = \frac{3at}{1+t^3}$, $y = \frac{3at^2}{1+t^3}$, the loop lies in the first quadrant for $0 < t < \infty$.</li>
+        </ul>
+      </div>
+
+      <!-- Example 4 -->
+      <div class="example-box">
+        <p class="box-title">Example 4 — $y = \dfrac{x}{1+x^2}$</p>
+        <ul>
+          <li><strong>Symmetry:</strong> $f(-x) = -f(x)$ — odd function, symmetric about origin.</li>
+          <li><strong>Intercepts:</strong> Only at $(0,0)$.</li>
+          <li><strong>Asymptote:</strong> $\lim_{x\to\pm\infty} y = 0$, so $y = 0$ is a horizontal asymptote.</li>
+          <li><strong>Extrema:</strong> $y' = \frac{(1+x^2) - 2x^2}{(1+x^2)^2} = \frac{1-x^2}{(1+x^2)^2}$. Zeros at $x = \pm 1$. Max at $(1, \tfrac12)$, min at $(-1, -\tfrac12)$.</li>
+          <li><strong>Inflections:</strong> $y'' = 0$ at $x = 0, \pm\sqrt{3}$.</li>
+        </ul>
+      </div>
+
+      <!-- 1b Polar -->
+      <h3 class="sub-heading">1.2 Polar Curves</h3>
+      <div class="def-box">
+        <p class="box-title">Symmetry Tests for Polar Curves $r = f(\theta)$</p>
+        <ul>
+          <li><strong>About polar axis ($x$-axis):</strong> Replace $\theta \to -\theta$; equation unchanged.</li>
+          <li><strong>About $\theta = \pi/2$ ($y$-axis):</strong> Replace $\theta \to \pi - \theta$; equation unchanged.</li>
+          <li><strong>About pole:</strong> Replace $r \to -r$ (or $\theta \to \theta + \pi$); equation unchanged.</li>
+        </ul>
+      </div>
+      <p>Additional steps: find values where $r = 0$ (tangents to pole), $r$ is max, and whether the curve is bounded.</p>
+
+      <div class="example-box">
+        <p class="box-title">Example 5 — Cardioid: $r = a(1 + \cos\theta)$, $a > 0$</p>
+        <ul>
+          <li><strong>Symmetry:</strong> $\cos(-\theta) = \cos\theta$ — symmetric about polar axis.</li>
+          <li><strong>Range of $r$:</strong> $0 \leq r \leq 2a$ (min at $\theta=\pi$, max at $\theta=0$).</li>
+          <li><strong>Key points:</strong> $(2a, 0)$, $(a, \pi/2)$, $(0, \pi)$, $(a, 3\pi/2)$.</li>
+          <li><strong>At pole:</strong> $r = 0$ when $\theta = \pi$; $dr/d\theta = -a\sin\pi = 0$ — a cusp at the pole.</li>
+          <li><strong>Area:</strong> $A = \frac{1}{2}\int_0^{2\pi} r^2\,d\theta = \frac{3\pi a^2}{2}$.</li>
+          <li>Shape: A heart-shaped curve touching the origin with a cusp on the left.</li>
+        </ul>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 6 — Four-Leaf Rose: $r = a\cos 2\theta$</p>
+        <ul>
+          <li><strong>Symmetry:</strong> Both $\theta\to-\theta$ and $\theta\to\pi-\theta$ — symmetric about both axes.</li>
+          <li><strong>Petals:</strong> $r = 0$ when $2\theta = \pi/2, 3\pi/2, 5\pi/2, 7\pi/2$, i.e. $\theta = \pi/4, 3\pi/4, 5\pi/4, 7\pi/4$ — four petals.</li>
+          <li><strong>Max $r = a$</strong> at $\theta = 0, \pi/2, \pi, 3\pi/2$.</li>
+          <li>Petal tips along the axes; petals have length $a$.</li>
+        </ul>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 7 — Lemniscate of Bernoulli: $r^2 = a^2\cos 2\theta$</p>
+        <ul>
+          <li><strong>Symmetry:</strong> About both axes and the pole.</li>
+          <li><strong>Existence:</strong> $r^2 \geq 0 \Rightarrow \cos 2\theta \geq 0 \Rightarrow \theta \in [-\pi/4, \pi/4] \cup [3\pi/4, 5\pi/4]$.</li>
+          <li><strong>Shape:</strong> Two symmetric loops (like a figure-eight) centred at the origin, each loop extending to $r = a$ along the $x$-axis.</li>
+          <li><strong>Area of one loop:</strong> $A = \frac{1}{2}\int_{-\pi/4}^{\pi/4} a^2\cos 2\theta\,d\theta = \frac{a^2}{2}$.</li>
+        </ul>
+      </div>
+
+      <!-- 1c Parametric -->
+      <h3 class="sub-heading">1.3 Parametric Curves</h3>
+      <p>For $x = g(t)$, $y = h(t)$: find $t$ at key points (cusps, loops, extrema), note $dy/dx = (dy/dt)/(dx/dt)$, and detect cusps when $dx/dt = dy/dt = 0$ simultaneously.</p>
+
+      <div class="example-box">
+        <p class="box-title">Example 8 — Cycloid: $x = a(t - \sin t)$, $y = a(1 - \cos t)$</p>
+        <ul>
+          <li><strong>Cusps:</strong> $\frac{dx}{dt} = a(1-\cos t) = 0$ and $\frac{dy}{dt} = a\sin t = 0$ both vanish at $t = 0, 2\pi, 4\pi, \ldots$, giving cusps at $(0,0),(2\pi a, 0),(4\pi a,0),\ldots$</li>
+          <li><strong>Max height:</strong> $y = 2a$ at $t = \pi$, corresponding to $x = \pi a$ (apex of each arch).</li>
+          <li><strong>Slope:</strong> $\frac{dy}{dx} = \frac{\sin t}{1-\cos t} = \cot(t/2)$. At $t=\pi$: slope $= 0$ (horizontal tangent at top). At cusps: slope $\to \infty$ (vertical).</li>
+          <li><strong>Shape:</strong> Repeated arches of height $2a$ and period $2\pi a$, each cusp on the $x$-axis.</li>
+          <li><strong>Arc length of one arch:</strong> $L = \int_0^{2\pi}\sqrt{(dx/dt)^2+(dy/dt)^2}\,dt = 8a$.</li>
+          <li><strong>Area under one arch:</strong> $A = \int_0^{2\pi a} y\,dx = 3\pi a^2$.</li>
+        </ul>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 2 — CURVATURE
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="curvature">
+      <div class="section-header">
+        <span class="section-number">2</span>
+        <h2>Curvature</h2>
+      </div>
+
+      <div class="def-box">
+        <p class="box-title">Geometric Definition</p>
+        <p>As a point $P$ moves along a curve, the tangent line rotates. The <strong>curvature</strong> $\kappa$ at $P$ is the rate of rotation of the tangent with respect to arc length:</p>
+        $$\kappa = \left|\frac{d\psi}{ds}\right|$$
+        <p>where $\psi$ is the inclination of the tangent and $s$ is arc length. High curvature means the curve bends sharply; zero curvature means straight.</p>
+      </div>
+
+      <h3 class="sub-heading">2.1 Curvature in Cartesian Form</h3>
+      <p>Using $\tan\psi = dy/dx = y_1$ and arc length element $ds = \sqrt{1+y_1^2}\,dx$:</p>
+      $$\frac{d\psi}{dx} = \frac{d}{dx}\arctan(y_1) = \frac{y_2}{1+y_1^2}$$
+      $$\frac{d\psi}{ds} = \frac{d\psi/dx}{ds/dx} = \frac{y_2/(1+y_1^2)}{\sqrt{1+y_1^2}} = \frac{y_2}{(1+y_1^2)^{3/2}}$$
+
+      <div class="formula-box">
+        <p class="box-title">Curvature — Cartesian Form</p>
+        $$\kappa = \frac{|y_2|}{(1+y_1^2)^{3/2}}, \qquad y_1 = \frac{dy}{dx},\quad y_2 = \frac{d^2y}{dx^2}$$
+      </div>
+
+      <div class="theorem-box">
+        <p class="box-title">Curvature of a Circle</p>
+        <p>For a circle of radius $R$: $y_1^2 + (y-k)^2 = R^2$ gives, after differentiation, $\kappa = 1/R$ everywhere. Thus curvature is uniform and equals the reciprocal of the radius.</p>
+      </div>
+
+      <h3 class="sub-heading">2.2 Signed vs. Unsigned Curvature</h3>
+      <p>The <em>signed curvature</em> is $\kappa_s = y_2/(1+y_1^2)^{3/2}$: positive when bending left (concave up), negative when bending right (concave down). The unsigned curvature is $\kappa = |\kappa_s|$, used for the radius of curvature $R = 1/\kappa$.</p>
+
+      <h3 class="sub-heading">2.3 Curvature — Parametric Form</h3>
+      <p>With $x = x(t)$, $y = y(t)$, let dots denote $d/dt$:</p>
+      $$y_1 = \frac{\dot{y}}{\dot{x}}, \qquad y_2 = \frac{\dot{x}\ddot{y} - \dot{y}\ddot{x}}{\dot{x}^3}$$
+      <div class="formula-box">
+        <p class="box-title">Curvature — Parametric Form</p>
+        $$\kappa = \frac{|\dot{x}\ddot{y} - \dot{y}\ddot{x}|}{(\dot{x}^2 + \dot{y}^2)^{3/2}}$$
+      </div>
+
+      <h3 class="sub-heading">2.4 Curvature — Polar Form</h3>
+      <p>For $r = f(\theta)$ write $r_1 = dr/d\theta$, $r_2 = d^2r/d\theta^2$. Converting to parametric with $\theta$ as parameter:</p>
+      $$\dot{x} = r_1\cos\theta - r\sin\theta, \quad \dot{y} = r_1\sin\theta + r\cos\theta$$
+      $$\dot{x}^2+\dot{y}^2 = r^2 + r_1^2$$
+      $$\dot{x}\ddot{y} - \dot{y}\ddot{x} = r^2 + 2r_1^2 - rr_2$$
+      <div class="formula-box">
+        <p class="box-title">Curvature — Polar Form</p>
+        $$\kappa = \frac{|r^2 + 2r_1^2 - rr_2|}{(r^2+r_1^2)^{3/2}}$$
+      </div>
+
+      <h3 class="sub-heading">2.5 Physical Interpretation</h3>
+      <div class="info-box">
+        <p class="box-title">Physical Meaning</p>
+        <p>In mechanics, when a particle moves along a curved path at speed $v$, the centripetal acceleration needed to maintain the path is $a_n = v^2 \kappa$. Designers of roads and railways use curvature to determine the maximum safe speed through a bend.</p>
+        <p>In optics, the curvature of a mirror or lens surface directly determines its focal length via $f = R/2$.</p>
+      </div>
+
+      <!-- Worked examples -->
+      <div class="example-box">
+        <p class="box-title">Example 1 — Curvature of the Parabola $y = x^2$</p>
+        <p>$y_1 = 2x$, $y_2 = 2$.</p>
+        $$\kappa = \frac{|2|}{(1+4x^2)^{3/2}} = \frac{2}{(1+4x^2)^{3/2}}$$
+        <p>At the vertex $(0,0)$: $\kappa = 2$, so $R = 1/2$. As $x \to \infty$, $\kappa \to 0$ — the parabola straightens out.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 2 — Curvature of an Ellipse $\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$ (Parametric)</p>
+        <p>$x = a\cos t$, $y = b\sin t$. Then $\dot{x} = -a\sin t$, $\dot{y} = b\cos t$, $\ddot{x} = -a\cos t$, $\ddot{y} = -b\sin t$.</p>
+        $$\dot{x}\ddot{y} - \dot{y}\ddot{x} = (-a\sin t)(-b\sin t) - (b\cos t)(-a\cos t) = ab\sin^2 t + ab\cos^2 t = ab$$
+        $$\dot{x}^2+\dot{y}^2 = a^2\sin^2 t + b^2\cos^2 t$$
+        $$\kappa = \frac{ab}{(a^2\sin^2 t + b^2\cos^2 t)^{3/2}}$$
+        <p>At end of major axis ($t=0$): $\kappa = ab/b^3 = a/b^2$. At end of minor axis ($t=\pi/2$): $\kappa = ab/a^3 = b/a^2$.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 3 — Curvature of $y = \sin x$</p>
+        <p>$y_1 = \cos x$, $y_2 = -\sin x$.</p>
+        $$\kappa = \frac{|\sin x|}{(1+\cos^2 x)^{3/2}}$$
+        <p>Max curvature at $x = \pi/2$ (peak): $\kappa_{\max} = 1/1^{3/2} = 1$, $R_{\min} = 1$. Zero curvature at $x = 0, \pi$ (inflection points).</p>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 3 — RADIUS OF CURVATURE — CARTESIAN
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="radius-cartesian">
+      <div class="section-header">
+        <span class="section-number">3</span>
+        <h2>Radius of Curvature — Cartesian Form</h2>
+      </div>
+
+      <div class="formula-box">
+        <p class="box-title">Radius of Curvature</p>
+        $$R = \frac{1}{\kappa} = \frac{(1+y_1^2)^{3/2}}{|y_2|}, \qquad y_1 = \frac{dy}{dx},\quad y_2 = \frac{d^2y}{dx^2}$$
+      </div>
+
+      <h3 class="sub-heading">3.1 Derivation</h3>
+      <p>We derived $\kappa = y_2/(1+y_1^2)^{3/2}$ in Section 2. Since $R = 1/\kappa$:</p>
+      $$R = \frac{(1+y_1^2)^{3/2}}{|y_2|}$$
+      <p>The absolute value ensures $R > 0$. Geometrically, $R$ is the radius of the <em>osculating circle</em> — the unique circle that best approximates the curve at the given point.</p>
+
+      <h3 class="sub-heading">3.2 Implicit Curves $F(x,y) = 0$</h3>
+      <p>Differentiate $F(x,y)=0$ implicitly. Let $F_x = \partial F/\partial x$, $F_y = \partial F/\partial y$, etc.</p>
+      $$y_1 = -\frac{F_x}{F_y}$$
+      $$y_2 = -\frac{F_{xx}F_y^2 - 2F_{xy}F_xF_y + F_{yy}F_x^2}{F_y^3}$$
+      <div class="formula-box">
+        <p class="box-title">Radius of Curvature for Implicit Curve</p>
+        $$R = \frac{(F_x^2 + F_y^2)^{3/2}}{|F_{xx}F_y^2 - 2F_{xy}F_xF_y + F_{yy}F_x^2|}$$
+      </div>
+
+      <h3 class="sub-heading">3.3 Newton's Formula at the Origin</h3>
+      <div class="theorem-box">
+        <p class="box-title">Newton's Formula</p>
+        <p>If the curve passes through the origin with the $x$-axis as tangent (so $y_1(0)=0$), then:</p>
+        $$R_O = \lim_{x\to 0} \frac{x^2}{2y} \quad \text{or} \quad R_O = \frac{1}{y_2(0)}$$
+        <p>This is derived by Taylor-expanding $y$ near $x = 0$: $y = \frac{x^2}{2R} + \cdots$</p>
+      </div>
+
+      <!-- Examples -->
+      <div class="example-box">
+        <p class="box-title">Example 1 — $y = x^2$</p>
+        <p>$y_1 = 2x$, $y_2 = 2$.</p>
+        $$R = \frac{(1+4x^2)^{3/2}}{2}$$
+        <p>At origin: $R = 1/2$. At $(1,1)$: $R = (1+4)^{3/2}/2 = 5\sqrt{5}/2 \approx 5.59$.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 2 — $y = \sin x$</p>
+        <p>$y_1 = \cos x$, $y_2 = -\sin x$.</p>
+        $$R = \frac{(1+\cos^2 x)^{3/2}}{|\sin x|}$$
+        <p>At $x = \pi/2$: $R = (1+0)^{3/2}/1 = 1$. As $x\to 0$, $R \to \infty$ (inflection point).</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 3 — Rectangular Hyperbola $xy = c^2$</p>
+        <p>$y = c^2/x$, $y_1 = -c^2/x^2$, $y_2 = 2c^2/x^3$.</p>
+        $$R = \frac{\left(1+\frac{c^4}{x^4}\right)^{3/2}}{\left|\frac{2c^2}{x^3}\right|} = \frac{(x^4+c^4)^{3/2}}{2c^2 x^3}$$
+        <p>At the point $(c,c)$: $R = (c^4+c^4)^{3/2}/(2c^2\cdot c^3) = (2c^4)^{3/2}/(2c^5) = 2^{3/2}c^6/(2c^5) = \frac{\sqrt{2}}{2}\cdot 2c = c\sqrt{2} \cdot \frac{2}{2} = c\sqrt{2}$.</p>
+        <p>More carefully: $(x^4+c^4)^{3/2}\big|_{x=c} = (2c^4)^{3/2} = 2^{3/2}c^6$; denominator $= 2c^2\cdot c^3 = 2c^5$. So $R = 2^{3/2}c^6/(2c^5) = 2^{1/2}c = c\sqrt{2}$.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 4 — Ellipse $\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$</p>
+        <p>At a general point $(a\cos\theta, b\sin\theta)$, using $\kappa$ from Section 2:</p>
+        $$R = \frac{(a^2\sin^2\theta + b^2\cos^2\theta)^{3/2}}{ab}$$
+        <p>At end of major axis $(\pm a, 0)$: $\theta = 0$, $R = b^3/(ab) = b^2/a$.</p>
+        <p>At end of minor axis $(0,\pm b)$: $\theta = \pi/2$, $R = a^3/(ab) = a^2/b$.</p>
+        <p>When $a > b$, the ellipse has smaller $R$ (sharper curvature) at the ends of the major axis.</p>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 4 — RADIUS — POLAR
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="radius-polar">
+      <div class="section-header">
+        <span class="section-number">4</span>
+        <h2>Radius of Curvature — Polar Form</h2>
+      </div>
+
+      <h3 class="sub-heading">4.1 Derivation</h3>
+      <p>For $r = f(\theta)$, let $r_1 = dr/d\theta$, $r_2 = d^2r/d\theta^2$. Using the parametric curvature formula with $\theta$ as parameter:</p>
+      $$x = r\cos\theta,\quad y = r\sin\theta$$
+      $$\dot x = r_1\cos\theta - r\sin\theta,\quad \dot y = r_1\sin\theta + r\cos\theta$$
+      $$\dot x^2 + \dot y^2 = r^2 + r_1^2$$
+      $$\ddot x = r_2\cos\theta - 2r_1\sin\theta - r\cos\theta,\quad \ddot y = r_2\sin\theta + 2r_1\cos\theta - r\sin\theta$$
+      $$\dot x\ddot y - \dot y\ddot x = r^2 + 2r_1^2 - rr_2$$
+
+      <div class="formula-box">
+        <p class="box-title">Radius of Curvature — Polar Form</p>
+        $$R = \frac{(r^2+r_1^2)^{3/2}}{|r^2 + 2r_1^2 - rr_2|}$$
+      </div>
+
+      <h3 class="sub-heading">4.2 Pedal Form</h3>
+      <p>The pedal length $p$ (perpendicular from pole $O$ to the tangent at $P$) satisfies:</p>
+      $$\frac{1}{p^2} = \frac{1}{r^2} + \frac{1}{r^4}\left(\frac{dr}{d\theta}\right)^2 \implies \frac{1}{p^2} = \frac{r^2+r_1^2}{r^4}$$
+      $$p = \frac{r^2}{\sqrt{r^2+r_1^2}}$$
+      <div class="formula-box">
+        <p class="box-title">Pedal Form of Radius of Curvature</p>
+        $$R = r\frac{dr}{dp}$$
+      </div>
+      <p>This elegant relation means: given the pedal equation $p = g(r)$, differentiate to get $dp/dr$, then $R = r/(dp/dr)$.</p>
+
+      <div class="example-box">
+        <p class="box-title">Example 1 — Archimedean Spiral: $r = a\theta$</p>
+        <p>$r_1 = a$, $r_2 = 0$.</p>
+        $$R = \frac{(r^2+a^2)^{3/2}}{|r^2 + 2a^2 - 0|} = \frac{(r^2+a^2)^{3/2}}{r^2+2a^2}$$
+        <p>At $\theta = 0$ (pole): $R = a^3/(2a^2) = a/2$ (finite — the spiral has nonzero curvature at the pole).</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 2 — Cardioid: $r = a(1+\cos\theta)$</p>
+        <p>$r_1 = -a\sin\theta$, $r_2 = -a\cos\theta$.</p>
+        $$r^2 + r_1^2 = a^2(1+\cos\theta)^2 + a^2\sin^2\theta = a^2(2+2\cos\theta) = 2a^2(1+\cos\theta)$$
+        $$r^2+2r_1^2 - rr_2 = a^2(1+\cos\theta)^2 + 2a^2\sin^2\theta + a^2(1+\cos\theta)\cos\theta$$
+        <p>After simplification using $1+\cos\theta = 2\cos^2(\theta/2)$:</p>
+        $$r^2+2r_1^2-rr_2 = \tfrac{3}{2}a^2(1+\cos\theta) \cdot 2 = 3a^2(1+\cos\theta) \quad\Longrightarrow\quad r^2+2r_1^2-rr_2 = \frac{3a^2(1+\cos\theta)+a^2\cos\theta\cdot a}{?}$$
+        <p>Using $2\cos^2(\theta/2) = 1+\cos\theta$:</p>
+        $$r^2+r_1^2 = 4a^2\cos^2(\theta/2), \quad r^2+2r_1^2-rr_2 = 3\cdot 2a^2\cos^2(\theta/2)\cdot \frac{3}{2} = \frac{3}{2}\cdot 2a^2(1+\cos\theta)$$
+        <p>Actually the clean result is:</p>
+        $$R = \frac{[2a^2(1+\cos\theta)]^{3/2}}{3a^2(1+\cos\theta)} = \frac{2^{3/2}a^3(1+\cos\theta)^{3/2}}{3a^2(1+\cos\theta)} = \frac{2\sqrt{2}\,a\sqrt{1+\cos\theta}}{3}$$
+        <p>Using $\sqrt{1+\cos\theta} = \sqrt{2}\cos(\theta/2)$:</p>
+        $$\boxed{R = \frac{2}{3}\sqrt{2ar}}$$
+        <p>where $r = a(1+\cos\theta)$. So $R^2 = 8ar/9$ — the radius of curvature of the cardioid at the point $(r,\theta)$.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 3 — Lemniscate $r^2 = a^2\cos 2\theta$</p>
+        <p>Differentiate: $2r r_1 = -2a^2\sin 2\theta$, so $r r_1 = -a^2\sin 2\theta$.</p>
+        <p>$r^2 + r_1^2 = a^2\cos 2\theta + \frac{a^4\sin^2 2\theta}{r^2} = a^2\cos 2\theta + \frac{a^4\sin^2 2\theta}{a^2\cos 2\theta} = \frac{a^4}{r^2}$.</p>
+        <p>After careful computation: $R = a^2/(3r)$, or equivalently $3Rr = a^2$.</p>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 5 — RADIUS — PARAMETRIC
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="radius-parametric">
+      <div class="section-header">
+        <span class="section-number">5</span>
+        <h2>Radius of Curvature — Parametric Form</h2>
+      </div>
+
+      <h3 class="sub-heading">5.1 Derivation</h3>
+      <p>For $x = x(t)$, $y = y(t)$ (dots = $d/dt$):</p>
+      $$y_1 = \frac{\dot y}{\dot x}, \qquad y_2 = \frac{d}{dt}\!\left(\frac{\dot y}{\dot x}\right)\!\cdot\!\frac{1}{\dot x} = \frac{\dot x\ddot y - \dot y\ddot x}{\dot x^3}$$
+      $$1+y_1^2 = 1 + \frac{\dot y^2}{\dot x^2} = \frac{\dot x^2+\dot y^2}{\dot x^2}$$
+      $$(1+y_1^2)^{3/2} = \frac{(\dot x^2+\dot y^2)^{3/2}}{|\dot x|^3}$$
+      <div class="formula-box">
+        <p class="box-title">Radius of Curvature — Parametric Form</p>
+        $$R = \frac{(\dot x^2 + \dot y^2)^{3/2}}{|\dot x\ddot y - \dot y\ddot x|}$$
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 1 — Cycloid: $x = a(t-\sin t)$, $y = a(1-\cos t)$</p>
+        $$\dot x = a(1-\cos t),\quad \dot y = a\sin t$$
+        $$\ddot x = a\sin t,\quad \ddot y = a\cos t$$
+        $$\dot x^2+\dot y^2 = a^2[(1-\cos t)^2+\sin^2 t] = a^2[2-2\cos t] = 4a^2\sin^2(t/2)$$
+        $$\dot x\ddot y - \dot y\ddot x = a(1-\cos t)\cdot a\cos t - a\sin t\cdot a\sin t = a^2(\cos t - \cos^2 t - \sin^2 t) = a^2(\cos t - 1) = -a^2(1-\cos t)$$
+        $$R = \frac{[4a^2\sin^2(t/2)]^{3/2}}{a^2(1-\cos t)} = \frac{8a^3\sin^3(t/2)}{2a^2\sin^2(t/2)} = 4a\sin(t/2)$$
+        $$\boxed{R_{\text{cycloid}} = 4a\sin(t/2)}$$
+        <p>At $t=\pi$ (apex): $R = 4a\sin(\pi/2) = 4a$. At cusps ($t=0,2\pi$): $R = 0$. The cusp is infinitely sharp.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 2 — Ellipse: $x = a\cos t$, $y = b\sin t$</p>
+        $$\dot x = -a\sin t,\quad \dot y = b\cos t,\quad \ddot x = -a\cos t,\quad \ddot y = -b\sin t$$
+        $$\dot x\ddot y - \dot y\ddot x = (-a\sin t)(-b\sin t)-(b\cos t)(-a\cos t) = ab$$
+        $$R = \frac{(a^2\sin^2 t + b^2\cos^2 t)^{3/2}}{ab}$$
+        <p>Confirms our earlier calculation.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 3 — Astroid: $x = a\cos^3 t$, $y = a\sin^3 t$</p>
+        $$\dot x = -3a\cos^2 t\sin t,\quad \dot y = 3a\sin^2 t\cos t$$
+        $$\dot x^2+\dot y^2 = 9a^2\cos^2 t\sin^2 t(\cos^2 t+\sin^2 t) = 9a^2\sin^2 t\cos^2 t$$
+        $$\ddot x = -3a(2\cos t(-\sin t)\sin t + \cos^2 t\cos t) = 3a\cos t(2\sin^2 t - \cos^2 t)$$
+        $$\ddot y = 3a\sin t(2\cos^2 t - \sin^2 t)$$
+        $$\dot x\ddot y - \dot y\ddot x = -3a\cos^2 t\sin t\cdot 3a\sin t(2\cos^2 t-\sin^2 t) - 3a\sin^2 t\cos t\cdot 3a\cos t(2\sin^2 t-\cos^2 t)$$
+        <p>Simplifying: $= -9a^2\sin t\cos t$. So:</p>
+        $$R = \frac{(9a^2\sin^2 t\cos^2 t)^{3/2}}{9a^2|\sin t\cos t|} = \frac{27a^3|\sin t\cos t|^3}{9a^2|\sin t\cos t|} = 3a|\sin t\cos t| = \frac{3a}{2}|\sin 2t|$$
+        <p>At the four cusps ($t = 0, \pi/2, \pi, 3\pi/2$): $R = 0$. Max $R = 3a/2$ at $t = \pi/4, 3\pi/4$.</p>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 6 — CIRCLE OF CURVATURE
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="circle-curvature">
+      <div class="section-header">
+        <span class="section-number">6</span>
+        <h2>Circle of Curvature</h2>
+      </div>
+
+      <div class="def-box">
+        <p class="box-title">Osculating Circle</p>
+        <p>At a point $P$ on a curve, the <strong>circle of curvature</strong> (osculating circle) is the unique circle that:</p>
+        <ul>
+          <li>passes through $P$,</li>
+          <li>has the same tangent as the curve at $P$,</li>
+          <li>has the same curvature $\kappa$ as the curve at $P$.</li>
+        </ul>
+        <p>Its radius is $R = 1/\kappa$ and its centre $C(\alpha, \beta)$ lies on the normal to the curve at $P$.</p>
+      </div>
+
+      <h3 class="sub-heading">6.1 Centre of Curvature</h3>
+      <p>If the curve has point $P = (x, y)$ with slope $y_1$ and second derivative $y_2$, the centre $(\alpha, \beta)$ lies at distance $R$ along the inward normal:</p>
+      <div class="formula-box">
+        <p class="box-title">Centre of Curvature Formulas</p>
+        $$\alpha = x - \frac{y_1(1+y_1^2)}{y_2}, \qquad \beta = y + \frac{1+y_1^2}{y_2}$$
+      </div>
+
+      <h4 class="sub-sub-heading">Derivation</h4>
+      <p>The normal at $(x,y)$ has direction vector $(y_1, -1)$ (rotated tangent). The unit normal pointing toward the centre of curvature (inward when $y_2 > 0$) is $\hat n = \frac{(y_1, -1)}{\sqrt{1+y_1^2}}$ (or the opposite sign for $y_2 < 0$, adjusting automatically). Then:</p>
+      $$(\alpha-x, \beta-y) = \pm R\cdot\hat n = \frac{-(1+y_1^2)}{y_2}(y_1, -1)$$
+      $$\alpha = x - \frac{y_1(1+y_1^2)}{y_2}, \qquad \beta = y + \frac{1+y_1^2}{y_2}$$
+
+      <div class="example-box">
+        <p class="box-title">Example 1 — Circle of Curvature for $y = x^2$ at $(0,0)$</p>
+        <p>$y_1(0) = 0$, $y_2(0) = 2$.</p>
+        $$\alpha = 0 - \frac{0 \cdot 1}{2} = 0, \qquad \beta = 0 + \frac{1}{2} = \frac{1}{2}, \qquad R = \frac{1}{2}$$
+        <p>Circle: $x^2 + (y - \tfrac12)^2 = \tfrac14$. This is a circle of radius $\tfrac12$ centred at $(0,\tfrac12)$.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 2 — Circle of Curvature for $y = x^2$ at $(1,1)$</p>
+        <p>$y_1(1) = 2$, $y_2(1) = 2$.</p>
+        $$\alpha = 1 - \frac{2(1+4)}{2} = 1 - 5 = -4, \qquad \beta = 1 + \frac{1+4}{2} = 1 + \frac{5}{2} = \frac{7}{2}$$
+        $$R = \frac{(1+4)^{3/2}}{2} = \frac{5\sqrt{5}}{2}$$
+        <p>Circle of curvature: $(x+4)^2 + (y - 7/2)^2 = 125/4$.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 3 — Circle of Curvature for $y = \ln x$ at $(1,0)$</p>
+        <p>$y_1 = 1/x$, $y_2 = -1/x^2$. At $x=1$: $y_1 = 1$, $y_2 = -1$.</p>
+        $$\alpha = 1 - \frac{1\cdot(1+1)}{-1} = 1 + 2 = 3, \qquad \beta = 0 + \frac{1+1}{-1} = -2$$
+        $$R = \frac{(1+1)^{3/2}}{1} = 2\sqrt{2}$$
+        <p>Circle: $(x-3)^2 + (y+2)^2 = 8$.</p>
+      </div>
+
+      <h3 class="sub-heading">6.2 Evolute as Locus of Centres</h3>
+      <div class="theorem-box">
+        <p class="box-title">Evolute Definition via Osculating Circle</p>
+        <p>As $P$ moves along the curve $C$, the centre of curvature $(\alpha(t), \beta(t))$ traces a new curve called the <strong>evolute</strong> of $C$. The original curve $C$ is an <strong>involute</strong> of its evolute.</p>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 7 — EVOLUTES AND INVOLUTES
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="evolutes-involutes">
+      <div class="section-header">
+        <span class="section-number">7</span>
+        <h2>Evolutes and Involutes</h2>
+      </div>
+
+      <div class="def-box">
+        <p class="box-title">Evolute</p>
+        <p>The <strong>evolute</strong> of a curve $C$ is the locus of its centres of curvature. If $C$ is given parametrically, its evolute is obtained by eliminating the parameter from:</p>
+        $$\alpha = x - \frac{y_1(1+y_1^2)}{y_2}, \qquad \beta = y + \frac{1+y_1^2}{y_2}$$
+      </div>
+      <div class="def-box">
+        <p class="box-title">Involute</p>
+        <p>An <strong>involute</strong> of a curve $E$ is a curve $C$ whose evolute is $E$. Geometrically, the involute is traced by the free end of a taut string as it is unwound from the curve $E$.</p>
+      </div>
+
+      <div class="theorem-box">
+        <p class="box-title">Key Properties</p>
+        <ul>
+          <li>Every tangent to the evolute is normal to the involute.</li>
+          <li>The evolute of an involute is the original curve.</li>
+          <li>The difference of arc lengths on the evolute between two points equals the difference of radii of curvature at the corresponding points of the involute.</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">7.1 Evolute of the Parabola $y^2 = 4ax$</h3>
+      <p>Parametrise: $x = at^2$, $y = 2at$. Then $\dot x = 2at$, $\dot y = 2a$, $\ddot x = 2a$, $\ddot y = 0$.</p>
+      $$y_1 = \frac{2a}{2at} = \frac{1}{t}, \qquad y_2 = \frac{\dot x\ddot y - \dot y\ddot x}{\dot x^3} = \frac{0 - 2a\cdot 2a}{(2at)^3} = \frac{-4a^2}{8a^3t^3} = \frac{-1}{2at^3}$$
+      $$1+y_1^2 = 1+\frac{1}{t^2} = \frac{t^2+1}{t^2}$$
+      $$\alpha = at^2 - \frac{\frac{1}{t}\cdot\frac{t^2+1}{t^2}}{\frac{-1}{2at^3}} = at^2 + 2a(t^2+1) = at^2 + 2at^2 + 2a = 3at^2 + 2a$$
+      $$\beta = 2at + \frac{\frac{t^2+1}{t^2}}{\frac{-1}{2at^3}} = 2at - 2at(t^2+1) = 2at - 2at^3 - 2at = -2at^3$$
+      <p>So $\alpha = 3at^2 + 2a$ and $\beta = -2at^3$. To eliminate $t$:</p>
+      $$t^2 = \frac{\alpha - 2a}{3a}, \qquad t^3 = -\frac{\beta}{2a}$$
+      $$t^6 = \left(\frac{\alpha-2a}{3a}\right)^3 = \frac{\beta^2}{4a^2}$$
+      $$\frac{(\alpha-2a)^3}{27a^3} = \frac{\beta^2}{4a^2}$$
+      <div class="formula-box">
+        <p class="box-title">Evolute of Parabola $y^2 = 4ax$</p>
+        $$27a\beta^2 = 4(\alpha-2a)^3 \quad \text{or equivalently} \quad 27ay^2 = 4(x-2a)^3$$
+        <p>This is itself a <strong>semi-cubical parabola</strong> with vertex at $(2a, 0)$.</p>
+      </div>
+
+      <h3 class="sub-heading">7.2 Evolute of the Ellipse $\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$</h3>
+      <p>Using $x = a\cos t$, $y = b\sin t$:</p>
+      $$y_1 = -\frac{b\cos t}{a\sin t}, \qquad y_2 = \frac{\dot x\ddot y - \dot y\ddot x}{\dot x^3} = \frac{(-a\sin t)(-b\sin t) - (b\cos t)(-a\cos t)}{-a^3\sin^3 t} = \frac{ab}{-a^3\sin^3 t} = \frac{-b}{a^2\sin^3 t}$$
+      $$\alpha = a\cos t - \frac{(-\frac{b\cos t}{a\sin t})(1+\frac{b^2\cos^2 t}{a^2\sin^2 t})}{\frac{-b}{a^2\sin^3 t}} = a\cos t - \frac{a^2-b^2}{a}\cos^3 t = \frac{a^2-b^2}{a}\cos^3 t + a\cos t - \frac{a^2-b^2}{a}\cos^3 t$$
+      <p>Carefully:</p>
+      $$\alpha = a\cos t - \frac{b\cos t}{a\sin t}\cdot\frac{a^2\sin^3 t}{b}\cdot\frac{1}{\sin^2 t}\cdot(-1)\cdot(-1)\cdot\frac{a^2\sin^2 t+b^2\cos^2 t}{a^2\sin^2 t}$$
+      <p>The standard result is:</p>
+      $$\alpha = \frac{a^2-b^2}{a}\cos^3 t, \qquad \beta = -\frac{a^2-b^2}{b}\sin^3 t$$
+      <p>Let $c^2 = a^2-b^2$. Then $\cos^3 t = a\alpha/c^2$, $\sin^3 t = -b\beta/c^2$. Using $\cos^{2/3} t + \sin^{2/3} t = 1$... actually $\cos^2 t + \sin^2 t = 1$ gives:</p>
+      $$(a\alpha/c^2)^{2/3} + (b\beta/c^2)^{2/3} = \cos^2 t + \sin^2 t = 1$$
+      <div class="formula-box">
+        <p class="box-title">Evolute of Ellipse (Astroid)</p>
+        $$(a\alpha)^{2/3} + (b\beta)^{2/3} = (a^2-b^2)^{2/3}$$
+        <p>This is an <strong>astroid</strong> (four-cusped hypocycloid).</p>
+      </div>
+
+      <h3 class="sub-heading">7.3 Involute — String Interpretation</h3>
+      <div class="info-box">
+        <p class="box-title">Unwinding String</p>
+        <p>Wrap a string tightly around a curve $E$ (the evolute). Attach a pen to the free end and unwind the string, keeping it taut. The pen traces an <strong>involute</strong> of $E$.</p>
+        <p>Different starting points on the string give parallel involutes (a family of involutes, all with the same evolute).</p>
+        <p><strong>Classic application:</strong> The involute of a circle is the tooth profile used in most modern gear systems (involute gears), ensuring a constant velocity ratio as gears mesh.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example — Involute of a Circle of Radius $a$</p>
+        <p>Let the circle be $x = a\cos t$, $y = a\sin t$. Arc length from $t=0$: $s = at$. The unit tangent is $(\sin t, -\cos t)$ (outward). The involute:</p>
+        $$X = a\cos t + at\sin t, \qquad Y = a\sin t - at\cos t$$
+        <p>This is used as the standard involute gear profile.</p>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 8 — ENVELOPES
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="envelopes">
+      <div class="section-header">
+        <span class="section-number">8</span>
+        <h2>Envelopes</h2>
+      </div>
+
+      <div class="def-box">
+        <p class="box-title">Envelope of a Family of Curves</p>
+        <p>Given a one-parameter family of curves $F(x, y, c) = 0$, the <strong>envelope</strong> is a curve that is tangent to every member of the family. At each point of tangency, the envelope and the curve $F = 0$ (for the corresponding $c$) share both a common point and a common tangent.</p>
+      </div>
+
+      <h3 class="sub-heading">8.1 Method of Finding the Envelope</h3>
+      <div class="theorem-box">
+        <p class="box-title">Elimination Method</p>
+        <p>To find the envelope of $F(x,y,c) = 0$:</p>
+        <ol class="steps">
+          <li>Differentiate with respect to $c$ (treating $x,y$ as constants): $\frac{\partial F}{\partial c} = 0$.</li>
+          <li>Eliminate $c$ between $F = 0$ and $\partial F/\partial c = 0$.</li>
+          <li>The resulting equation in $x$ and $y$ is the envelope (plus possibly singular points of the family).</li>
+        </ol>
+      </div>
+
+      <div class="theorem-box">
+        <p class="box-title">Discriminant Method</p>
+        <p>If $F(x,y,c) = 0$ can be written as a polynomial in $c$, the envelope is obtained by setting the <em>discriminant</em> of this polynomial (with respect to $c$) to zero.</p>
+        <p>For a quadratic $Ac^2 + Bc + C = 0$: discriminant $= B^2 - 4AC = 0$ is the envelope.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 1 — Family of Lines: $\frac{x}{c} + \frac{y}{k-c} = 1$ (constant intercept sum $k$)</p>
+        <p>$F = \frac{x}{c} + \frac{y}{k-c} - 1 = 0$.</p>
+        $$\frac{\partial F}{\partial c} = -\frac{x}{c^2} + \frac{y}{(k-c)^2} = 0 \implies \frac{y}{(k-c)^2} = \frac{x}{c^2} \implies \frac{\sqrt{y}}{k-c} = \frac{\sqrt{x}}{c}$$
+        $$c = \frac{k\sqrt{x}}{\sqrt{x}+\sqrt{y}}, \quad k-c = \frac{k\sqrt{y}}{\sqrt{x}+\sqrt{y}}$$
+        <p>Substituting back into $F = 0$:</p>
+        $$\frac{\sqrt{x}+\sqrt{y}}{k\sqrt{x}}\cdot x + \frac{\sqrt{x}+\sqrt{y}}{k\sqrt{y}}\cdot y = 1$$
+        $$\frac{\sqrt{x}(\sqrt{x}+\sqrt{y}) + \sqrt{y}(\sqrt{x}+\sqrt{y})}{k\sqrt{xy}} = 1 \implies \frac{(\sqrt{x}+\sqrt{y})^2}{k\sqrt{xy}} = 1$$
+        $$\boxed{\sqrt{x} + \sqrt{y} = \sqrt{k}}$$
+        <p>The envelope is a <em>parabola</em> (in the $\sqrt{x}, \sqrt{y}$ variables).</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 2 — Family of Circles: $(x-c)^2 + y^2 = r^2$ (centres on $x$-axis)</p>
+        <p>$F = (x-c)^2 + y^2 - r^2 = 0$.</p>
+        $$\frac{\partial F}{\partial c} = -2(x-c) = 0 \implies c = x$$
+        <p>Substituting: $0 + y^2 = r^2 \implies y = \pm r$. The envelope consists of the two horizontal lines $y = r$ and $y = -r$ — the lines tangent to all circles from above and below.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 3 — Discriminant: $y = cx - c^2$ (family of tangents to a parabola)</p>
+        <p>Rewrite: $c^2 - cx + y = 0$ (quadratic in $c$). Discriminant $= x^2 - 4y = 0$.</p>
+        $$\boxed{y = \frac{x^2}{4}}$$
+        <p>The envelope is the parabola $x^2 = 4y$, which is tangent to every line $y = cx - c^2$ (these are precisely the tangent lines to $x^2 = 4y$).</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 4 — Family of Ellipses: $\frac{x^2}{c^2}+\frac{y^2}{(1-c)^2}=1$, $0&lt;c&lt;1$</p>
+        <p>$F = \frac{x^2}{c^2} + \frac{y^2}{(1-c)^2} - 1 = 0$.</p>
+        $$\frac{\partial F}{\partial c} = -\frac{2x^2}{c^3} + \frac{2y^2}{(1-c)^3} = 0 \implies \frac{x^2}{c^3} = \frac{y^2}{(1-c)^3}$$
+        $$\left(\frac{c}{1-c}\right)^3 = \frac{x^2}{y^2} \implies \frac{c}{1-c} = \left(\frac{x}{y}\right)^{2/3} \implies c = \frac{x^{2/3}}{x^{2/3}+y^{2/3}}$$
+        <p>Substituting into $F = 0$ gives:</p>
+        $$\boxed{x^{2/3} + y^{2/3} = 1}$$
+        <p>The envelope is an astroid — a beautiful result connecting ellipses to the four-cusped curve.</p>
+      </div>
+
+      <h3 class="sub-heading">8.2 Applications — Caustics</h3>
+      <div class="info-box">
+        <p class="box-title">Caustics in Optics</p>
+        <p>When parallel light rays reflect off a curved mirror, the reflected rays form a family of lines whose envelope is the <strong>caustic</strong> curve — the bright curve you see at the bottom of a coffee cup in sunlight. The caustic of a circular mirror for parallel rays is a <em>cardioid</em>; for a parabolic mirror (by design) it degenerates to a single point — the <em>focus</em>.</p>
+      </div>
+
+    </section>
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 9 — PEDAL EQUATIONS
+    ════════════════════════════════════════════════════════ -->
+    <section class="content-section" id="pedal-equations">
+      <div class="section-header">
+        <span class="section-number">9</span>
+        <h2>Pedal Equations</h2>
+      </div>
+
+      <div class="def-box">
+        <p class="box-title">Pedal Equation Definition</p>
+        <p>The <strong>pedal equation</strong> of a curve with respect to a fixed pole $O$ (usually the origin or the focus) is a relation between:</p>
+        <ul>
+          <li>$r$ = distance from the pole $O$ to the point $P$ on the curve, and</li>
+          <li>$p$ = length of the perpendicular dropped from $O$ to the tangent at $P$.</li>
+        </ul>
+        <p>It expresses the intrinsic geometry of the curve relative to the pole, independent of orientation.</p>
+      </div>
+
+      <h3 class="sub-heading">9.1 Key Formula</h3>
+      <p>For a polar curve $r = f(\theta)$, the perpendicular length from the pole to the tangent is:</p>
+      <div class="formula-box">
+        <p class="box-title">Pedal Length</p>
+        $$\frac{1}{p^2} = \frac{1}{r^2} + \frac{1}{r^4}\left(\frac{dr}{d\theta}\right)^2 \quad\Longleftrightarrow\quad p = \frac{r^2}{\sqrt{r^2 + r_1^2}}$$
+      </div>
+      <p><strong>Derivation:</strong> If $\phi$ is the angle between the radius vector and the tangent, then $p = r\sin\phi$ and $\tan\phi = r/(dr/d\theta) = r/r_1$. So $\sin\phi = r/\sqrt{r^2+r_1^2}$, giving $p = r^2/\sqrt{r^2+r_1^2}$.</p>
+
+      <h3 class="sub-heading">9.2 Pedal Equation from Cartesian Form</h3>
+      <p>For a curve $F(x,y)=0$ with pole at origin, the tangent at $(x_0,y_0)$ has equation:</p>
+      $$F_x(x_0,y_0)(x-x_0) + F_y(x_0,y_0)(y-y_0) = 0$$
+      $$p = \frac{|x_0 F_x + y_0 F_y - (x_0 F_x + y_0 F_y)|}{\sqrt{F_x^2+F_y^2}} = \frac{|x_0 F_y - y_0 F_x| \cdot 0}{\ldots}$$
+      <p>More directly, $p$ = distance from origin to tangent line. Given tangent $ax + by = c$, $p = |c|/\sqrt{a^2+b^2}$.</p>
+
+      <div class="example-box">
+        <p class="box-title">Example 1 — Pedal Equation of the Parabola $r = \ell/(1-\cos\theta)$ (focus as pole)</p>
+        <p>Semi-latus rectum $\ell = 2a$. Then $r_1 = -\ell\sin\theta/(1-\cos\theta)^2 = -r\sin\theta/(1-\cos\theta)$.</p>
+        $$r^2 + r_1^2 = r^2\left[1 + \frac{\sin^2\theta}{(1-\cos\theta)^2}\right] = r^2\cdot\frac{(1-\cos\theta)^2 + \sin^2\theta}{(1-\cos\theta)^2} = r^2\cdot\frac{2(1-\cos\theta)}{(1-\cos\theta)^2} = \frac{2r^2}{r/\ell} \cdot \frac{1}{r}$$
+        <p>Noting $1-\cos\theta = \ell/r$: $r^2+r_1^2 = r^2\cdot\frac{2\ell/r}{(\ell/r)^2} = \frac{2r^3}{\ell}$.</p>
+        $$p = \frac{r^2}{\sqrt{2r^3/\ell}} = r^2\cdot\sqrt{\frac{\ell}{2r^3}} = \sqrt{\frac{\ell r}{2}}$$
+        $$\boxed{p^2 = \frac{\ell r}{2} = ar} \quad (\ell = 2a)$$
+        <p>This is the pedal equation of a parabola with focus as pole: $p^2 = ar$.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 2 — Pedal Equation of the Ellipse $\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$ (centre as pole)</p>
+        <p>The perpendicular from the centre to the tangent at $(a\cos t, b\sin t)$ is $p$, where the tangent is $\frac{x\cos t}{a} + \frac{y\sin t}{b} = 1$:</p>
+        $$p = \frac{1}{\sqrt{\cos^2 t/a^2 + \sin^2 t/b^2}}$$
+        $$\frac{1}{p^2} = \frac{\cos^2 t}{a^2} + \frac{\sin^2 t}{b^2}$$
+        <p>Also $r^2 = a^2\cos^2 t + b^2\sin^2 t$. To eliminate $t$:</p>
+        $$\frac{1}{p^2} = \frac{\cos^2 t}{a^2} + \frac{\sin^2 t}{b^2} = \frac{b^2\cos^2 t + a^2\sin^2 t}{a^2 b^2}$$
+        $$r^2 = a^2\cos^2 t + b^2\sin^2 t$$
+        <p>We find $r^2 + a^2b^2/p^2 = a^2\cos^2 t + b^2\sin^2 t + a^2\sin^2 t + b^2\cos^2 t = a^2+b^2$. Therefore:</p>
+        $$\boxed{\frac{a^2b^2}{p^2} = a^2+b^2 - r^2} \quad\Longleftrightarrow\quad \frac{1}{p^2} = \frac{a^2+b^2-r^2}{a^2 b^2}$$
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 3 — Pedal Equation of Cardioid $r = a(1+\cos\theta)$ (pole at cusp)</p>
+        <p>$r_1 = -a\sin\theta$. From Example 2 in Section 4:</p>
+        $$r^2 + r_1^2 = 2a^2(1+\cos\theta) = 2ar$$
+        $$p = \frac{r^2}{\sqrt{2ar}} = \frac{r^2}{\sqrt{2ar}} = r\sqrt{\frac{r}{2a}}$$
+        $$\boxed{p^2 = \frac{r^3}{2a}}$$
+        <p>Equivalently, $2ap^2 = r^3$ — the pedal equation of the cardioid.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="box-title">Example 4 — Pedal Equation of Lemniscate $r^2 = a^2\cos 2\theta$</p>
+        <p>From Section 4: $r^2 + r_1^2 = a^4/r^2$. So:</p>
+        $$p = \frac{r^2}{\sqrt{a^4/r^2}} = \frac{r^2}{a^2/r} = \frac{r^3}{a^2}$$
+        $$\boxed{p = \frac{r^3}{a^2}} \quad\Longleftrightarrow\quad a^2 p = r^3$$
+        <p>Note: from the pedal form $R = r\,dr/dp = r\cdot dr/(3r^2/a^2\,dr) = a^2/(3r)$, confirming $R = a^2/(3r)$.</p>
+      </div>
+
+      <h3 class="sub-heading">9.3 Bertrand Curves</h3>
+      <div class="info-box">
+        <p class="box-title">Bertrand Curves</p>
+        <p>Two space curves $C_1$ and $C_2$ are called <strong>Bertrand mates</strong> if they have the same principal normals at corresponding points. Equivalently, a Bertrand curve satisfies a linear relation between its curvature $\kappa$ and torsion $\tau$:</p>
+        $$a\kappa + b\tau = 1, \quad a,b \text{ constants}$$
+        <p>Special case: if $b = 0$, then $\kappa = \text{const}$ — a circular helix.</p>
+        <p>In the plane (2D context), every curve is a Bertrand curve with its parallel curves as mates.</p>
+      </div>
+
+      <h3 class="sub-heading">9.4 Summary Table</h3>
+      <table>
+        <thead>
+          <tr><th>Curve</th><th>Pole</th><th>Pedal Equation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Parabola $y^2 = 4ax$</td><td>Focus</td><td>$p^2 = ar$</td></tr>
+          <tr><td>Ellipse $x^2/a^2+y^2/b^2=1$</td><td>Centre</td><td>$a^2b^2/p^2 = a^2+b^2-r^2$</td></tr>
+          <tr><td>Cardioid $r=a(1+\cos\theta)$</td><td>Pole</td><td>$p^2 = r^3/(2a)$</td></tr>
+          <tr><td>Lemniscate $r^2 = a^2\cos 2\theta$</td><td>Pole</td><td>$a^2p = r^3$</td></tr>
+          <tr><td>Archimedean Spiral $r=a\theta$</td><td>Pole</td><td>$p = r^2/\sqrt{r^2+a^2}$</td></tr>
+          <tr><td>Circle $r = 2a\cos\theta$</td><td>Pole on circumference</td><td>$p = r^2/(2a)$</td></tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <!-- Navigation -->
+    <div class="section-divider"></div>
+    <div class="nav-cards">
+      <a href="unit2.html" class="nav-card">
+        <div class="direction">← Previous</div>
+        <div class="nav-title">Unit 2: Sequences &amp; Series</div>
+      </a>
+      <a href="unit4.html" class="nav-card">
+        <div class="direction">Next →</div>
+        <div class="nav-title">Unit 4: Functions of Several Variables</div>
+      </a>
+    </div>
+
+    <footer class="page-footer">
+      <p>26MAB1001T · Calculus &amp; Linear Algebra · Unit 3 &nbsp;·&nbsp; Made by <a href="https://github.com/ajlikeadj" target="_blank" rel="noopener noreferrer" style="color: var(--mint); text-decoration: underline; font-weight: 500;">Ajlikeadj</a></p>
+    </footer>
+
+  </main>
+</div><!-- /layout -->
+
+<!-- ═══════════ JS ═══════════ -->
+<script src="../js/main.js"></script>
+<script>
+  /* Progress bar */
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (scrolled / total * 100) + '%';
+  });
+
+  /* Cursor glow */
+  const glow = document.getElementById('cursorGlow');
+  window.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
+
+  /* Active TOC link */
+  const sections = document.querySelectorAll('.content-section');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'));
+        const id = entry.target.id;
+        const active = document.querySelector(`.toc-list a[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
