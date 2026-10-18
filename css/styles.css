@@ -708,14 +708,133 @@ body::before {
 }
 
 /* ══════════════════════════════════════════
-   RESPONSIVE
+   RESPONSIVE & MOBILE OPTIMIZATIONS
 ══════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .units-grid { grid-template-columns: repeat(2, 1fr); }
+  .topic-layout, .layout, .page-wrapper {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
 }
 
-@media (max-width: 640px) {
-  .units-grid { grid-template-columns: 1fr; }
-  .hero-title { font-size: 2.5rem; }
+@media (max-width: 768px) {
+  /* Navigation */
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 68px; left: 0; right: 0;
+    background: rgba(5,13,11,0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 20px 24px 28px;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.6);
+  }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: flex; }
+
+  /* Hero & Headings */
+  .hero-title { font-size: clamp(2.2rem, 9vw, 3.2rem); }
+  .hero-subtitle { font-size: 0.95rem; }
+  .hero-cta-group { flex-direction: column; width: 100%; gap: 12px; }
+  .hero-cta-group .btn { width: 100%; justify-content: center; }
+
+  /* Spacing */
+  .units-section { padding: 60px 0; }
+  .stats-section { padding: 40px 0; }
   .container, .container-wide { padding: 0 16px; }
+  .units-grid { grid-template-columns: 1fr; gap: 16px; }
+  .unit-card { padding: 24px 20px; }
+
+  /* Math & Code horizontal scrolling prevention */
+  .katex-display {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 0 !important;
+    max-width: 100%;
+  }
+  .formula-box, .def-box, .theorem-box, .example-box, .proof-box, .key-points, .warning-box, .note-box {
+    padding: 16px 16px !important;
+    margin: 16px 0 !important;
+    border-radius: 10px;
+  }
+
+  /* Responsive tables */
+  .math-table, table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  /* TOC Mobile Floating Action Button */
+  .toc-toggle, .mobile-toc-toggle, .toc-mobile-toggle {
+    display: flex !important;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #050d0b;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(74,222,128,0.45);
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .toc-toggle:active, .mobile-toc-toggle:active, .toc-mobile-toggle:active {
+    transform: scale(0.95);
+  }
+
+  /* Mobile Slide-in Drawer for Sidebar */
+  .topic-sidebar, .sidebar {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: calc(100vh - 60px) !important;
+    max-height: none !important;
+    background: rgba(5, 13, 11, 0.98) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 990;
+    padding: 24px 20px 80px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-right: none !important;
+    border-top: 1px solid var(--border);
+  }
+
+  .topic-sidebar.open, .topic-sidebar.mobile-open, .sidebar.open {
+    display: block !important;
+  }
+
+  /* Touch tap targets */
+  .toc-list a {
+    padding: 10px 14px !important;
+    font-size: 0.92rem !important;
+    display: block;
+  }
 }
+
+@media (max-width: 480px) {
+  .topic-hero h1, .hero h1 { font-size: 1.85rem !important; }
+  .section-title, .section-title-main { font-size: 1.45rem !important; }
+}
+
